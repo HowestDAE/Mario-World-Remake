@@ -144,9 +144,9 @@ Explain where you applied inheritance (mandatory).
 <!-- CONTACT -->
 ## Contact
 
-Your Name - email@student.howest.be
+Lennert Saerens - lennert.saerens@student.howest.be
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/HowestDAE/dae28-LennertSaerens1](https://github.com/HowestDAE/dae28-LennertSaerens1)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
