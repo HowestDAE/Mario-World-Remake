@@ -46,8 +46,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-TODO: add screenshot
-    ![Mario World Screenshot](dae28-LennertSaerens1\DAE28_lennert_saerens\Resources\MarioWorld.png "Mario World Screenshot")
+![Alt text](DAE28_lennert_saerens/Resources/MarioWorld.png)
 
 Here's why:
 * I'm a pretty big mario fan and i like 2D platformers in general.
