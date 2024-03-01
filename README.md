@@ -4,15 +4,15 @@
 <br />
 <div align="center">
 
-  <h1 align="center">NAME OF CHOSEN GAME</h1>
+  <h1 align="center">Super Mario World</h1>
 
   <p align="center">
-    Short description of the game.
+    Super Mario World is the fourth installment in the Super Mario series and was originally released on SNES, it is a 2D sidescrolling platformer with 9 worlds and 74 levels. 
     <br />
     <strong>Original game : </strong>
-    <a href="https://www.google.be/"><strong>General info »</strong></a>
+    <a href="https://en.wikipedia.org/wiki/Super_Mario_World"><strong>General info »</strong></a>
     ·
-    <a href="https://www.google.be/"><strong>Youtube video »<strong></a>
+    <a href="https://www.youtube.com/watch?v=3Tc_Ek0ASSA"><strong>Youtube video »<strong></a>
     <br />
     <br />
   </p>
@@ -46,12 +46,13 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-TODO: add screenshot 
+TODO: add screenshot
+    ![Mario World Screenshot](dae28-LennertSaerens1\DAE28_lennert_saerens\Resources\MarioWorld.png "Mario World Screenshot")
 
 Here's why:
-TODO: describe why you chose this game 
-* reason 1
-* reason .. 
+* I'm a pretty big mario fan and i like 2D platformers in general.
+* I chose this over the first mario game because it introduces more new features so it won't be too easy for me to make.
+* A lot of the things this game has will make me more used to programming in general i think.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -61,16 +62,19 @@ TODO: describe why you chose this game
 This section gives a clear and detailed overview of which parts of the original game I planned to make.
 
 ### The minimum I will most certainly develop:
-* .. 
-* .. 
+* All the movement of mario. 
+* All of the enemys in the levels i will make.
+* The ability to pick up power-ups.
+* The ability to defeat enemys.
+* The first level of the game.
 
 ### What I will probably make as well:
-* .. 
-* .. 
+* A few more levels that i think are interesting.
+* More enemy types.
 
 ### What I plan to create if I have enough time left:
-* .. 
-* .. 
+* The whole of world 1 
+* A world map
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
