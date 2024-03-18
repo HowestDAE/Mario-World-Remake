@@ -1,5 +1,10 @@
 #pragma once
 #include "BaseGame.h"
+#include <vector>
+#include "Texture.h"
+class Mario;
+class Camera;
+
 class Game : public BaseGame
 {
 public:
@@ -22,6 +27,10 @@ public:
 	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
 
 private:
+	std::vector<std::vector<Point2f>> m_Landscape;
+	Mario* m_pMario;
+	Texture* m_pMap;
+	Camera* m_pCamera;
 
 	// FUNCTIONS
 	void Initialize();

@@ -5,9 +5,14 @@ class Enemy
 {
 public:
 	Enemy();
-	~Enemy();
+	virtual ~Enemy();
 	virtual void Update(float elapsedSec);
 	virtual void Draw();
+protected:
+	Point2f GetPos() const;
+	void SetPos();
+	Vector2f GetVel() const;
+	void SetVel();
 private:
 	Point2f m_Pos;
 	Vector2f m_Velocity;

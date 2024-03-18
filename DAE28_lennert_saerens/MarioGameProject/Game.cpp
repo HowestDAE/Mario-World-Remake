@@ -1,10 +1,14 @@
 #include "pch.h"
 #include "Game.h"
+#include "Mario.h"
+#include "Camera.h"
+#include "SVGParser.h"
 
-Game::Game( const Window& window ) 
+Game::Game(const Window& window)
 	:BaseGame{ window }
 {
 	Initialize();
+	
 }
 
 Game::~Game( )
@@ -14,15 +18,38 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	
+	std::vector<Point2f> platformOne{ Point2f(0, 50), Point2f(5000, 50) };
+	m_Landscape.push_back(platformOne);
+	m_pMario = new Mario(Point2f(50, 200));
+	m_pMap = new Texture("yoshis-island-1-top.png");
+	m_pCamera = new Camera(GetViewPort().width, GetViewPort().height);
+	//SVGParser::GetVerticesFromSvgFile("yoshis-island-1-top.svg", m_Landscape);
+//	for (int idx{}; idx < m_Landscape.size(); ++idx)
+//	{
+//		for (int i{}; i < m_Landscape[idx].size(); ++i)
+//		{
+//			m_Landscape[idx][i].x * 2;
+//			m_Landscape[idx][i].y * 2;
+//		}
+//	}
+//	
 }
 
 void Game::Cleanup( )
 {
+	delete m_pMario;
+	m_pMario = nullptr;
+	delete m_pMap;
+	m_pMap = nullptr;
+	delete m_pCamera;
+	m_pCamera = nullptr;
 }
 
 void Game::Update( float elapsedSec )
 {
+	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
+	m_pMario->HandleMovement(elapsedSec, pStates);
+	m_pMario->Update(elapsedSec,m_Landscape);
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
@@ -37,7 +64,12 @@ void Game::Update( float elapsedSec )
 
 void Game::Draw( ) const
 {
+	m_pCamera->Aim(m_pMap->GetWidth() * 2, m_pMap->GetHeight() * 2, m_pMario->GetPos());
 	ClearBackground( );
+	m_pMap->Draw(Rectf(0,0,m_pMap->GetWidth()*2,m_pMap->GetHeight()*2));
+	m_pMario->Draw();
+	m_pCamera->Reset();
+	
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )

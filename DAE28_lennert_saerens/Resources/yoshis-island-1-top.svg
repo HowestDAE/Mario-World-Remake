@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="5120"
+   height="432"
+   viewBox="0 0 5120 432"
+   sodipodi:docname="yoshis-island-1-top.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="1.5578125"
+     inkscape:cx="443.89168"
+     inkscape:cy="190.33099"
+     inkscape:window-width="2560"
+     inkscape:window-height="1351"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g1" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Image"
+     id="g1">
+    <image
+       width="5120"
+       height="432"
+       preserveAspectRatio="none"
+       xlink:href="yoshis-island-1-top.png"
+       id="image1" />
+    <path
+       style="fill:#000000"
+       d="m -0.08024072,384.39318 817.57272072,0.12036 95.48646,-95.24574 29.56871,29.32799 -65.998,65.79739 67.56269,-0.0401 0.2006,-59.97994 4.25276,-3.97192 215.8074,0.36109 3.2899,3.81143 -0.04,59.97994 641.7653,-0.2006 -0.5617,-47.86359 30.01,-0.16048 v 47.98395 l 65.1956,0.0802 -0.321,-64.11234 16.1284,-0.24072 0.2006,64.47342 32.658,-0.0802 -0.321,-64.6339 15.8877,0.0401 -0.1204,64.79438 16.9308,-0.12036 95.8877,-95.5667 31.0933,31.29388 15.5266,0.0802 0.08,64.35306 97.4122,-0.28084 -0.5617,-63.95186 31.0532,0.16049 -0.321,63.71113 831.9669,-0.30502 0.1702,16.90815 80.796,-0.68086 -0.057,-15.88686 239.8347,-0.11347 0.057,47.77403 L 0,432.12239 Z"
+       id="path1" />
+    <path
+       style="fill:#000000"
+       d="m 3440.6383,431.78196 v -47.20665 l 62.6396,-0.22696 v 15.31947 h 65.4766 l 0.3404,-15.31947 78.2995,0.34044 v 47.4336 z"
+       id="path2" />
+    <path
+       style="fill:#000000"
+       d="m 3680.3029,432.00891 -0.227,-47.66056 896.8128,0.34044 -0.2269,-47.88752 h 94.8672 l 0.3404,47.43361 449.9384,0.34043 -0.5674,48.22794 z"
+       id="path3" />
+  </g>
+</svg>
