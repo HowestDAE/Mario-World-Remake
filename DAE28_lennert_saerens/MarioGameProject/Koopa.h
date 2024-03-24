@@ -4,7 +4,7 @@
 class Koopa : public Enemy
 {
 public:
-	Koopa();
+	explicit Koopa();
 	~Koopa();
 	virtual void Update(float elapsedSec) override;
 	virtual void Draw() override;

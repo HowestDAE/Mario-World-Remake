@@ -1,7 +1,7 @@
 #pragma once
 #include "utils.h"
 #include "Texture.h"
-class EnemyManager
+class EnemyManager final 
 {
 public:
 	static enum class EnemyType
@@ -13,7 +13,7 @@ public:
 		Chuck,
 	};
 
-	EnemyManager(EnemyType enemyType, Point2f pos);
+	explicit EnemyManager(EnemyType enemyType, Point2f pos);
 	~EnemyManager();
 	void Update(float elapsedSec);
 	void Draw()const;

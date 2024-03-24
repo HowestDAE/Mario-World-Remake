@@ -1,8 +1,8 @@
 #pragma once
-class Camera
+class Camera final
 {
 public:
-	Camera(float screenWidth, float screenHeight);
+	explicit Camera(float screenWidth, float screenHeight);
 	void Aim(float levelW, float levelH,const Point2f& trackCenter);
 	Point2f Reset();
 private:

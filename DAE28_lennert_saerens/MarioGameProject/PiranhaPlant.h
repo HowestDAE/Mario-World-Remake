@@ -4,7 +4,7 @@
 class PiranhaPlant : public Enemy
 {
 public:
-	PiranhaPlant();
+	explicit PiranhaPlant();
 	~PiranhaPlant();
 	virtual void Update(float elapsedSec) override;
 	virtual void Draw() override;

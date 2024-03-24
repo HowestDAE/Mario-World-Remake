@@ -4,7 +4,7 @@
 class Enemy
 {
 public:
-	Enemy();
+	explicit Enemy();
 	virtual ~Enemy();
 	virtual void Update(float elapsedSec);
 	virtual void Draw();

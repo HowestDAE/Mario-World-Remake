@@ -3,6 +3,7 @@
 #include "Mario.h"
 #include "Camera.h"
 #include "SVGParser.h"
+#include "Matrix2x3.h"
 
 Game::Game(const Window& window)
 	:BaseGame{ window }
@@ -18,21 +19,31 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	std::vector<Point2f> platformOne{ Point2f(0, 50), Point2f(5000, 50) };
-	m_Landscape.push_back(platformOne);
+	//std::vector<Point2f> platformOne{ Point2f(0, 50), Point2f(5000, 50) };
+	//m_Landscape.push_back(platformOne);
+	m_pBackgroundMusic = new SoundStream("Sounds/12. Overworld.mp3");
+	m_pBackgroundMusic->Play(true);
 	m_pMario = new Mario(Point2f(50, 200));
 	m_pMap = new Texture("yoshis-island-1-top.png");
 	m_pCamera = new Camera(GetViewPort().width, GetViewPort().height);
-	//SVGParser::GetVerticesFromSvgFile("yoshis-island-1-top.svg", m_Landscape);
-//	for (int idx{}; idx < m_Landscape.size(); ++idx)
-//	{
-//		for (int i{}; i < m_Landscape[idx].size(); ++i)
-//		{
-//			m_Landscape[idx][i].x * 2;
-//			m_Landscape[idx][i].y * 2;
-//		}
-//	}
-//	
+	SVGParser::GetVerticesFromSvgFile("yoshis-island-1-top.svg", m_Landscape);
+	for (int idx{}; idx < m_Landscape.size(); ++idx)
+	{
+		for (int i{}; i < m_Landscape[idx].size(); ++i)
+		{
+			m_Landscape[idx][i].x;
+			m_Landscape[idx][i].y;
+		}
+	}
+
+	Matrix2x3 scaleMat{};
+	scaleMat.SetAsScale(2.f);
+
+	for (int idx{}; idx < m_Landscape.size(); ++idx)
+	{
+		Matrix2x3 transformMatrix{ scaleMat };
+		m_Landscape[idx] = transformMatrix.Transform(m_Landscape[idx]);
+	}
 }
 
 void Game::Cleanup( )
@@ -43,6 +54,8 @@ void Game::Cleanup( )
 	m_pMap = nullptr;
 	delete m_pCamera;
 	m_pCamera = nullptr;
+	delete m_pBackgroundMusic;
+	m_pBackgroundMusic = nullptr;
 }
 
 void Game::Update( float elapsedSec )
@@ -64,11 +77,14 @@ void Game::Update( float elapsedSec )
 
 void Game::Draw( ) const
 {
-	m_pCamera->Aim(m_pMap->GetWidth() * 2, m_pMap->GetHeight() * 2, m_pMario->GetPos());
+	/*glPushMatrix();
+	glScalef(2.f, 2.f, 0.f);*/
+	m_pCamera->Aim(m_pMap->GetWidth()*2, m_pMap->GetHeight()*2, m_pMario->GetPos());
 	ClearBackground( );
 	m_pMap->Draw(Rectf(0,0,m_pMap->GetWidth()*2,m_pMap->GetHeight()*2));
 	m_pMario->Draw();
 	m_pCamera->Reset();
+	//glPopMatrix();
 	
 }
 
@@ -79,6 +95,7 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 {
+	m_pMario->OnKeyUpEvent(e);
 	//std::cout << "KEYUP event: " << e.keysym.sym << std::endl;
 	//switch ( e.keysym.sym )
 	//{

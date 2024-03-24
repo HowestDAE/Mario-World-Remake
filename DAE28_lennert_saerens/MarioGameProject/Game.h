@@ -2,6 +2,7 @@
 #include "BaseGame.h"
 #include <vector>
 #include "Texture.h"
+#include "SoundStream.h"
 class Mario;
 class Camera;
 
@@ -31,6 +32,7 @@ private:
 	Mario* m_pMario;
 	Texture* m_pMap;
 	Camera* m_pCamera;
+	SoundStream* m_pBackgroundMusic;
 
 	// FUNCTIONS
 	void Initialize();

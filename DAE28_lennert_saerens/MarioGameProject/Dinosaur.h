@@ -4,7 +4,7 @@
 class Dinosaur : public Enemy
 {
 public:
-	Dinosaur();
+	explicit Dinosaur();
 	~Dinosaur();
 	virtual void Update(float elapsedSec) override;
 	virtual void Draw() override;
