@@ -5,15 +5,17 @@
 Mario::Mario(const Point2f& startingPos)
 	:m_Pos{startingPos}
 	,m_Velocity{}
-	,m_WalkingState{}
+	,m_WalkingState{WalkingState::none}
+	,m_LookingState{ LookingState::right }
 	,m_AccTime{}
 	,m_FrameNr{1}
-	,m_FrameTime{ 0.28f }
+	,m_FrameTime{ 0.5f }
 	, m_JumpTime{ 0.4f }
 	,m_TimeInAir{0}
-	, m_Mariostate{ state::small }
+	, m_Mariostate{ PowerUpState::small }
 	, m_CanJump{ 1 }
 	,m_IsOnGround{  }
+	,m_FrameRect{ Rectf(328, 19, 16, 19) }
 {
 	m_pSpritesheet = new Texture("mario-spritesheet.png");
 	m_Bounds = Rectf(0, 0, GetCurrFrameRect().width*2, GetCurrFrameRect().height*2);
@@ -34,12 +36,12 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 	const float gravity{ -7.f };
 	const float friction{ -1.4f };
 
-	Point2f leftTop{ m_Pos.x, m_Pos.y + m_Bounds.height };
-	Point2f leftBottom{ m_Pos.x, m_Pos.y };
-	Point2f leftMiddle{ m_Pos.x, m_Pos.y + m_Bounds.height / 2 };
-	Point2f rightTop{ m_Pos.x + m_Bounds.width, m_Pos.y + m_Bounds.height };
-	Point2f rightBottom{ m_Pos.x + m_Bounds.width, m_Pos.y };
-	Point2f rightMiddle{ m_Pos.x + m_Bounds.width, m_Pos.y + m_Bounds.height / 2 };
+	const Point2f leftTop{ m_Pos.x, m_Pos.y + m_Bounds.height };
+	const Point2f leftBottom{ m_Pos.x, m_Pos.y };
+	const Point2f leftMiddle{ m_Pos.x, m_Pos.y + m_Bounds.height / 2 };
+	const Point2f rightTop{ m_Pos.x + m_Bounds.width, m_Pos.y + m_Bounds.height };
+	const Point2f rightBottom{ m_Pos.x + m_Bounds.width, m_Pos.y };
+	const Point2f rightMiddle{ m_Pos.x + m_Bounds.width, m_Pos.y + m_Bounds.height / 2 };
 
 	utils::HitInfo hitInfo{};
 
@@ -76,6 +78,15 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 		{
 			m_Velocity.y += gravity;
 		}
+		if (m_Velocity.y > 5)
+		{
+			m_IsOnGround = 0; 
+		}
+		if (m_Velocity.y < -100)
+		{
+			m_IsOnGround = 0;
+			m_CanJump = false;
+		}
 		if (m_Velocity.x > 0 && m_IsOnGround == 1) m_Velocity.x += friction;
 		if (m_Velocity.x < 1.f && m_Velocity.x >-1.f) m_Velocity.x = 0;
 		if (m_Velocity.x < 0 && m_IsOnGround == 1) m_Velocity.x -= friction;
@@ -84,7 +95,7 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 
 	}
 
-	//Animate(elapsedSec);
+	Animate(elapsedSec);
 
 }
 
@@ -95,32 +106,31 @@ void Mario::Draw() const
 	m_pTexture->Draw();
 	glPopMatrix();*/
 
-	Rectf drawRect{ m_Pos.x,m_Pos.y, GetCurrFrameRect().width*2,GetCurrFrameRect().height*2};
-	m_pSpritesheet->Draw(drawRect,GetCurrFrameRect());
+	Rectf drawRect{ m_Pos.x,m_Pos.y, m_FrameRect.width*2,m_FrameRect.height*2};
+	m_pSpritesheet->Draw(drawRect, m_FrameRect);
 }
 
-
-void Mario::HandleMovement(float elapsedSec, const Uint8* pStates)
+void Mario::WalkRight(float elapsedSec, const Uint8* pStates)
 {
-	m_WalkingState = WalkingState::none;
-
-	if (pStates[SDL_SCANCODE_RIGHT])
+	if (m_Velocity.x <= 140.f && m_Velocity.x >= 0.f && m_IsOnGround == 1) m_Velocity.x += 1000.f * elapsedSec;
+	else if (m_Velocity.x <= 140.f && m_IsOnGround == 0)m_Velocity.x += 2500.f * elapsedSec;
+	m_WalkingState = WalkingState::right;
+	m_LookingState = LookingState::right;
+	m_AccTime += elapsedSec;
+	m_FrameTime = 0.5f;
+	if (pStates[SDL_SCANCODE_LSHIFT] && m_IsOnGround == 1)
 	{
-		if (m_Velocity.x <= 140.f && m_Velocity.x >= 0.f && m_IsOnGround == 1) m_Velocity.x += 1000.f*elapsedSec;
-		else if (m_Velocity.x <= 140.f && m_IsOnGround == 0 )m_Velocity.x += 2500.f*elapsedSec;
-		m_WalkingState = WalkingState::right;
-		m_AccTime += elapsedSec;
-		if (pStates[SDL_SCANCODE_LSHIFT] && m_IsOnGround == 1)
-		{
-			if (m_Velocity.x <= 300.f && m_Velocity.x >= 0.f) m_Velocity.x += 1000.f*elapsedSec;
-			if (m_Velocity.x >= 300.f) m_Velocity.x = 300.f;
-		}
-		if (pStates[SDL_SCANCODE_LSHIFT]) m_JumpTime = 0.4f;
-		else m_JumpTime = 0.25f;
+		if (m_Velocity.x <= 300.f && m_Velocity.x >= 0.f) m_Velocity.x += 1000.f * elapsedSec;
+		if (m_Velocity.x >= 300.f) m_Velocity.x = 300.f;
+		m_FrameTime = 0.25f;
 	}
-	if (pStates[SDL_SCANCODE_LEFT])
-	{
-		/*if (m_Velocity.x >= -140.f && m_Velocity.x <= 0.f && m_CanJump == 1) m_Velocity.x = -140.f;
+	if (pStates[SDL_SCANCODE_LSHIFT]) m_JumpTime = 0.4f;
+	else m_JumpTime = 0.25f;
+}
+
+void Mario::WalkLeft(float elapsedSec, const Uint8* pStates)
+{
+	/*if (m_Velocity.x >= -140.f && m_Velocity.x <= 0.f && m_CanJump == 1) m_Velocity.x = -140.f;
 		else if (m_Velocity.x >= -80.f && m_CanJump == 0)m_Velocity.x = -80.f;
 		m_WalkingState = WalkingState::left;
 		m_AccTime += elapsedSec;
@@ -128,20 +138,26 @@ void Mario::HandleMovement(float elapsedSec, const Uint8* pStates)
 		{
 			if (m_Velocity.x >= -300.f) m_Velocity.x = -300.f;
 		}*/
-		if (m_Velocity.x >= -140.f && m_Velocity.x <= 0.f && m_IsOnGround == 1) m_Velocity.x -= 1000.f * elapsedSec;
-		else if (m_Velocity.x >= -140.f && m_IsOnGround == 0)m_Velocity.x -= 2500.f * elapsedSec;
-		m_WalkingState = WalkingState::left;
-		m_AccTime += elapsedSec;
-		if (pStates[SDL_SCANCODE_LSHIFT] && m_IsOnGround == 1)
-		{
-			if (m_Velocity.x >= -300.f && m_Velocity.x <= 0.f) m_Velocity.x -= 1000.f * elapsedSec;
-			if (m_Velocity.x <= -300.f) m_Velocity.x = -300.f;
-		}
-		if (pStates[SDL_SCANCODE_LSHIFT]) m_JumpTime = 0.4f;
-		else m_JumpTime = 0.25f;
-
+	if (m_Velocity.x >= -140.f && m_Velocity.x <= 0.f && m_IsOnGround == 1) m_Velocity.x -= 1000.f * elapsedSec;
+	else if (m_Velocity.x >= -140.f && m_IsOnGround == 0)m_Velocity.x -= 2500.f * elapsedSec;
+	m_WalkingState = WalkingState::left;
+	m_LookingState = LookingState::left;
+	m_AccTime += elapsedSec;
+	m_FrameTime = 0.5f;
+	if (pStates[SDL_SCANCODE_LSHIFT] && m_IsOnGround == 1)
+	{
+		if (m_Velocity.x >= -300.f && m_Velocity.x <= 0.f) m_Velocity.x -= 1000.f * elapsedSec;
+		if (m_Velocity.x <= -300.f) m_Velocity.x = -300.f;
+		m_FrameTime = 0.25f;
 	}
+	if (pStates[SDL_SCANCODE_LSHIFT]) m_JumpTime = 0.4f;
+	else m_JumpTime = 0.25f;
+}
 
+
+void Mario::HandleMovement(float elapsedSec, const Uint8* pStates)
+{
+	// Aparte functions voor elke movement method want ze worden lang
 	if (pStates[SDL_SCANCODE_DOWN])
 	{
 		m_WalkingState = WalkingState::down;
@@ -151,6 +167,18 @@ void Mario::HandleMovement(float elapsedSec, const Uint8* pStates)
 	{
 		m_WalkingState = WalkingState::up;
 	}
+	if (pStates[SDL_SCANCODE_UP] == 0 && pStates[SDL_SCANCODE_DOWN] == 0) m_WalkingState = WalkingState::none;
+	if (pStates[SDL_SCANCODE_RIGHT])
+	{
+		WalkRight(elapsedSec,pStates);
+	}
+	if (pStates[SDL_SCANCODE_LEFT])
+	{
+		WalkLeft(elapsedSec, pStates);
+	}
+
+	
+	
 	if (pStates[SDL_SCANCODE_SPACE])
 	{
 		if (m_IsOnGround == 1)
@@ -158,6 +186,7 @@ void Mario::HandleMovement(float elapsedSec, const Uint8* pStates)
 			m_pJumpEffect->Play(0);
 			m_IsOnGround = 0;
 		}
+
 		if (m_CanJump == 1)
 		{
 			m_Velocity.y = 400.f;
@@ -166,11 +195,12 @@ void Mario::HandleMovement(float elapsedSec, const Uint8* pStates)
 
 	}
 
-	if (m_AccTime >= m_FrameTime)
+	/*if (m_AccTime >= m_FrameTime)
 	{
 		m_AccTime = 0;
 		++m_FrameNr;
-	}
+	}*/
+	if (m_IsOnGround == 0) (m_WalkingState = WalkingState::midAir);
 	if (m_TimeInAir >= m_JumpTime)
 	{
  		m_CanJump = 0;
@@ -185,7 +215,7 @@ void Mario::HandleMovement(float elapsedSec, const Uint8* pStates)
 
 Rectf Mario::GetCurrFrameRect() const
 {
-	return Rectf(328, 19, 16, 19);
+	return m_FrameRect;
 }
 
 Point2f Mario::GetPos() const
@@ -195,6 +225,63 @@ Point2f Mario::GetPos() const
 
 void Mario::Animate(float elapsedSec)
 {
+	m_AccTime += elapsedSec;
+	if (m_WalkingState == WalkingState::none && m_LookingState == LookingState::left) m_FrameRect = Rectf(169, 20, 14, 20);
+	else if (m_WalkingState == WalkingState::none && m_LookingState == LookingState::right) m_FrameRect = Rectf(209, 20, 14, 20);
+	else if (m_WalkingState == WalkingState::left)
+	{
+		if (m_AccTime >= m_FrameTime)
+		{
+			++m_FrameNr;
+			m_AccTime = 0;
+			if (m_FrameNr % 2 == 0) m_FrameRect = Rectf(49, 19, 15, 19);
+			else if (m_FrameNr % 2 == 1) m_FrameRect = Rectf(169, 20, 14, 20);
+		}
+
+	}
+	else if (m_WalkingState == WalkingState::right)
+	{
+		if (m_AccTime >= m_FrameTime)
+		{
+			++m_FrameNr;
+			m_AccTime = 0;
+			if (m_FrameNr % 2 == 1) m_FrameRect = Rectf(328, 19, 15, 19);
+			else if (m_FrameNr % 2 == 0) m_FrameRect = Rectf(209, 20, 14, 20);
+		}
+	}
+	else if (m_WalkingState == WalkingState::down && m_LookingState == LookingState::left)
+	{
+		m_FrameRect = Rectf(89, 57, 15, 14);
+	}
+	else if (m_WalkingState == WalkingState::down && m_LookingState == LookingState::right)
+	{
+		m_FrameRect = Rectf(288, 57, 15, 14);
+	}
+	else if (m_WalkingState == WalkingState::up && m_LookingState == LookingState::left)
+	{
+		m_FrameRect = Rectf(49, 60, 15, 21);
+	}
+	else if (m_WalkingState == WalkingState::up && m_LookingState == LookingState::right)
+	{
+		m_FrameRect = Rectf(328, 60, 15, 21);
+	}
+	else if (m_WalkingState == WalkingState::midAir && m_LookingState == LookingState::left && m_Velocity.y > 0)
+	{
+		m_FrameRect = Rectf(168, 61, 16, 22);
+	}
+	else if (m_WalkingState == WalkingState::midAir && m_LookingState == LookingState::right && m_Velocity.y > 0)
+	{
+		m_FrameRect = Rectf(208, 61, 16, 22);
+	}
+	else if (m_WalkingState == WalkingState::midAir && m_LookingState == LookingState::left && m_Velocity.y <= 0)
+	{
+		m_FrameRect = Rectf(128, 60, 16, 20);
+	}
+	else if (m_WalkingState == WalkingState::midAir && m_LookingState == LookingState::right && m_Velocity.y <= 0)
+	{
+		m_FrameRect = Rectf(247, 60, 16, 20);
+	}
+
 }
 
 void Mario::OnKeyUpEvent(const SDL_KeyboardEvent& e)
@@ -202,7 +289,7 @@ void Mario::OnKeyUpEvent(const SDL_KeyboardEvent& e)
 	switch (e.keysym.sym)
 	{
 	case SDLK_SPACE:
-		m_CanJump = 0;
+		m_CanJump = false;
 		break;
 	}
 }

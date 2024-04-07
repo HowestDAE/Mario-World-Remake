@@ -11,10 +11,15 @@ private:
 		down,
 		left,
 		right,
-		up
+		up,
+		midAir
+	};
+	enum class LookingState {
+		left,
+		right
 	};
 
-	enum class state {
+	enum class PowerUpState {
 		small,
 		big,
 		fireflower
@@ -24,8 +29,9 @@ private:
 	Vector2f m_Velocity;
 	Texture* m_pSpritesheet;
 	Rectf m_Bounds;
-	state m_Mariostate;
+	PowerUpState m_Mariostate;
 	WalkingState m_WalkingState;
+	LookingState m_LookingState;
 	SoundEffect* m_pJumpEffect;
 	float m_AccTime;
 	float m_FrameTime;
@@ -34,6 +40,7 @@ private:
 	int m_FrameNr;
 	bool m_CanJump;
 	bool m_IsOnGround;
+	Rectf m_FrameRect;
 
 
 public:
@@ -42,12 +49,14 @@ public:
 	~Mario();
 	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape);
 	void Draw() const;
-	void HandleMovement(float elapsedSec, const Uint8* pStates);
+	void WalkRight(float elapsedSec, const Uint8* pStates) ;
+	void WalkLeft(float elapsedSec, const Uint8* pStates) ;
+	void HandleMovement(float elapsedSec, const Uint8* pStates) ;
 	void OnKeyUpEvent(const SDL_KeyboardEvent& e);
 	void Animate(float elapsedSec);
 	Rectf GetCurrFrameRect() const;
 	Point2f GetPos() const;
 
-	Mario& operator=(const Mario& rhs) = delete; // asignment= operatot afzetten
+	Mario& operator=(const Mario& rhs) = delete; // asignment= operator afzetten
 };
 
