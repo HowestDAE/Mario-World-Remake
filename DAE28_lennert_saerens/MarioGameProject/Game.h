@@ -5,6 +5,7 @@
 #include "SoundStream.h"
 class Mario;
 class Camera;
+class Coin;
 
 class Game : public BaseGame
 {
@@ -33,6 +34,7 @@ private:
 	Texture* m_pMap;
 	Camera* m_pCamera;
 	SoundStream* m_pBackgroundMusic;
+	std::vector<Coin*> m_pCoins;
 
 	// FUNCTIONS
 	void Initialize();

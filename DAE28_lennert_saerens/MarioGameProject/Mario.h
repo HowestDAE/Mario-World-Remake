@@ -56,6 +56,7 @@ public:
 	void Animate(float elapsedSec);
 	Rectf GetCurrFrameRect() const;
 	Point2f GetPos() const;
+	Rectf GetBounds() const;
 
 	Mario& operator=(const Mario& rhs) = delete; // asignment= operator afzetten
 };

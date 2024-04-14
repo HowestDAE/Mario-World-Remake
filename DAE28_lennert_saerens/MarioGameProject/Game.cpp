@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "SVGParser.h"
 #include "Matrix2x3.h"
+#include "Coin.h"
 
 Game::Game(const Window& window)
 	:BaseGame{ window }
@@ -44,6 +45,10 @@ void Game::Initialize( )
 		Matrix2x3 transformMatrix{ scaleMat };
 		m_Landscape[idx] = transformMatrix.Transform(m_Landscape[idx]);
 	}
+	
+	m_pCoins.push_back(new Coin(Point2f(100, 250)));
+	m_pCoins.push_back(new Coin(Point2f(125, 250)));
+	m_pCoins.push_back(new Coin(Point2f(150, 250)));
 }
 
 void Game::Cleanup( )
@@ -56,6 +61,11 @@ void Game::Cleanup( )
 	m_pCamera = nullptr;
 	delete m_pBackgroundMusic;
 	m_pBackgroundMusic = nullptr;
+	for (int idx{}; idx < m_pCoins.size(); ++idx)
+	{
+		delete m_pCoins[idx];
+		m_pCoins[idx] = nullptr;
+	}
 }
 
 void Game::Update( float elapsedSec )
@@ -63,6 +73,12 @@ void Game::Update( float elapsedSec )
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 	m_pMario->HandleMovement(elapsedSec, pStates);
 	m_pMario->Update(elapsedSec,m_Landscape);
+
+	for (int idx{}; idx < m_pCoins.size(); ++idx)
+	{
+		m_pCoins[idx]->Update(elapsedSec);
+		m_pCoins[idx]->Collect(m_pMario);
+	}
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
@@ -83,6 +99,10 @@ void Game::Draw( ) const
 	ClearBackground( );
 	m_pMap->Draw(Rectf(0,0,m_pMap->GetWidth()*2,m_pMap->GetHeight()*2));
 	m_pMario->Draw();
+	for (int idx{}; idx < m_pCoins.size(); ++idx)
+	{
+		m_pCoins[idx]->Draw();
+	}
 	m_pCamera->Reset();
 	//glPopMatrix();
 	

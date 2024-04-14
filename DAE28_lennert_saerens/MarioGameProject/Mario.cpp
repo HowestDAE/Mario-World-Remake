@@ -223,6 +223,11 @@ Point2f Mario::GetPos() const
 	return m_Pos;
 }
 
+Rectf Mario::GetBounds() const
+{
+	return m_Bounds;
+}
+
 void Mario::Animate(float elapsedSec)
 {
 	m_AccTime += elapsedSec;
