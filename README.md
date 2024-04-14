@@ -80,17 +80,16 @@ This section gives a clear and detailed overview of which parts of the original 
 
 <!-- GETTING STARTED -->
 ## Getting Started
-Detailed instructions on how to run your game project are in this section.
+Download the visual studio file and run it in a debug window(for now probably).
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
 * Visual Studio 2022
 
 ### How to run the project
 
-Explain which project (version) must be run.
-* any extra steps if required 
+The Newest version you can find on this page is recommended to play. Older versions are just versions with less content i programmed in it.
+* No extra steps required
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -99,12 +98,15 @@ Explain which project (version) must be run.
 <!-- HOW TO PLAY -->
 ## How to play
 
-Use this space to show useful examples of how a game can be played. 
-Additional screenshots and demos work well in this space. 
+The controls are pretty simple
 
 ### Controls
-* keys, .. 
-* .. 
+* Arrow keys left and right to move accordingly
+* Arrow key up to look up
+* Arrow key down to crouch
+* Space to jump
+* Shift to sprint
+* Spinjumping will be added
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -114,10 +116,10 @@ Additional screenshots and demos work well in this space.
 ## Class structure 
 
 ### Object composition 
-If you applied object composition (optional); explain where and how.
+Thus far i haven't used Object Composition, but i will in the future for a koopa enemy;
 
 ### Inheritance 
-Explain where you applied inheritance (mandatory).
+Inheritance is used for all enemy types, they all inherit from one enemy class.
 
 ### ..
 
@@ -128,15 +130,15 @@ Explain where you applied inheritance (mandatory).
 ## Checklist
 
 - [x] Accept / set up github project
-- [ ] week 01 topics applied
-    - [ ] const keyword applied proactively (variables, functions,..)
-    - [ ] static keyword applied proactively (class variables, static functions,..)
-    - [ ] object composition (optional)
-- [ ] week 02 topics applied
-- [ ] week 03 topics applied
-- [ ] week 04 topics applied
-- [ ] week 05 topics applied
-- [ ] week 06 topics applied
+- [x] week 01 topics applied
+    - [x] const keyword applied proactively (variables, functions,..)
+    - [x] static keyword applied proactively (class variables, static functions,..)
+    - [x] object composition (optional)
+- [x] week 02 topics applied
+- [x] week 03 topics applied
+- [x] week 04 topics applied
+- [x] week 05 topics applied
+- [x] week 06 topics applied
 - [ ] week 07 topics applied
 - [ ] week 08 topics applied
 - [ ] week 09 topics applied (optional)
@@ -159,8 +161,9 @@ Project Link: [https://github.com/HowestDAE/dae28-LennertSaerens1](https://githu
 
 Use this space to list resources you find helpful and would like to give credit to. 
 
-* [Example 1: cpp reference on std::vector](https://en.cppreference.com/w/cpp/container/vector)
-* ..
+* [The site where i found all my sprites](https://www.mariouniverse.com/sprites-snes-smw/)
+* [The site where i found all the sound effects](https://themushroomkingdom.net/media/smw/wav)
+* [The site where i found all the sound streams](https://downloads.khinsider.com/game-soundtracks/album/super-mario-world-snes-gamerip)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
