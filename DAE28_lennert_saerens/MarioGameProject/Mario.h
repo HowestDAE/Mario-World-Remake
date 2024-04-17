@@ -16,7 +16,9 @@ private:
 	};
 	enum class LookingState {
 		left,
-		right
+		right,
+		leftSpin,
+		rightSpin
 	};
 
 	enum class PowerUpState {
@@ -33,9 +35,11 @@ private:
 	WalkingState m_WalkingState;
 	LookingState m_LookingState;
 	SoundEffect* m_pJumpEffect;
+	SoundEffect* m_pSpinJumpEffect;
 	float m_AccTime;
 	float m_FrameTime;
 	float m_JumpTime;
+	float m_SpinJumpTime;
 	float m_TimeInAir;
 	int m_FrameNr;
 	bool m_CanJump;

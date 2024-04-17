@@ -5,14 +5,19 @@
 
 int Coin::m_CoinCount{};
 Coin::Coin(const Point2f& pos)
+	:Coin::Coin(pos, "misc-8.png", "Sounds/smw_coin.wav", 0.2f)
+{
+}
+
+Coin::Coin(const Point2f& pos, std::string coinTex, std::string coinSound, float frameTime)
 	:m_IsCollected{ false }
-	,m_CurrFrame{}
-	,m_FrameTime{0.2f}
-	,m_ElapsedSec{}
+	, m_CurrFrame{}
+	, m_FrameTime{ frameTime }
+	, m_ElapsedSec{}
 	, m_Pos{ pos }
 {
-	m_pCoinTex = new Texture("misc-8.png");
-	m_pCoinSound = new SoundEffect("Sounds/smw_coin.wav");
+	m_pCoinTex = new Texture(coinTex);
+	m_pCoinSound = new SoundEffect(coinSound);
 }
 
 Coin::~Coin()
@@ -41,7 +46,7 @@ void Coin::Update(float elapsedSec)
 		{
 			m_ElapsedSec = 0;
 			++m_CurrFrame;
-			if (m_CurrFrame > 3) m_CurrFrame = 0;
+			if (m_CurrFrame > 4) m_CurrFrame = 0;
 		}
 		if (m_CurrFrame == 0) m_SrcRect = Rectf(2, 16, 12, 16);
 		else if (m_CurrFrame == 1) m_SrcRect = Rectf(20, 16, 8, 16);

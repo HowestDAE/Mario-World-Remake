@@ -25,7 +25,7 @@ void Game::Initialize( )
 	m_pBackgroundMusic = new SoundStream("Sounds/12. Overworld.mp3");
 	m_pBackgroundMusic->Play(true);
 	m_pMario = new Mario(Point2f(50, 200));
-	m_pMap = new Texture("yoshis-island-1-top.png");
+	m_pMap = new Texture("yoshis-island-1-top no enemies.png");
 	m_pCamera = new Camera(GetViewPort().width, GetViewPort().height);
 	SVGParser::GetVerticesFromSvgFile("yoshis-island-1-top.svg", m_Landscape);
 	for (int idx{}; idx < m_Landscape.size(); ++idx)
@@ -49,6 +49,7 @@ void Game::Initialize( )
 	m_pCoins.push_back(new Coin(Point2f(100, 250)));
 	m_pCoins.push_back(new Coin(Point2f(125, 250)));
 	m_pCoins.push_back(new Coin(Point2f(150, 250)));
+	m_pCoins.push_back(new DragonCoin(Point2f(279*2, 161*2)));
 }
 
 void Game::Cleanup( )

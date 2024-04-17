@@ -3,21 +3,22 @@
 #include "SoundEffect.h"
 class Mario;
 
-class Coin final
+class Coin 
 {
 public:
 	Coin(const Point2f& pos);
+	Coin(const Point2f& pos, std::string coinTex, std::string coinSound, float frameTime);
 	Coin(const Coin& other) = delete; //Copy constructor afzetten (rule of three)
 
 	~Coin();
 
-	void Draw()const;
-	void Update(float elapsedSec);
-	void Collect(const Mario* mario);
+	virtual void Draw()const;
+	virtual void Update(float elapsedSec);
+	virtual void Collect(const Mario* mario);
 
 	Coin& operator=(const Coin& rhs) = delete; // asignment= operator afzetten
 
-private:
+protected:
 
 	
 	bool m_IsCollected;

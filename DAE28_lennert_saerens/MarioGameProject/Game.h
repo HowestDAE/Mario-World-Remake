@@ -3,6 +3,7 @@
 #include <vector>
 #include "Texture.h"
 #include "SoundStream.h"
+#include "DragonCoin.h"
 class Mario;
 class Camera;
 class Coin;
