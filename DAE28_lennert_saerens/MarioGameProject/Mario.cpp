@@ -35,7 +35,7 @@ Mario::~Mario()
 }
 
 
-void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape)
+void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms)
 {
 
 	const float gravity{ -7.f };
@@ -128,7 +128,18 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 
 
 	}
-
+	for (int idx{ 0 }; idx < platforms.size(); ++idx)
+	{
+		const std::vector <Point2f>& collissionShape{ platforms[idx] };
+		if ((utils::Raycast(collissionShape, leftBottom, leftMiddle, hitInfo) || utils::Raycast(collissionShape, rightBottom, rightMiddle, hitInfo)) && m_Velocity.y < 0)
+		{
+			m_Velocity.y = 0;
+			m_Pos.y = hitInfo.intersectPoint.y;
+			m_TimeInAir = 0;
+			m_CanJump = 1;
+			m_IsOnGround = 1;
+		}
+	}
 	Animate(elapsedSec);
 
 }

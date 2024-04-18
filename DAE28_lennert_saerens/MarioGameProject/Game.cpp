@@ -27,14 +27,11 @@ void Game::Initialize( )
 	m_pMario = new Mario(Point2f(50, 200));
 	m_pMap = new Texture("yoshis-island-1-top no enemies.png");
 	m_pCamera = new Camera(GetViewPort().width, GetViewPort().height);
-	SVGParser::GetVerticesFromSvgFile("yoshis-island-1-top.svg", m_Landscape);
+	SVGParser::GetVerticesFromSvgFile("yoshis-island-1-top-NoLag.svg", m_Landscape);
+	SVGParser::GetVerticesFromSvgFile("yoshis-island-1-top-Platforms.svg", m_Platforms);
 	for (int idx{}; idx < m_Landscape.size(); ++idx)
 	{
-		for (int i{}; i < m_Landscape[idx].size(); ++i)
-		{
-			m_Landscape[idx][i].x;
-			m_Landscape[idx][i].y;
-		}
+		utils::DrawPolygon(m_Landscape[idx]);
 	}
 
 	Matrix2x3 scaleMat{};
@@ -44,6 +41,11 @@ void Game::Initialize( )
 	{
 		Matrix2x3 transformMatrix{ scaleMat };
 		m_Landscape[idx] = transformMatrix.Transform(m_Landscape[idx]);
+	}
+	for (int idx{}; idx < m_Platforms.size(); ++idx)
+	{
+		Matrix2x3 transformMatrix{ scaleMat };
+		m_Platforms[idx] = transformMatrix.Transform(m_Platforms[idx]);
 	}
 	
 	m_pCoins.push_back(new Coin(Point2f(100, 250)));
@@ -73,7 +75,7 @@ void Game::Update( float elapsedSec )
 {
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 	m_pMario->HandleMovement(elapsedSec, pStates);
-	m_pMario->Update(elapsedSec,m_Landscape);
+	m_pMario->Update(elapsedSec,m_Landscape, m_Platforms);
 
 	for (int idx{}; idx < m_pCoins.size(); ++idx)
 	{
@@ -103,6 +105,15 @@ void Game::Draw( ) const
 	for (int idx{}; idx < m_pCoins.size(); ++idx)
 	{
 		m_pCoins[idx]->Draw();
+	}
+	utils::SetColor(Color4f(1.f, 0.f, 0.f, 1.f));
+	for (int idx{}; idx < m_Landscape.size(); ++idx)
+	{
+		utils::DrawPolygon(m_Landscape[idx]);
+	}
+	for (int idx{}; idx < m_Platforms.size(); ++idx)
+	{
+		utils::DrawPolygon(m_Platforms[idx]);
 	}
 	m_pCamera->Reset();
 	//glPopMatrix();

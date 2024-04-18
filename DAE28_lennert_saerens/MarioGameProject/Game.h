@@ -31,6 +31,7 @@ public:
 
 private:
 	std::vector<std::vector<Point2f>> m_Landscape;
+	std::vector<std::vector<Point2f>> m_Platforms;
 	Mario* m_pMario;
 	Texture* m_pMap;
 	Camera* m_pCamera;

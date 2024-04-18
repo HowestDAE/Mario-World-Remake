@@ -51,7 +51,7 @@ public:
 	explicit Mario(const Point2f& startingPos);
 	Mario(const Mario& other) = delete; //Copy constructor afzetten (rule of three)
 	~Mario();
-	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape);
+	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms);
 	void Draw() const;
 	void WalkRight(float elapsedSec, const Uint8* pStates) ;
 	void WalkLeft(float elapsedSec, const Uint8* pStates) ;

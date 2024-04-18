@@ -7,7 +7,7 @@
    width="5120"
    height="432"
    viewBox="0 0 5120 432"
-   sodipodi:docname="yoshis-island-1-top.svg"
+   sodipodi:docname="yoshis-island-1-top-NoLag.svg"
    inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -25,9 +25,9 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#505050"
-     inkscape:zoom="1.1085618"
-     inkscape:cx="4300.1663"
-     inkscape:cy="280.99472"
+     inkscape:zoom="0.85298144"
+     inkscape:cx="3467.8363"
+     inkscape:cy="449.59947"
      inkscape:window-width="2560"
      inkscape:window-height="1351"
      inkscape:window-x="-9"
@@ -54,47 +54,8 @@
        id="path2" />
     <path
        style="fill:#000000"
-       d="m 3680.3029,432.00891 -0.227,-47.66056 896.8128,0.34044 -0.2269,-47.88752 h 94.8672 l 0.3404,47.43361 449.9384,0.34043 -0.5674,48.22794 z"
-       id="path3" />
-    <path
-       style="fill:#000000"
-       d="m 175.98863,335.60194 47.56201,-47.654 -19.77917,31.0947 z"
-       id="path4" />
-    <path
-       style="fill:#000000"
-       d="m 1199.9368,335.85003 47.9059,-47.39716 -18.0601,29.42185 z"
-       id="path5" />
-    <path
-       style="fill:#000000"
-       d="m 1264.3766,335.68046 47.058,-47.05801 -14.6685,30.94806 z"
-       id="path6" />
-    <path
-       style="fill:#000000"
-       d="m 1328.4772,335.51088 46.9733,-47.31238 -18.6537,27.38691 z"
-       id="path7" />
-    <path
-       style="fill:#000000"
-       d="m 2832.2291,337.1796 61.4982,-0.6627 -27.4356,6.36188 z"
-       id="path8" />
-    <path
-       style="fill:#000000"
-       d="m 2786.1055,288.14011 75.0172,-0.26507 -42.28,10.33805 z"
-       id="path9" />
-    <path
-       style="fill:#000000"
-       d="m 2833.9521,256.86087 79.7886,-0.66269 95.0306,95.69327 29.8213,0.92777 v 3.97617 l -33.93,0.13254 -93.1751,-95.8258 z"
-       id="path10" />
-    <path
-       style="fill:#000000"
-       d="m 4304.8288,321.02123 141.3623,-0.67187 -72.2937,7.39061 z"
-       id="path11" />
-    <path
-       style="fill:#000000"
-       d="m 4545.6284,384.17735 0.2687,-63.82799 28.3531,0.26874 v 64.76862 z"
-       id="path12" />
-    <path
-       style="fill:#000000"
-       d="m 4656.8906,319.94623 14.6469,-0.13437 0.1343,17.60309 h -15.0499 z"
-       id="path13" />
+       d="m 3680.3029,432.00891 -0.227,-47.66056 865.5218,0.28838 -1.2682,-64.13177 31.0621,0.1692 0.6095,15.67983 80.6672,0.21544 -0.6766,-16.57145 16.1103,0.21544 -0.573,16.58785 0.3404,47.43361 449.9384,0.34043 -0.5674,48.22794 z"
+       id="path3"
+       sodipodi:nodetypes="cccccccccccccc" />
   </g>
 </svg>
