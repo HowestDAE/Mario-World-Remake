@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "DragonCoin.h"
 
-DragonCoin::DragonCoin(const Point2f& pos)
-	:Coin(pos, "misc-8.png", "Sounds/smw_dragon_coin.wav", 0.2f)
+DragonCoin::DragonCoin(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
+	:Coin(pos, tex, sound)
 {
 }
+
+
 
 void DragonCoin::Update(float elapsedSec)
 {

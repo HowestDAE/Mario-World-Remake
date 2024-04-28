@@ -3,10 +3,12 @@
 #include <vector>
 #include "Texture.h"
 #include "SoundStream.h"
-#include "DragonCoin.h"
 class Mario;
 class Camera;
 class Coin;
+class TextureManager;
+class SoundEffectManager;
+class PowerUp;
 
 class Game : public BaseGame
 {
@@ -36,7 +38,10 @@ private:
 	Texture* m_pMap;
 	Camera* m_pCamera;
 	SoundStream* m_pBackgroundMusic;
+	TextureManager* m_pTextureManager;
+	SoundEffectManager* m_pSoundManager;
 	std::vector<Coin*> m_pCoins;
+	std::vector<PowerUp*> m_pPowerUps;
 
 	// FUNCTIONS
 	void Initialize();

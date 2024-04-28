@@ -4,28 +4,23 @@
 #include "utils.h"
 
 int Coin::m_CoinCount{};
-Coin::Coin(const Point2f& pos)
-	:Coin::Coin(pos, "misc-8.png", "Sounds/smw_coin.wav", 0.2f)
-{
-}
 
-Coin::Coin(const Point2f& pos, std::string coinTex, std::string coinSound, float frameTime)
+
+Coin::Coin(const Point2f& pos, const Texture* coinTex, const SoundEffect* sound)
 	:m_IsCollected{ false }
 	, m_CurrFrame{}
-	, m_FrameTime{ frameTime }
+	, m_FrameTime{ 0.2f }
 	, m_ElapsedSec{}
 	, m_Pos{ pos }
 {
-	m_pCoinTex = new Texture(coinTex);
-	m_pCoinSound = new SoundEffect(coinSound);
+	m_pCoinTex = coinTex;
+	m_pCoinSound = sound;
 }
 
 Coin::~Coin()
 {
-	delete m_pCoinTex;
-	m_pCoinTex = nullptr;
-	delete m_pCoinSound;
 	m_pCoinSound = nullptr;
+	m_pCoinTex = nullptr;
 }
 
 void Coin::Draw() const

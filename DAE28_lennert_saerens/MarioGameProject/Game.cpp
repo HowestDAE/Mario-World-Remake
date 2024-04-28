@@ -5,6 +5,11 @@
 #include "SVGParser.h"
 #include "Matrix2x3.h"
 #include "Coin.h"
+#include "DragonCoin.h"
+#include "TextureManager.h"
+#include "SoundEffectManager.h"
+#include "PowerUp.h"
+
 
 Game::Game(const Window& window)
 	:BaseGame{ window }
@@ -22,6 +27,8 @@ void Game::Initialize( )
 {
 	//std::vector<Point2f> platformOne{ Point2f(0, 50), Point2f(5000, 50) };
 	//m_Landscape.push_back(platformOne);
+	m_pTextureManager = new TextureManager();
+	m_pSoundManager = new SoundEffectManager();
 	m_pBackgroundMusic = new SoundStream("Sounds/12. Overworld.mp3");
 	m_pBackgroundMusic->Play(true);
 	m_pMario = new Mario(Point2f(50, 200));
@@ -48,14 +55,20 @@ void Game::Initialize( )
 		m_Platforms[idx] = transformMatrix.Transform(m_Platforms[idx]);
 	}
 	
-	m_pCoins.push_back(new Coin(Point2f(100, 250)));
-	m_pCoins.push_back(new Coin(Point2f(125, 250)));
-	m_pCoins.push_back(new Coin(Point2f(150, 250)));
-	m_pCoins.push_back(new DragonCoin(Point2f(279*2, 161*2)));
+	m_pCoins.push_back(new Coin(Point2f(100, 250),m_pTextureManager->GiveTexture(TextureManager::Textures::coins),m_pSoundManager->GiveSound(SoundEffectManager::Sounds::coins)));
+	m_pCoins.push_back(new Coin(Point2f(125, 250), m_pTextureManager->GiveTexture(TextureManager::Textures::coins), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::coins)));
+	m_pCoins.push_back(new Coin(Point2f(150, 250), m_pTextureManager->GiveTexture(TextureManager::Textures::coins), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::coins)));
+	m_pCoins.push_back(new DragonCoin(Point2f(279*2, 161*2), m_pTextureManager->GiveTexture(TextureManager::Textures::coins), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::dragonCoins)));
+
+	m_pPowerUps.push_back(new PowerUp(*m_pMario, Point2f(279 * 2, 50 * 2),m_pTextureManager->GiveTexture(TextureManager::Textures::PowerUp), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::PowerUp)));
 }
 
-void Game::Cleanup( )
+void Game::Cleanup()
 {
+	delete m_pTextureManager;
+	m_pTextureManager = nullptr;
+	delete m_pSoundManager;
+	m_pSoundManager = nullptr;
 	delete m_pMario;
 	m_pMario = nullptr;
 	delete m_pMap;
@@ -68,6 +81,11 @@ void Game::Cleanup( )
 	{
 		delete m_pCoins[idx];
 		m_pCoins[idx] = nullptr;
+	}
+	for (int idx{}; idx < m_pPowerUps.size(); ++idx)
+	{
+		delete m_pPowerUps[idx];
+		m_pPowerUps[idx] = nullptr;
 	}
 }
 
@@ -82,6 +100,17 @@ void Game::Update( float elapsedSec )
 		m_pCoins[idx]->Update(elapsedSec);
 		m_pCoins[idx]->Collect(m_pMario);
 	}
+	for (int idx{}; idx < m_pPowerUps.size(); ++idx)
+	{
+		m_pPowerUps[idx]->Update(elapsedSec, m_Landscape, m_Platforms);
+		if (m_pPowerUps[idx]->Collect(m_pMario))
+		{
+			m_pMario->Grow(m_pPowerUps[idx]->GetPowerUpType());
+		}
+	}
+
+	if (m_pMario->GetIsAlive() == false) m_pBackgroundMusic->Stop();
+	else if (m_pBackgroundMusic->IsPlaying() == false) m_pBackgroundMusic->Play(1);
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
@@ -105,6 +134,10 @@ void Game::Draw( ) const
 	for (int idx{}; idx < m_pCoins.size(); ++idx)
 	{
 		m_pCoins[idx]->Draw();
+	}
+	for (int idx{}; idx < m_pPowerUps.size(); ++idx)
+	{
+		m_pPowerUps[idx]->Draw();
 	}
 	utils::SetColor(Color4f(1.f, 0.f, 0.f, 1.f));
 	for (int idx{}; idx < m_Landscape.size(); ++idx)

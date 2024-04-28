@@ -161,6 +161,9 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="PiranhaPlant.cpp" />
+    <ClCompile Include="PowerUp.cpp" />
+    <ClCompile Include="SoundEffectManager.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BulletBill.h" />
@@ -176,6 +179,9 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="pch.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="PiranhaPlant.h" />
+    <ClInclude Include="PowerUp.h" />
+    <ClInclude Include="SoundEffectManager.h" />
+    <ClInclude Include="TextureManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
