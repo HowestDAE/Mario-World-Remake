@@ -491,16 +491,7 @@ void Mario::Animate(float elapsedSec)
 				}
 			}
 
-			else
-			{
-				if (m_AccTime >= m_FrameTime)
-				{
-					++m_FrameNr;
-					m_AccTime = 0;
-					if (m_FrameNr % 2 == 0) m_FrameRect = Rectf(8, 62, 16, 24);
-					else if (m_FrameNr % 2 == 1) m_FrameRect = Rectf(368, 62, 16, 24);
-				}
-			}
+			
 		}
 
 
@@ -605,6 +596,16 @@ void Mario::Animate(float elapsedSec)
 					else if (m_FrameNr % 2 == 1) m_FrameRect = Rectf(368, 62, 16, 24);
 				}
 			}
+		}
+	}
+	else
+	{
+		if (m_AccTime >= m_FrameTime)
+		{
+			++m_FrameNr;
+			m_AccTime = 0;
+			if (m_FrameNr % 2 == 0) m_FrameRect = Rectf(8, 62, 16, 24);
+			else if (m_FrameNr % 2 == 1) m_FrameRect = Rectf(368, 62, 16, 24);
 		}
 	}
 }
