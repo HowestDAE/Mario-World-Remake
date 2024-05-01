@@ -3,6 +3,7 @@
 #include "Texture.h"
 #include "SoundEffect.h"
 #include "PowerUp.h"
+#include "FireBall.h"
 
 class Mario final
 {
@@ -36,8 +37,10 @@ public:
 	void WalkLeft(float elapsedSec, const Uint8* pStates) ;
 	void HandleMovement(float elapsedSec, const Uint8* pStates) ;
 	void OnKeyUpEvent(const SDL_KeyboardEvent& e);
+	void OnKeyDownEvent(const SDL_KeyboardEvent& e);
 	void Animate(float elapsedSec);
 	void Grow(const PowerUp::PowerUpType& type);
+	void ShootFireBall();
 	bool GetIsAlive()const;
 	Rectf GetCurrFrameRect() const;
 	Point2f GetPos() const;
@@ -51,6 +54,7 @@ private:
 	Point2f m_Pos;
 	Vector2f m_Velocity;
 	Texture* m_pSpritesheet;
+	Texture* m_pFireBallTex;
 	Rectf m_Bounds;
 	PowerUpState m_Mariostate;
 	WalkingState m_WalkingState;
@@ -58,6 +62,7 @@ private:
 	SoundEffect* m_pJumpEffect;
 	SoundEffect* m_pSpinJumpEffect;
 	SoundEffect* m_pDeathEffect;
+	SoundEffect* m_pFireEffect;
 	float m_AccTime;
 	float m_FrameTime;
 	float m_JumpTime;
@@ -68,5 +73,6 @@ private:
 	bool m_IsOnGround;
 	bool m_IsAlive;
 	Rectf m_FrameRect;
+	std::vector<FireBall*> m_pFireBalls;
 };
 

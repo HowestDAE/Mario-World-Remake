@@ -25,6 +25,8 @@ Mario::Mario(const Point2f& startingPos)
 	m_pJumpEffect = new SoundEffect("Sounds/smw_jump.wav");
 	m_pSpinJumpEffect = new SoundEffect("Sounds/smw_spin_jump.wav");
 	m_pDeathEffect = new SoundEffect( "Sounds/smw_lost_a_life.wav");
+	m_pFireBallTex = new Texture("FireBall.png");
+	m_pFireEffect = new SoundEffect("Sounds/smw_fireball.wav");
 }
 
 Mario::Mario(Mario&& other)
@@ -48,11 +50,15 @@ Mario::Mario(Mario&& other)
 	,m_pSpritesheet{std::move(other.m_pSpritesheet)}
 	,m_IsAlive{ std::move(other.m_IsAlive)}
 	,m_pDeathEffect{std::move(other.m_pDeathEffect)}
+	,m_pFireBallTex{ std::move(other.m_pFireBallTex) }
+	,m_pFireEffect{std::move(other.m_pFireEffect)}
 {
 	other.m_pJumpEffect = nullptr;
 	other.m_pSpinJumpEffect = nullptr;
 	other.m_pSpritesheet = nullptr;
 	other.m_pDeathEffect = nullptr;
+	other.m_pFireBallTex = nullptr;
+	other.m_pFireEffect = nullptr;
 }
 
 Mario::~Mario()
@@ -65,6 +71,15 @@ Mario::~Mario()
 	m_pSpinJumpEffect = nullptr;
 	delete m_pDeathEffect;
 	m_pDeathEffect = nullptr;
+	delete m_pFireBallTex;
+	m_pFireBallTex = nullptr;
+	delete m_pFireEffect;
+	m_pFireEffect = nullptr;
+	for (int idx{}; idx < m_pFireBalls.size(); ++idx)
+	{
+		if (m_pFireBalls[idx] != nullptr) delete m_pFireBalls[idx];
+		m_pFireBalls[idx] = nullptr;
+	}
 }
 
 
@@ -194,7 +209,35 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 		m_FrameTime = 0.05f;
 	}
 	Animate(elapsedSec);
-
+	for (int idx{}; idx < m_pFireBalls.size(); ++idx)
+	{
+		if (m_pFireBalls[idx] != nullptr)
+		{
+			m_pFireBalls[idx]->Update(elapsedSec, landscape, platforms);
+			if (m_pFireBalls[idx]->GetIsAlive() == false)
+			{
+				delete m_pFireBalls[idx];
+				m_pFireBalls[idx] = nullptr;
+			}
+			if (m_pFireBalls[idx] != nullptr)
+			{
+				if (abs(m_pFireBalls[idx]->GetPos().x - m_Pos.x) > 500.f)
+				{
+					delete m_pFireBalls[idx];
+					m_pFireBalls[idx] = nullptr;
+				}
+			}
+		}
+	}
+	if (m_pFireBalls.size() == 2)
+	{
+		if (m_pFireBalls[0] == nullptr && m_pFireBalls[1] == nullptr)
+		{
+			m_pFireBalls.pop_back();
+			m_pFireBalls.pop_back();
+		}
+	}
+	
 }
 
 void Mario::Draw() const
@@ -205,6 +248,10 @@ void Mario::Draw() const
 	glPopMatrix();*/
 
 	m_pSpritesheet->Draw(m_Bounds, m_FrameRect);
+	for (int idx{}; idx < m_pFireBalls.size(); ++idx)
+	{
+		if (m_pFireBalls[idx] != nullptr) m_pFireBalls[idx]->Draw();
+	}
 }
 
 void Mario::WalkRight(float elapsedSec, const Uint8* pStates)
@@ -288,7 +335,10 @@ void Mario::HandleMovement(float elapsedSec, const Uint8* pStates)
 			WalkLeft(elapsedSec, pStates);
 		}
 
-
+		/*if (pStates[SDL_SCANCODE_LSHIFT] && m_Mariostate == PowerUpState::fireflower)
+		{
+			ShootFireBall();
+		}*/
 
 		if (pStates[SDL_SCANCODE_SPACE])
 		{
@@ -394,10 +444,17 @@ Mario& Mario::operator=(Mario&& other)
 		m_pJumpEffect = std::move(other.m_pJumpEffect);
 		m_pSpinJumpEffect = std::move(other.m_pJumpEffect);
 		m_pSpritesheet = std::move(other.m_pSpritesheet);
+		m_pFireBallTex = std::move(other.m_pFireBallTex);
+		m_pDeathEffect = std::move(other.m_pDeathEffect);
+		m_pFireEffect = std::move(other.m_pFireEffect);
 
 		other.m_pJumpEffect = nullptr;
 		other.m_pSpinJumpEffect = nullptr;
 		other.m_pSpritesheet = nullptr;
+		other.m_pDeathEffect = nullptr;
+		other.m_pFireBallTex = nullptr;
+		other.m_pFireEffect = nullptr;
+
 	}
 	return *this;
 }
@@ -559,7 +616,7 @@ void Mario::Animate(float elapsedSec)
 			}
 			else if (m_WalkingState == WalkingState::midAir && m_LookingState == LookingState::right && m_Velocity.y <= 0)
 			{
-				m_FrameRect = Rectf(247, 144, 16, 29);
+				m_FrameRect = Rectf(248, 144, 16, 29);
 			}
 			else if (m_WalkingState == WalkingState::midAir && m_LookingState == LookingState::leftSpin)
 			{
@@ -585,15 +642,93 @@ void Mario::Animate(float elapsedSec)
 					else if (m_FrameNr % 4 == 3) m_FrameRect = Rectf(208, 104, 15, 28);
 				}
 			}
+		}
+		
+		else if (m_Mariostate == Mario::PowerUpState::fireflower)
+		{
+			if (m_WalkingState == WalkingState::none && m_LookingState == LookingState::left) m_FrameRect = Rectf(169, 260, 15, 28);
+			else if (m_WalkingState == WalkingState::none && m_LookingState == LookingState::right) m_FrameRect = Rectf(208, 260, 15, 28);
+			else if (m_WalkingState == WalkingState::left)
+			{
+				if (m_Velocity.x >= 10) m_FrameRect = Rectf(8, 300, 16, 29);
+				else if (m_AccTime >= m_FrameTime)
+				{
+					++m_FrameNr;
+					m_AccTime = 0;
+					if (m_FrameNr % 4 == 0) m_FrameRect = Rectf(48, 259, 16, 27);
+					else if (m_FrameNr % 4 == 1) m_FrameRect = Rectf(8, 260, 16, 28);
+					else if (m_FrameNr % 4 == 2) m_FrameRect = Rectf(169, 260, 15, 28);
+					else if (m_FrameNr % 4 == 3) m_FrameRect = Rectf(8, 260, 16, 28);
+				}
 
-			else
+			}
+			else if (m_WalkingState == WalkingState::right)
+			{
+				if (m_Velocity.x <= -10) m_FrameRect = Rectf(368, 300, 16, 29);
+				else if (m_AccTime >= m_FrameTime)
+				{
+					++m_FrameNr;
+					m_AccTime = 0;
+					if (m_FrameNr % 4 == 0) m_FrameRect = Rectf(328, 259, 16, 27);
+					else if (m_FrameNr % 4 == 1) m_FrameRect = Rectf(368, 260, 16, 28);
+					else if (m_FrameNr % 4 == 2) m_FrameRect = Rectf(208, 260, 15, 28);
+					else if (m_FrameNr % 4 == 3) m_FrameRect = Rectf(368, 260, 16, 28);
+				}
+			}
+			else if (m_WalkingState == WalkingState::down && m_LookingState == LookingState::left)
+			{
+				m_FrameRect = Rectf(88, 293, 16, 15);
+			}
+			else if (m_WalkingState == WalkingState::down && m_LookingState == LookingState::right)
+			{
+				m_FrameRect = Rectf(288, 293, 16, 15);
+			}
+			else if (m_WalkingState == WalkingState::up && m_LookingState == LookingState::left)
+			{
+				m_FrameRect = Rectf(50, 299, 15, 27);
+			}
+			else if (m_WalkingState == WalkingState::up && m_LookingState == LookingState::right)
+			{
+				m_FrameRect = Rectf(327, 299, 15, 27);
+			}
+			else if (m_WalkingState == WalkingState::midAir && m_LookingState == LookingState::left && m_Velocity.y > 0)
+			{
+				m_FrameRect = Rectf(168, 301, 16, 31);
+			}
+			else if (m_WalkingState == WalkingState::midAir && m_LookingState == LookingState::right && m_Velocity.y > 0)
+			{
+				m_FrameRect = Rectf(208, 301, 16, 31);
+			}
+			else if (m_WalkingState == WalkingState::midAir && m_LookingState == LookingState::left && m_Velocity.y <= 0)
+			{
+				m_FrameRect = Rectf(128, 300, 16, 29);
+			}
+			else if (m_WalkingState == WalkingState::midAir && m_LookingState == LookingState::right && m_Velocity.y <= 0)
+			{
+				m_FrameRect = Rectf(248, 300, 16, 31);
+			}
+			else if (m_WalkingState == WalkingState::midAir && m_LookingState == LookingState::leftSpin)
 			{
 				if (m_AccTime >= m_FrameTime)
 				{
 					++m_FrameNr;
 					m_AccTime = 0;
-					if (m_FrameNr % 2 == 0) m_FrameRect = Rectf(8, 62, 16, 24);
-					else if (m_FrameNr % 2 == 1) m_FrameRect = Rectf(368, 62, 16, 24);
+					if (m_FrameNr % 4 == 0) m_FrameRect = Rectf(88, 260, 16, 28);
+					else if (m_FrameNr % 4 == 1) m_FrameRect = Rectf(208, 260, 15, 28);
+					else if (m_FrameNr % 4 == 2) m_FrameRect = Rectf(248, 260, 16, 28);
+					else if (m_FrameNr % 4 == 3) m_FrameRect = Rectf(169, 260, 15, 28);
+				}
+			}
+			else if (m_WalkingState == WalkingState::midAir && m_LookingState == LookingState::rightSpin)
+			{
+				if (m_AccTime >= m_FrameTime)
+				{
+					++m_FrameNr;
+					m_AccTime = 0;
+					if (m_FrameNr % 4 == 0) m_FrameRect = Rectf(248, 260, 16, 28);
+					else if (m_FrameNr % 4 == 1) m_FrameRect = Rectf(169, 260, 15, 28);
+					else if (m_FrameNr % 4 == 2) m_FrameRect = Rectf(88, 260, 16, 28);
+					else if (m_FrameNr % 4 == 3) m_FrameRect = Rectf(208, 260, 15, 28);
 				}
 			}
 		}
@@ -612,9 +747,19 @@ void Mario::Animate(float elapsedSec)
 
 void Mario::Grow(const PowerUp::PowerUpType& type)
 {
-	if (type == PowerUp::PowerUpType::Mushroom) m_Mariostate = PowerUpState::big;
-	else if (type == PowerUp::PowerUpType::Flower) m_Mariostate = PowerUpState::fireflower;
+	if (type == PowerUp::PowerUpType::Mushroom && m_Mariostate == PowerUpState::small) m_Mariostate = PowerUpState::big;
+	else if (type == PowerUp::PowerUpType::Flower && (m_Mariostate == PowerUpState::small || m_Mariostate == PowerUpState::big)) m_Mariostate = PowerUpState::fireflower;
 	
+}
+
+void Mario::ShootFireBall()
+{
+	if (m_pFireBalls.size() < 2 && m_Mariostate == PowerUpState::fireflower)
+	{
+		m_pFireEffect->Play(0);
+		if (m_LookingState == LookingState::left) m_pFireBalls.push_back(new FireBall(m_Pos, Vector2f(-300.f, 0.f), m_pFireBallTex));
+		if (m_LookingState == LookingState::right)m_pFireBalls.push_back(new FireBall(m_Pos, Vector2f(300.f, 0.f), m_pFireBallTex));
+	}
 }
 
 bool Mario::GetIsAlive() const
@@ -629,6 +774,16 @@ void Mario::OnKeyUpEvent(const SDL_KeyboardEvent& e)
 	case SDLK_SPACE:
 	case SDLK_LALT:
 		m_CanJump = false;
+		break;
+	}
+}
+
+void Mario::OnKeyDownEvent(const SDL_KeyboardEvent& e)
+{
+	switch (e.keysym.sym)
+	{
+	case SDLK_LSHIFT:
+		ShootFireBall();
 		break;
 	}
 }

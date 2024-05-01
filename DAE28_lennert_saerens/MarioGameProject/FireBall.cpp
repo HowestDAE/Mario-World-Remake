@@ -1,0 +1,96 @@
+#include "pch.h"
+#include "FireBall.h"
+
+FireBall::FireBall(const Point2f& pos, const Vector2f& velocity, const Texture* tex)
+	:m_Pos{pos}
+	,m_Velocity{velocity}
+	,m_pTexture{tex}
+	,m_SrcRect{ 0,0,8,8 }
+	,m_ElapsedSec{}
+	,m_FrameTime{0.05f}
+	,m_FrameNr{ 0 }
+{
+}
+
+void FireBall::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms)
+{
+	if (m_IsAlive)
+	{
+		const float gravity{ -7.f };
+		const Point2f leftTop{ m_Pos.x + 1, m_Pos.y + m_Bounds.height };
+		const Point2f leftBottom{ m_Pos.x + 1, m_Pos.y };
+		const Point2f leftMiddle{ m_Pos.x + 1, m_Pos.y + m_Bounds.height / 2 };
+		const Point2f rightTop{ m_Pos.x + m_Bounds.width - 1, m_Pos.y + m_Bounds.height };
+		const Point2f rightBottom{ m_Pos.x + m_Bounds.width - 1, m_Pos.y };
+		const Point2f rightMiddle{ m_Pos.x + m_Bounds.width - 1, m_Pos.y + m_Bounds.height / 2 };
+
+
+		const Point2f lowerLeft{ m_Pos.x, m_Pos.y + m_Bounds.height / 4 };
+		const Point2f lowerMiddle{ m_Pos.x + m_Bounds.width / 2, m_Pos.y + m_Bounds.height / 4 };
+		const Point2f lowerRight{ m_Pos.x + m_Bounds.width, m_Pos.y + m_Bounds.height / 4 };
+
+		utils::HitInfo hitInfo{};
+
+		m_Pos.x += m_Velocity.x * elapsedSec;
+		m_Pos.y += m_Velocity.y * elapsedSec;
+		m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2);
+		m_ElapsedSec += elapsedSec;
+
+
+
+		for (int idx{ 0 }; idx < landscape.size(); ++idx)
+		{
+
+			const std::vector <Point2f>& collissionShape{ landscape[idx] };
+			if ((utils::Raycast(collissionShape, leftBottom, leftMiddle, hitInfo) || utils::Raycast(collissionShape, rightBottom, rightMiddle, hitInfo)))
+			{
+				m_Velocity.y = 350.f;
+				m_Pos.y = hitInfo.intersectPoint.y + 1;
+			}
+			else
+			{
+				m_Velocity.y += gravity;
+			}
+			if ((utils::Raycast(collissionShape, lowerLeft, lowerMiddle, hitInfo)))
+			{
+				if (hitInfo.normal.Normalized().x >= 0.9)
+				{
+					m_IsAlive = false;
+
+				}
+			}
+			if ((utils::Raycast(collissionShape, lowerRight, lowerMiddle, hitInfo)))
+			{
+				if (hitInfo.normal.Normalized().x <= -0.9)
+				{
+					m_IsAlive = false;
+				}
+			}			
+		}
+		if (m_ElapsedSec >= m_FrameTime)
+		{
+			++m_FrameNr;
+			m_ElapsedSec = 0;
+			if (m_FrameNr % 4 == 0) m_SrcRect = Rectf(0, 0, 8, 8);
+			if (m_FrameNr % 4 == 1) m_SrcRect = Rectf(9, 0, 8, 8);
+			if (m_FrameNr % 4 == 2) m_SrcRect = Rectf(18, 0, 8, 8);
+			if (m_FrameNr % 4 == 3) m_SrcRect = Rectf(27, 0, 8, 8);
+			if (m_FrameNr >= 4) m_FrameNr = 0;
+		}
+	}
+}
+
+void FireBall::Draw() const
+{
+	if (m_IsAlive) m_pTexture->Draw(m_Bounds, m_SrcRect);
+}
+
+Point2f FireBall::GetPos()
+{
+	return m_Pos;
+}
+
+bool FireBall::GetIsAlive()
+{
+	return m_IsAlive;
+}

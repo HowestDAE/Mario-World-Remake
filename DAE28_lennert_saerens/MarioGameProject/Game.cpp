@@ -61,6 +61,7 @@ void Game::Initialize( )
 	m_pCoins.push_back(new DragonCoin(Point2f(279*2, 161*2), m_pTextureManager->GiveTexture(TextureManager::Textures::coins), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::dragonCoins)));
 
 	m_pPowerUps.push_back(new PowerUp(*m_pMario, Point2f(279 * 2, 50 * 2),m_pTextureManager->GiveTexture(TextureManager::Textures::PowerUp), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::PowerUp)));
+	m_pPowerUps.push_back(new PowerUp(PowerUp::PowerUpType::Flower, Point2f(230 * 2, 50 * 2),m_pTextureManager->GiveTexture(TextureManager::Textures::PowerUp), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::PowerUp)));
 }
 
 void Game::Cleanup()
@@ -156,6 +157,7 @@ void Game::Draw( ) const
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
 	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
+	m_pMario->OnKeyDownEvent(e);
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
