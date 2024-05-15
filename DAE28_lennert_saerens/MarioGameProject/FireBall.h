@@ -2,7 +2,7 @@
 #include "utils.h"
 #include "Texture.h"
 
-class FireBall
+class FireBall final
 {
 public:
 	FireBall(const Point2f& pos,const Vector2f& velocity, const Texture* tex );
@@ -12,8 +12,10 @@ public:
 
 	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms);
 	void Draw()const;
+	void SetDead();
 	Point2f GetPos();
 	bool GetIsAlive();
+	Rectf GetBounds() const;
 
 	//FireBall& operator=(const FireBall& rhs) = delete; // asignment= operator afzetten
 	//FireBall& operator=(FireBall&& other);

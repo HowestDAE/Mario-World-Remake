@@ -91,7 +91,7 @@ void PowerUp::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& 
 			}
 			if ((utils::Raycast(collissionShape, lowerRight, lowerMiddle, hitInfo)))
 			{
-				if (hitInfo.normal.Normalized().x <= 0.1)
+				if (hitInfo.normal.Normalized().x <= -0.1)
 				{
 					if (m_Velocity.x >= 0)
 					{

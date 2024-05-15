@@ -151,7 +151,6 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Chuck.cpp" />
     <ClCompile Include="Coin.cpp" />
-    <ClCompile Include="Dinosaur.cpp" />
     <ClCompile Include="DragonCoin.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="FireBall.cpp" />
@@ -171,7 +170,6 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Chuck.h" />
     <ClInclude Include="Coin.h" />
-    <ClInclude Include="Dinosaur.h" />
     <ClInclude Include="DragonCoin.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="FireBall.h" />

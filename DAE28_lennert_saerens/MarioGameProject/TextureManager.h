@@ -1,12 +1,13 @@
 #pragma once
 #include "Texture.h"
-class TextureManager
+class TextureManager final
 {
 public:
 	enum class Textures
 	{
 		coins,
 		PowerUp,
+		Enemies,
 	};
 
 	TextureManager();
@@ -21,5 +22,6 @@ public:
 protected:
 	Texture* m_pCoinTexture;
 	Texture* m_pPowerUpTexture;
+	Texture* m_pEnemyTexture;
 };
 

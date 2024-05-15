@@ -6,6 +6,9 @@ SoundEffectManager::SoundEffectManager()
 	m_pCoinSound = new SoundEffect("Sounds/smw_coin.wav");
 	m_pDragonCoinSound = new SoundEffect("Sounds/smw_dragon_coin.wav");
 	m_pPowerUpSound = new SoundEffect("Sounds/smw_power-up.wav");
+	m_pStompSound = new SoundEffect("Sounds/smw_stomp.wav");
+	m_pSpinStompSound = new SoundEffect("Sounds/smw_stomp_no_damage.wav");
+	m_pPipeHitSound = new SoundEffect("Sounds/smw_pipeandhit.wav");
 }
 
 SoundEffectManager::~SoundEffectManager()
@@ -16,6 +19,12 @@ SoundEffectManager::~SoundEffectManager()
 	m_pDragonCoinSound = nullptr;
 	delete m_pPowerUpSound;
 	m_pPowerUpSound = nullptr;
+	delete m_pStompSound;
+	m_pStompSound = nullptr;
+	delete m_pSpinStompSound;
+	m_pSpinStompSound = nullptr;
+	delete m_pPipeHitSound;
+	m_pPipeHitSound = nullptr;
 }
 
 SoundEffectManager::SoundEffectManager(SoundEffectManager&& other)
@@ -31,8 +40,11 @@ SoundEffectManager::SoundEffectManager(SoundEffectManager&& other)
 SoundEffect* SoundEffectManager::GiveSound(const Sounds& sound)
 {
 	if (sound == Sounds::coins) return m_pCoinSound;
-	if (sound == Sounds::dragonCoins) return m_pDragonCoinSound;
+	else if (sound == Sounds::dragonCoins) return m_pDragonCoinSound;
 	else if (sound == Sounds::PowerUp) return m_pPowerUpSound;
+	else if (sound == Sounds::Stomp) return m_pStompSound;
+	else if (sound == Sounds::spinStomp) return m_pStompSound;
+	else if (sound == Sounds::pipeHit) return m_pPipeHitSound;
 }
 
 SoundEffectManager& SoundEffectManager::operator=(SoundEffectManager&& other)

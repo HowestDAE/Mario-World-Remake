@@ -6,9 +6,11 @@
 class Mario;
 class Camera;
 class Coin;
+class Enemy;
 class TextureManager;
 class SoundEffectManager;
 class PowerUp;
+class EnemyManager;
 
 class Game : public BaseGame
 {
@@ -36,10 +38,13 @@ private:
 	std::vector<std::vector<Point2f>> m_Platforms;
 	Mario* m_pMario;
 	Texture* m_pMap;
+	Texture* m_pForeground;
+	Texture* m_pPipes;
 	Camera* m_pCamera;
 	SoundStream* m_pBackgroundMusic;
 	TextureManager* m_pTextureManager;
 	SoundEffectManager* m_pSoundManager;
+	EnemyManager* m_pEnemyManager;
 	std::vector<Coin*> m_pCoins;
 	std::vector<PowerUp*> m_pPowerUps;
 

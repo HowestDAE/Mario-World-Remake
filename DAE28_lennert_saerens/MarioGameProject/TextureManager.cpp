@@ -5,6 +5,7 @@ TextureManager::TextureManager()
 {
 	m_pCoinTexture = new Texture("misc-8.png");
 	m_pPowerUpTexture = new Texture("PowerUpBlock.png");
+	m_pEnemyTexture = new Texture("misc-3.png");
 }
 
 TextureManager::~TextureManager()
@@ -13,9 +14,12 @@ TextureManager::~TextureManager()
 	m_pCoinTexture = nullptr;
 	delete m_pPowerUpTexture;
 	m_pPowerUpTexture = nullptr;
+	delete m_pEnemyTexture;
+	m_pEnemyTexture = nullptr;
 }
 
-TextureManager::TextureManager(TextureManager&& other)
+
+TextureManager::TextureManager(TextureManager&& other) 
 	:m_pCoinTexture{ std::move(other.m_pCoinTexture) }
 	,m_pPowerUpTexture{std::move(other.m_pCoinTexture)}
 {
@@ -27,6 +31,7 @@ Texture* TextureManager::GiveTexture(const Textures& tex)
 {
 	if (tex == Textures::coins) return m_pCoinTexture;
 	else if (tex == Textures::PowerUp) return m_pPowerUpTexture;
+	else if (tex == Textures::Enemies) return m_pEnemyTexture;
 }
 
 

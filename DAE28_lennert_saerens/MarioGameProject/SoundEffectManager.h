@@ -1,7 +1,7 @@
 #pragma once
 #include "SoundEffect.h"
 
-class SoundEffectManager
+class SoundEffectManager final
 {
 public:
 	enum class Sounds
@@ -9,6 +9,9 @@ public:
 		coins,
 		dragonCoins,
 		PowerUp,
+		Stomp,
+		spinStomp,
+		pipeHit,
 	};
 
 	SoundEffectManager();
@@ -24,5 +27,8 @@ protected:
 	SoundEffect* m_pCoinSound;
 	SoundEffect* m_pDragonCoinSound;
 	SoundEffect* m_pPowerUpSound;
+	SoundEffect* m_pStompSound;
+	SoundEffect* m_pSpinStompSound;
+	SoundEffect* m_pPipeHitSound;
 };
 

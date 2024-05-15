@@ -39,7 +39,7 @@ void FireBall::Update(float elapsedSec, const std::vector<std::vector<Point2f>>&
 
 
 		for (int idx{ 0 }; idx < landscape.size(); ++idx)
-		{
+		{ 
 
 			const std::vector <Point2f>& collissionShape{ landscape[idx] };
 			if ((utils::Raycast(collissionShape, leftBottom, leftMiddle, hitInfo) || utils::Raycast(collissionShape, rightBottom, rightMiddle, hitInfo)))
@@ -67,6 +67,15 @@ void FireBall::Update(float elapsedSec, const std::vector<std::vector<Point2f>>&
 				}
 			}			
 		}
+		for (int idx{ 0 }; idx < platforms.size(); ++idx)
+		{
+			const std::vector <Point2f>& collissionShape{ platforms[idx] };
+			if ((utils::Raycast(collissionShape, leftBottom, leftMiddle, hitInfo) || utils::Raycast(collissionShape, rightBottom, rightMiddle, hitInfo)) && m_Velocity.y < 0)
+			{
+				m_Velocity.y = 350.f;
+				m_Pos.y = hitInfo.intersectPoint.y+1;
+			}
+		}
 		if (m_ElapsedSec >= m_FrameTime)
 		{
 			++m_FrameNr;
@@ -85,6 +94,11 @@ void FireBall::Draw() const
 	if (m_IsAlive) m_pTexture->Draw(m_Bounds, m_SrcRect);
 }
 
+void FireBall::SetDead()
+{
+	m_IsAlive = false;
+}
+
 Point2f FireBall::GetPos()
 {
 	return m_Pos;
@@ -93,4 +107,9 @@ Point2f FireBall::GetPos()
 bool FireBall::GetIsAlive()
 {
 	return m_IsAlive;
+}
+
+Rectf FireBall::GetBounds() const
+{
+	return m_Bounds;
 }

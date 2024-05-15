@@ -5,7 +5,7 @@
 
 class Mario;
 
-class PowerUp
+class PowerUp final
 {
 
 public:

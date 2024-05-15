@@ -1,13 +1,18 @@
 #pragma once
 #include "Enemy.h"
+#include "SoundEffect.h"
 
-class PiranhaPlant : public Enemy
+class PiranhaPlant final : public Enemy
 {
 public:
-	explicit PiranhaPlant();
-	~PiranhaPlant();
-	virtual void Update(float elapsedSec) override;
-	virtual void Draw() override;
+	explicit PiranhaPlant(const Point2f& pos, const Texture* tex, const SoundEffect* sound,const SoundEffect* spinsound);
+	virtual void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const Mario* mario) override;
+	virtual void CheckHit(Mario* mario) override;
+
 private:
+	virtual void Animate(float elapsedSec) override;
+	const SoundEffect* m_pSpinSound;
+	const Point2f m_OriginalPos;
+	float m_AnimSec;
 };
 

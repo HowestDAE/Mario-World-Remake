@@ -7,7 +7,7 @@ Camera::Camera(float screenWidth, float screenHeight)
 {
 }
 
-void Camera::Aim(float levelW, float levelH,const Point2f& trackCenter)
+void Camera::Aim(float levelW, float levelH,const Point2f& trackCenter) const
 {
 	Point2f bottomLeft{ trackCenter.x-m_ScreenWidth/2,trackCenter.y-m_ScreenHeight/2 };
 	if (bottomLeft.x <0)

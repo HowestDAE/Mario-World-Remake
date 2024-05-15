@@ -2,7 +2,7 @@
 #include "Mario.h"
 #include "iostream"
 
-Mario::Mario(const Point2f& startingPos)
+Mario::Mario(const Point2f& startingPos, const SoundEffect* hiteffect)
 	:m_Pos{startingPos}
 	,m_Velocity{}
 	,m_WalkingState{WalkingState::none}
@@ -18,7 +18,11 @@ Mario::Mario(const Point2f& startingPos)
 	,m_IsOnGround{  }
 	,m_FrameRect{ Rectf(328, 19, 16, 19) }
 	,m_IsAlive{ 1 }
-	
+	,m_CoinCount{ 0 }
+	,m_Invincible{false}
+	,m_InvinTimer{0}
+	,m_IFrames{1.f}
+	, m_pHitEffect{hiteffect}
 {
 	m_pSpritesheet = new Texture("mario-spritesheet2.png");
 	m_Bounds = Rectf(0, 0, GetCurrFrameRect().width*2, GetCurrFrameRect().height*2);
@@ -29,6 +33,7 @@ Mario::Mario(const Point2f& startingPos)
 	m_pFireEffect = new SoundEffect("Sounds/smw_fireball.wav");
 }
 
+
 Mario::Mario(Mario&& other)
 	:m_AccTime{std::move(other.m_AccTime)}
 	,m_Bounds{std::move(other.m_Bounds)}
@@ -38,6 +43,7 @@ Mario::Mario(Mario&& other)
 	,m_FrameTime{std::move(other.m_FrameTime)}
 	,m_IsOnGround{std::move(other.m_IsOnGround)}
 	,m_JumpTime{std::move(other.m_JumpTime)}
+	,m_CoinCount{std::move(other.m_CoinCount)}
 	,m_LookingState{std::move(other.m_LookingState)}
 	,m_Mariostate{std::move(other.m_Mariostate)}
 	,m_Pos{std::move(other.m_Pos)}
@@ -141,7 +147,7 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 			}
 			if ((utils::Raycast(collissionShape, lowerRight, lowerMiddle, hitInfo)))
 			{
-				if (hitInfo.normal.Normalized().x <= 0.1)
+				if (hitInfo.normal.Normalized().x <= -0.1)
 				{
 					if (m_Velocity.x >= 0)
 					{
@@ -208,6 +214,15 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 		m_Velocity.y += gravity;
 		m_FrameTime = 0.05f;
 	}
+	if (m_Invincible == true)
+	{
+		m_InvinTimer += elapsedSec;
+		if (m_InvinTimer >= m_IFrames)
+		{
+			m_Invincible = false;
+			m_InvinTimer = 0;
+		}
+	}
 	Animate(elapsedSec);
 	for (int idx{}; idx < m_pFireBalls.size(); ++idx)
 	{
@@ -235,6 +250,14 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 		{
 			m_pFireBalls.pop_back();
 			m_pFireBalls.pop_back();
+		}
+	}
+	if (m_pFireBalls.size() == 1)
+	{
+		if (m_pFireBalls[0] == nullptr)
+		{
+			m_pFireBalls.pop_back();
+
 		}
 	}
 	
@@ -365,6 +388,11 @@ void Mario::HandleMovement(float elapsedSec, const Uint8* pStates)
 				m_FrameNr = 0;
 				if (m_IsOnGround == 0 && m_LookingState == LookingState::left) m_LookingState = LookingState::leftSpin;
 				if (m_IsOnGround == 0 && m_LookingState == LookingState::right) m_LookingState = LookingState::rightSpin;
+				if (m_pFireBalls.size() < 1 && m_Mariostate == PowerUpState::fireflower)
+				{
+					m_pFireBalls.push_back(new FireBall(m_Pos, Vector2f(-300.f, 0.f), m_pFireBallTex));
+					m_pFireBalls.push_back(new FireBall(m_Pos, Vector2f(300.f, 0.f), m_pFireBallTex));
+				}
 			}
 
 
@@ -415,9 +443,24 @@ Rectf Mario::GetBounds() const
 	return m_Bounds;
 }
 
+Vector2f Mario::GetVel() const
+{
+	return m_Velocity;
+}
+
 Mario::PowerUpState Mario::GetPowerUpState() const
 {
 	return m_Mariostate;
+}
+
+Mario::LookingState Mario::GetState() const
+{
+	return m_LookingState;
+}
+
+std::vector<FireBall*> Mario::GetFireBalls() const
+{
+	return m_pFireBalls;
 }
 
 Mario& Mario::operator=(Mario&& other)
@@ -440,6 +483,7 @@ Mario& Mario::operator=(Mario&& other)
 		m_Velocity = std::move(other.m_Velocity);
 		m_WalkingState = std::move(other.m_WalkingState);
 		m_IsAlive= std::move(other.m_IsAlive);
+		m_CoinCount = std::move(other.m_CoinCount);
 
 		m_pJumpEffect = std::move(other.m_pJumpEffect);
 		m_pSpinJumpEffect = std::move(other.m_pJumpEffect);
@@ -762,9 +806,58 @@ void Mario::ShootFireBall()
 	}
 }
 
+void Mario::AddCoin()
+{
+	++m_CoinCount;
+}
+
 bool Mario::GetIsAlive() const
 {
 	return m_IsAlive;
+}
+
+void Mario::TakeDamage()
+{
+	if (m_Invincible == false)
+	{
+		if (m_Mariostate == PowerUpState::fireflower)
+		{
+			m_Mariostate = PowerUpState::big;
+			m_Invincible = true;
+			m_pHitEffect->Play(0);
+		}
+		else if (m_Mariostate == PowerUpState::big)
+		{
+			m_Mariostate = PowerUpState::small;
+			m_Invincible = true;
+			m_pHitEffect->Play(0);
+
+		}
+		else if (m_Mariostate == PowerUpState::small)
+		{
+			m_IsAlive = false;
+			m_Velocity.y = 500;
+			m_Velocity.x = 0;
+			m_pDeathEffect->Play(0);
+
+		}
+	}
+}
+
+void Mario::Bounce(float ypos)
+{
+	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
+	if (pStates[SDL_SCANCODE_SPACE])
+	{
+		m_CanJump = true;
+		m_TimeInAir = 0;
+		m_Pos.y = ypos+7;
+	}
+	else
+	{
+		m_Velocity.y = 400.f;
+		m_Pos.y = ypos+7;
+	}
 }
 
 void Mario::OnKeyUpEvent(const SDL_KeyboardEvent& e)
