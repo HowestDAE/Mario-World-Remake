@@ -11,6 +11,7 @@ public:
 	virtual void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const Mario* mario);
 	virtual void Draw() const;
 	virtual void CheckHit(Mario* mario);
+	virtual void Reset();
 protected:
 	Rectf GetBounds() const;
 	virtual void Animate(float elapsedSec);
@@ -18,6 +19,7 @@ protected:
 	Rectf m_Bounds;
 	Rectf m_SrcRect;
 	Vector2f m_Velocity;
+	const Point2f m_OriginalPos;
 	int m_HP;
 	bool m_IsAlive;
 	bool m_DeathAnimation;
@@ -28,6 +30,6 @@ protected:
 	int m_FrameNr;
 	const SoundEffect* m_StompSound;
 	bool m_LookingRight;
-
+private:
 };
 

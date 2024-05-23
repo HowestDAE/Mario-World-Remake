@@ -41,6 +41,16 @@ public:
 	bool GetIsAlive()const;
 	void TakeDamage();
 	void Bounce(float ypos);
+	void Reset();
+	void SetCheckpointHit();
+	void SetVel(const Vector2f& vel);
+	void SetVelX(const float vel);
+	void SetVelY(const float vel);
+	void SetPosX(const float pos);
+	void SetPosY(const float pos);
+	void SetIsOnGround();
+	void SetCanJump(bool flag);
+
 	Rectf GetCurrFrameRect() const;
 	Point2f GetPos() const;
 	Rectf GetBounds() const;
@@ -82,6 +92,7 @@ private:
 	bool m_IsOnGround;
 	bool m_IsAlive;
 	bool m_Invincible;
+	bool m_CheckpointHit;
 	float m_InvinTimer;
 	float m_IFrames;
 	Rectf m_FrameRect;

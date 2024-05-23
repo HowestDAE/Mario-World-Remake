@@ -1,0 +1,44 @@
+#include "pch.h"
+#include "Finish.h"
+
+Finish::Finish(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
+	:m_IsHit{false}
+	,m_pTexture{tex}
+	,m_Pos{pos}
+	,m_pSoundEffect{sound}
+	,m_BarPos{pos}
+	,m_OriginalPos{pos}
+	,m_Vel{0,30.f}
+{
+	m_SrcRectPole = Rectf(0, 64, 32, 64);
+	m_SrcRectBar = Rectf(8, 73, 18, 3);
+	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRectBar.width*4, m_SrcRectBar.height*4);
+	m_PoleBounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRectPole.width *4 , m_SrcRectPole.height *4);
+}
+
+void Finish::Draw() const
+{
+	m_pTexture->Draw(m_PoleBounds, m_SrcRectPole);
+	m_pTexture->Draw(m_Bounds, m_SrcRectBar);
+}
+
+void Finish::CheckIsHit(Mario* mario)
+{
+}
+
+void Finish::Update(float elapsedSec)
+{
+	m_Pos.y += m_Vel.y * elapsedSec;
+	if (m_Pos.y >= m_OriginalPos.y + 60*4)
+	{
+		m_Vel.y = -30.f;
+	}
+	else if (m_Pos.y <= m_OriginalPos.y)
+	{
+		m_Vel.y = 30.f;
+	}
+
+	m_Bounds = Rectf(m_Pos.x + 6 * 4, m_Pos.y, m_SrcRectBar.width *4 , m_SrcRectBar.height*4);
+
+
+}

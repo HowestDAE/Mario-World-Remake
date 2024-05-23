@@ -5,7 +5,6 @@
 PiranhaPlant::PiranhaPlant(const Point2f& pos, const Texture* tex, const SoundEffect* sound, const SoundEffect* spinsound)
 	:Enemy::Enemy(pos, tex, sound)
 	, m_pSpinSound{ spinsound }
-	,m_OriginalPos{pos}
 	,m_AnimSec{0}
 {
 	m_FrameTime = 0.2f;
@@ -17,7 +16,7 @@ PiranhaPlant::PiranhaPlant(const Point2f& pos, const Texture* tex, const SoundEf
 
 void PiranhaPlant::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const Mario* mario)
 {
-	if (m_Pos.x - mario->GetPos().x <= 500.f)
+	if (m_Pos.x - mario->GetPos().x <= 500.f && mario->GetPos().x - m_Pos.x >= -500.f)
 	{
 		const float gravity{ -0.5f };
 		m_Pos.x += m_Velocity.x * elapsedSec;
@@ -95,6 +94,22 @@ void PiranhaPlant::CheckHit(Mario* mario)
 		}
 	}
 }
+
+void PiranhaPlant::Reset()
+{
+	m_IsAlive = true;
+	m_Pos = m_OriginalPos;
+	m_DeathAnimation = false;
+	m_Deathtimer = 0;
+	m_FrameNr = 0;
+	m_ElapsedSec = 0;
+	m_HP = 2;
+	m_LookingRight = false;
+	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2);
+	m_Velocity = Vector2f(0, 0);
+
+}
+
 
 void PiranhaPlant::Animate(float elapsedSec)
 {

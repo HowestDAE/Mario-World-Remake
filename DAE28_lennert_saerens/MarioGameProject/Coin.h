@@ -15,6 +15,7 @@ public:
 	virtual void Update(float elapsedSec);
 	virtual void Animate();
 	virtual void Collect(Mario* mario);
+	virtual void Reset();
 
 	//Coin& operator=(const Coin& rhs) = delete; // asignment= operator afzetten
 

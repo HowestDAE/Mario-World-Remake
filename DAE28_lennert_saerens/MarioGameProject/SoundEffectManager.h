@@ -12,6 +12,9 @@ public:
 		Stomp,
 		spinStomp,
 		pipeHit,
+		Clap,
+		CheckPoint,
+		block,
 	};
 
 	SoundEffectManager();
@@ -30,5 +33,8 @@ protected:
 	SoundEffect* m_pStompSound;
 	SoundEffect* m_pSpinStompSound;
 	SoundEffect* m_pPipeHitSound;
+	SoundEffect* m_pClapSound;
+	SoundEffect* m_pCheckpointSound;
+	SoundEffect* m_pBreakSound;
 };
 

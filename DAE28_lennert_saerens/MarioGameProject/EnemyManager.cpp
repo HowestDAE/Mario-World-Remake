@@ -45,6 +45,7 @@ void EnemyManager::Draw() const
 void EnemyManager::PushBackEnemy(const Point2f& pos, const EnemyType& enemy, const SoundEffect* sound) 
 {
 	assert(enemy != EnemyManager::EnemyType::PianhaPlant);
+	assert(enemy != EnemyManager::EnemyType::Chuck);
 	if (enemy == EnemyType::Enemy)
 	{
 		m_pEnemies.push_back(new Enemy(pos, m_pTexture, sound));
@@ -53,12 +54,35 @@ void EnemyManager::PushBackEnemy(const Point2f& pos, const EnemyType& enemy, con
 	{
 		m_pEnemies.push_back(new BulletBill(pos, m_pTexture, sound));
 	}
+	if (enemy == EnemyType::Koopa)
+	{
+		m_pEnemies.push_back(new Koopa(pos, m_pTexture, sound));
+	}
+	
 	
 }
 
-void EnemyManager::PushBackPiranhaPlant(const Point2f& pos, const SoundEffect* sound, const SoundEffect* spinSound)
+void EnemyManager::PushBackEnemy(const Point2f& pos, const EnemyType& enemy, const SoundEffect* sound, const SoundEffect* spinSound)
 {
-	m_pEnemies.push_back(new PiranhaPlant(pos, m_pTexture, sound,spinSound ));
+	assert(enemy != EnemyManager::EnemyType::Enemy);
+	assert(enemy != EnemyManager::EnemyType::BulletBill);
+	assert(enemy != EnemyManager::EnemyType::Koopa);
+	if (enemy == EnemyType::PianhaPlant)
+	{
+		m_pEnemies.push_back(new PiranhaPlant(pos, m_pTexture, sound, spinSound));
+	}
+	if (enemy == EnemyType::Chuck)
+	{
+		m_pEnemies.push_back(new Chuck(pos, m_pTexture, sound, spinSound));
+	}
+}
+
+void EnemyManager::Reset()
+{
+	for (int idx{}; idx < m_pEnemies.size(); ++idx)
+	{
+		m_pEnemies[idx]->Reset();
+	}
 }
 
 EnemyManager& EnemyManager::operator=(EnemyManager&& other)

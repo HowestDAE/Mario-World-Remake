@@ -8,6 +8,9 @@ public:
 		coins,
 		PowerUp,
 		Enemies,
+		Checkpoint,
+		block,
+		Finish,
 	};
 
 	TextureManager();
@@ -23,5 +26,7 @@ protected:
 	Texture* m_pCoinTexture;
 	Texture* m_pPowerUpTexture;
 	Texture* m_pEnemyTexture;
+	Texture* m_pCheckpointTexture;
+	Texture* m_pFinishTexture;
 };
 

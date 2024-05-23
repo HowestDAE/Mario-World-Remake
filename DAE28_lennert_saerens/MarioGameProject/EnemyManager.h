@@ -4,6 +4,8 @@
 #include "Enemy.h"
 #include "BulletBill.h"
 #include "PiranhaPlant.h"
+#include "Koopa.h"
+#include "Chuck.h"
 #include <vector>
 class EnemyManager final 
 {
@@ -26,7 +28,9 @@ public:
 	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario);
 	void Draw()const;
 	void PushBackEnemy(const Point2f& pos, const EnemyType& enemy, const SoundEffect* sound);
-	void PushBackPiranhaPlant(const Point2f& pos,const SoundEffect* sound, const SoundEffect* spinSound);
+	void PushBackEnemy(const Point2f& pos, const EnemyType& enemy,const SoundEffect* sound, const SoundEffect* spinSound);
+	void Reset();
+
 
 	EnemyManager& operator=(const EnemyManager& rhs) = delete; // asignment= operator afzetten
 	EnemyManager& operator=(EnemyManager&& other);

@@ -65,3 +65,8 @@ void Coin::Collect(Mario* mario)
 		mario->AddCoin();
 	}
 }
+
+void Coin::Reset()
+{
+	m_IsCollected = false;
+}

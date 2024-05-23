@@ -4,11 +4,12 @@
 class Koopa final : public Enemy
 {
 public:
-	explicit Koopa();
+	explicit Koopa(const Point2f& pos, const Texture* tex, const SoundEffect* sound);
 	virtual void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const Mario* mario) override;
-	virtual void Draw() const override;
+	virtual void Reset() override;
+	virtual void Animate(float elapsedSec) override;
+
 private:
-	Point2f m_ShellPos;
-	bool m_IsOutOfShell;
+
 };
 

@@ -15,7 +15,7 @@ BulletBill::BulletBill(const Point2f& pos, const Texture* tex, const SoundEffect
 void BulletBill::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const Mario* mario)
 {
 	
-	if (m_Pos.x - mario->GetPos().x <= 500.f)
+	if (m_Pos.x - mario->GetPos().x <= 500.f && mario->GetPos().x - m_Pos.x >= -500.f)
 	{
 		m_Pos.x += m_Velocity.x * elapsedSec;
 		m_Pos.y += m_Velocity.y * elapsedSec;
@@ -39,12 +39,12 @@ void BulletBill::CheckHit(Mario* mario)
 	if (m_DeathAnimation == false)
 	{
 		Rectf marioRect{ mario->GetBounds() };
-		Rectf marioBodyRect{ marioRect.left,marioRect.bottom ,marioRect.width, ((marioRect.height / 4) * 2) };
+		Rectf marioFeetRect{ marioRect.left,marioRect.bottom ,marioRect.width, ((marioRect.height / 4)) };
 
 		Rectf enemyHeadRect{ m_Bounds.left,m_Bounds.bottom + ((m_Bounds.height / 4) * 3),m_Bounds.width, m_Bounds.height / 4 };
 		Rectf enemyBodyRect{ m_Bounds.left,m_Bounds.bottom ,m_Bounds.width, ((m_Bounds.height / 4) * 3) };
 
-		if (utils::IsOverlapping(marioBodyRect, enemyHeadRect) && (mario->GetVel().y < 1))
+		if (utils::IsOverlapping(marioFeetRect, enemyHeadRect) && (mario->GetVel().y < 1))
 		{
 			if (mario->GetState() == Mario::LookingState::leftSpin || mario->GetState() == Mario::LookingState::rightSpin)
 			{
@@ -59,7 +59,7 @@ void BulletBill::CheckHit(Mario* mario)
 				mario->Bounce(m_Pos.y + m_Bounds.height);
 			}
 		}
-		else if (utils::IsOverlapping(marioBodyRect, enemyBodyRect))
+		else if (utils::IsOverlapping(marioRect, enemyBodyRect))
 		{
 			mario->TakeDamage();
 
@@ -76,4 +76,13 @@ void BulletBill::CheckHit(Mario* mario)
 			}
 		}
 	}
+}
+
+void BulletBill::Reset()
+{
+	
+		m_Pos = m_OriginalPos;
+		m_DeathAnimation = false;
+		m_HP = 1;
+		m_Velocity = Vector2f(-100.f, 0.f);
 }

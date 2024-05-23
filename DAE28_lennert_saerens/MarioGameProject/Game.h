@@ -3,6 +3,7 @@
 #include <vector>
 #include "Texture.h"
 #include "SoundStream.h"
+
 class Mario;
 class Camera;
 class Coin;
@@ -11,6 +12,9 @@ class TextureManager;
 class SoundEffectManager;
 class PowerUp;
 class EnemyManager;
+class Checkpoint;
+class Block;
+class Finish;
 
 class Game : public BaseGame
 {
@@ -45,11 +49,16 @@ private:
 	TextureManager* m_pTextureManager;
 	SoundEffectManager* m_pSoundManager;
 	EnemyManager* m_pEnemyManager;
+	Checkpoint* m_pCheckpoint;
+	Finish* m_pFinish;
 	std::vector<Coin*> m_pCoins;
 	std::vector<PowerUp*> m_pPowerUps;
+	std::vector<Block*> m_pBlocks;
 
 	// FUNCTIONS
 	void Initialize();
 	void Cleanup( );
 	void ClearBackground( ) const;
+
+	void Respawn();
 };

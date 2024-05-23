@@ -147,12 +147,15 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Block.cpp" />
     <ClCompile Include="BulletBill.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Checkpoint.cpp" />
     <ClCompile Include="Chuck.cpp" />
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="DragonCoin.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Finish.cpp" />
     <ClCompile Include="FireBall.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Koopa.cpp" />
@@ -162,16 +165,20 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="PiranhaPlant.cpp" />
     <ClCompile Include="PowerUp.cpp" />
+    <ClCompile Include="QBlock.cpp" />
     <ClCompile Include="SoundEffectManager.cpp" />
     <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Block.h" />
     <ClInclude Include="BulletBill.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Checkpoint.h" />
     <ClInclude Include="Chuck.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="DragonCoin.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Finish.h" />
     <ClInclude Include="FireBall.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Koopa.h" />
@@ -180,6 +187,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="PiranhaPlant.h" />
     <ClInclude Include="PowerUp.h" />
+    <ClInclude Include="QBlock.h" />
     <ClInclude Include="SoundEffectManager.h" />
     <ClInclude Include="TextureManager.h" />
   </ItemGroup>

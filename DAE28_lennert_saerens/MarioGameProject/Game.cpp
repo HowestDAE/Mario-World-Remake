@@ -11,6 +11,10 @@
 #include "PowerUp.h"
 #include "Enemy.h"
 #include "EnemyManager.h"
+#include "Checkpoint.h"
+#include "Block.h"
+#include "QBlock.h"
+#include "Finish.h"
 
 
 Game::Game(const Window& window)
@@ -64,9 +68,12 @@ void Game::Initialize( )
 	m_pCoins.push_back(new Coin(Point2f(125, 250), m_pTextureManager->GiveTexture(TextureManager::Textures::coins), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::coins)));
 	m_pCoins.push_back(new Coin(Point2f(150, 250), m_pTextureManager->GiveTexture(TextureManager::Textures::coins), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::coins)));
 	m_pCoins.push_back(new DragonCoin(Point2f(279*2, 161*2), m_pTextureManager->GiveTexture(TextureManager::Textures::coins), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::dragonCoins)));
+	m_pCoins.push_back(new DragonCoin(Point2f(1416 * 2, 161 * 2), m_pTextureManager->GiveTexture(TextureManager::Textures::coins), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::dragonCoins)));
+	m_pCoins.push_back(new DragonCoin(Point2f(2871*2, 193*2), m_pTextureManager->GiveTexture(TextureManager::Textures::coins), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::dragonCoins)));
+	m_pCoins.push_back(new DragonCoin(Point2f(4615*2, 161*2), m_pTextureManager->GiveTexture(TextureManager::Textures::coins), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::dragonCoins)));
 
-	m_pPowerUps.push_back(new PowerUp(*m_pMario, Point2f(279 * 2, 50 * 2),m_pTextureManager->GiveTexture(TextureManager::Textures::PowerUp), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::PowerUp)));
-	m_pPowerUps.push_back(new PowerUp(PowerUp::PowerUpType::Flower, Point2f(230 * 2, 50 * 2),m_pTextureManager->GiveTexture(TextureManager::Textures::PowerUp), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::PowerUp)));
+	m_pPowerUps.push_back(new PowerUp(PowerUp::PowerUpType::Flower, Point2f(589 * 2, 98 * 2), m_pTextureManager->GiveTexture(TextureManager::Textures::PowerUp), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::PowerUp), false));
+	m_pPowerUps.push_back(new PowerUp(*m_pMario, Point2f(3888 * 2, 144 * 2),m_pTextureManager->GiveTexture(TextureManager::Textures::PowerUp), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::PowerUp),false));
 
 	m_pEnemyManager->PushBackEnemy(Point2f(528*2, 48*2), EnemyManager::EnemyType::Enemy, m_pSoundManager->GiveSound(SoundEffectManager::Sounds::Stomp));
 	m_pEnemyManager->PushBackEnemy(Point2f(748*2, 48*2), EnemyManager::EnemyType::Enemy, m_pSoundManager->GiveSound(SoundEffectManager::Sounds::Stomp));
@@ -92,9 +99,44 @@ void Game::Initialize( )
 	m_pEnemyManager->PushBackEnemy(Point2f(3612*2, 48*2), EnemyManager::EnemyType::BulletBill, m_pSoundManager->GiveSound(SoundEffectManager::Sounds::Stomp));
 	m_pEnemyManager->PushBackEnemy(Point2f(4460*2, 48*2), EnemyManager::EnemyType::BulletBill, m_pSoundManager->GiveSound(SoundEffectManager::Sounds::Stomp));
 
-	m_pEnemyManager->PushBackPiranhaPlant(Point2f(1816*2, 70*2), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::Stomp), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::spinStomp));
-	m_pEnemyManager->PushBackPiranhaPlant(Point2f(4552*2, 70*2), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::Stomp), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::spinStomp));
-	m_pEnemyManager->PushBackPiranhaPlant(Point2f(2232*2, 88*2), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::Stomp), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::spinStomp));
+	m_pEnemyManager->PushBackEnemy(Point2f(1816*2, 70*2), EnemyManager::EnemyType::PianhaPlant, m_pSoundManager->GiveSound(SoundEffectManager::Sounds::Stomp), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::spinStomp));
+	m_pEnemyManager->PushBackEnemy(Point2f(4552*2, 70*2), EnemyManager::EnemyType::PianhaPlant, m_pSoundManager->GiveSound(SoundEffectManager::Sounds::Stomp), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::spinStomp));
+	m_pEnemyManager->PushBackEnemy(Point2f(2232*2, 88*2), EnemyManager::EnemyType::PianhaPlant, m_pSoundManager->GiveSound(SoundEffectManager::Sounds::Stomp), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::spinStomp));
+
+	m_pEnemyManager->PushBackEnemy(Point2f(4761*2, 52*2), EnemyManager::EnemyType::Chuck, m_pSoundManager->GiveSound(SoundEffectManager::Sounds::Stomp), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::Clap));
+
+	m_pEnemyManager->PushBackEnemy(Point2f(207*2, 144*2), EnemyManager::EnemyType::Koopa, m_pSoundManager->GiveSound(SoundEffectManager::Sounds::Stomp));
+	
+	m_pCheckpoint = new Checkpoint(Point2f(2408 * 2, 49 * 2), m_pTextureManager->GiveTexture(TextureManager::Textures::Checkpoint), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::CheckPoint));
+	m_pFinish = new Finish(Point2f(4816 * 2, 49 * 2), m_pTextureManager->GiveTexture(TextureManager::Textures::Finish), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::CheckPoint));
+
+	m_pBlocks.push_back(new Block(Point2f(1920*2, 96*2), m_pTextureManager->GiveTexture(TextureManager::Textures::block), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::block)));
+	m_pBlocks.push_back(new Block(Point2f(1936*2, 96*2), m_pTextureManager->GiveTexture(TextureManager::Textures::block), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::block)));
+	m_pBlocks.push_back(new Block(Point2f(3344*2, 178*2), m_pTextureManager->GiveTexture(TextureManager::Textures::block), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::block)));
+	m_pBlocks.push_back(new Block(Point2f(3824*2, 96*2), m_pTextureManager->GiveTexture(TextureManager::Textures::block), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::block)));
+	m_pBlocks.push_back(new Block(Point2f(3888*2, 80*2), m_pTextureManager->GiveTexture(TextureManager::Textures::block), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::block)));
+	m_pBlocks.push_back(new Block(Point2f(3952*2, 96*2), m_pTextureManager->GiveTexture(TextureManager::Textures::block), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::block)));
+
+	m_pBlocks.push_back(new QBlock(Point2f(589*2, 98*2), m_pTextureManager->GiveTexture(TextureManager::Textures::block), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::block),m_pPowerUps[0]));
+	m_pBlocks.push_back(new QBlock(Point2f(3888*2, 144*2), m_pTextureManager->GiveTexture(TextureManager::Textures::block), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::block), m_pPowerUps[1]));
+}
+
+void Game::Respawn()
+{
+	m_pEnemyManager->Reset();
+	for (int idx{}; idx < m_pCoins.size(); ++idx)
+	{
+		m_pCoins[idx]->Reset();
+	}
+	for (int idx{}; idx < m_pPowerUps.size(); ++idx)
+	{
+		m_pPowerUps[idx]->Reset();
+	}
+	m_pMario->Reset();
+	for (int idx{}; idx < m_pBlocks.size(); ++idx)
+	{
+		m_pBlocks[idx]->Reset();
+	}
 }
 
 void Game::Cleanup()
@@ -111,10 +153,14 @@ void Game::Cleanup()
 	m_pForeground = nullptr;
 	delete m_pPipes;
 	m_pPipes = nullptr;
+	delete m_pCheckpoint;
+	m_pCheckpoint = nullptr;
 	delete m_pCamera;
 	m_pCamera = nullptr;
 	delete m_pBackgroundMusic;
 	m_pBackgroundMusic = nullptr;
+	delete m_pFinish;
+	m_pFinish = nullptr;
 	for (int idx{}; idx < m_pCoins.size(); ++idx)
 	{
 		delete m_pCoins[idx];
@@ -124,6 +170,11 @@ void Game::Cleanup()
 	{
 		delete m_pPowerUps[idx];
 		m_pPowerUps[idx] = nullptr;
+	}
+	for (int idx{}; idx < m_pBlocks.size(); ++idx)
+	{
+		delete m_pBlocks[idx];
+		m_pBlocks[idx] = nullptr;
 	}
 
 	delete m_pEnemyManager;
@@ -146,16 +197,32 @@ void Game::Update( float elapsedSec )
 	}
 	for (int idx{}; idx < m_pPowerUps.size(); ++idx)
 	{
-		m_pPowerUps[idx]->Update(elapsedSec, m_Landscape, m_Platforms);
+		m_pPowerUps[idx]->Update(elapsedSec, m_Landscape, m_Platforms, m_pBlocks);
 		if (m_pPowerUps[idx]->Collect(m_pMario))
 		{
 			m_pMario->Grow(m_pPowerUps[idx]->GetPowerUpType());
 		}
 	}
+	for (int idx{}; idx < m_pBlocks.size(); ++idx)
+	{
+		m_pBlocks[idx]->Update(elapsedSec, m_Landscape,m_Platforms, m_pBlocks);
+	}
 	m_pEnemyManager->Update(elapsedSec, m_Landscape, m_Platforms, m_pMario);
-
-	if (m_pMario->GetIsAlive() == false) m_pBackgroundMusic->Stop();
-	else if (m_pBackgroundMusic->IsPlaying() == false) m_pBackgroundMusic->Play(1);
+	m_pCheckpoint->Update();
+	m_pCheckpoint->CheckIsHit(m_pMario);
+	if (m_pMario->GetIsAlive() == false)
+	{
+		m_pBackgroundMusic->Stop();
+		if (m_pMario->GetPos().y <= -5000.f)
+		{
+			Respawn();
+		}
+	}
+	else if (m_pBackgroundMusic->IsPlaying() == false)
+	{
+		m_pBackgroundMusic->Play(1);
+	}
+	m_pFinish->Update(elapsedSec);
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
@@ -176,7 +243,6 @@ void Game::Draw( ) const
 	ClearBackground( );
 	m_pMap->Draw(Rectf(0,0,m_pMap->GetWidth()*2,m_pMap->GetHeight()*2));
 	m_pForeground->Draw(Rectf(0,0, m_pForeground->GetWidth()*2, m_pForeground->GetHeight()*2));
-	m_pMario->Draw();
 	for (int idx{}; idx < m_pCoins.size(); ++idx)
 	{
 		m_pCoins[idx]->Draw();
@@ -194,8 +260,17 @@ void Game::Draw( ) const
 	{
 		utils::DrawPolygon(m_Platforms[idx]);
 	}*/
+	m_pCheckpoint->Draw();
 	m_pEnemyManager->Draw();
 	m_pPipes->Draw(Rectf(0, 0, m_pPipes->GetWidth() * 2, m_pPipes->GetHeight() * 2));
+	m_pFinish->Draw();
+	m_pMario->Draw();
+	for (int idx{}; idx < m_pBlocks.size(); ++idx)
+	{
+		m_pBlocks[idx]->Draw();
+		m_pBlocks[idx]->CheckHit(m_pMario);
+	}
+	//utils::DrawRect(m_pMario->GetBounds());
 	m_pCamera->Reset();
 	//glPopMatrix();
 	

@@ -9,6 +9,10 @@ SoundEffectManager::SoundEffectManager()
 	m_pStompSound = new SoundEffect("Sounds/smw_stomp.wav");
 	m_pSpinStompSound = new SoundEffect("Sounds/smw_stomp_no_damage.wav");
 	m_pPipeHitSound = new SoundEffect("Sounds/smw_pipeandhit.wav");
+	m_pClapSound = new SoundEffect("Sounds/smw_bubble_pop.wav");
+	m_pCheckpointSound = new SoundEffect("Sounds/smw_midway_gate.wav");
+	m_pBreakSound = new SoundEffect("Sounds/smw_break_block.wav");
+	
 }
 
 SoundEffectManager::~SoundEffectManager()
@@ -25,6 +29,12 @@ SoundEffectManager::~SoundEffectManager()
 	m_pSpinStompSound = nullptr;
 	delete m_pPipeHitSound;
 	m_pPipeHitSound = nullptr;
+	delete m_pClapSound;
+	m_pClapSound = nullptr;
+	delete m_pCheckpointSound;
+	m_pCheckpointSound = nullptr;
+	delete m_pBreakSound;
+	m_pBreakSound = nullptr;
 }
 
 SoundEffectManager::SoundEffectManager(SoundEffectManager&& other)
@@ -45,6 +55,9 @@ SoundEffect* SoundEffectManager::GiveSound(const Sounds& sound)
 	else if (sound == Sounds::Stomp) return m_pStompSound;
 	else if (sound == Sounds::spinStomp) return m_pStompSound;
 	else if (sound == Sounds::pipeHit) return m_pPipeHitSound;
+	else if (sound == Sounds::Clap) return m_pClapSound;
+	else if (sound == Sounds::CheckPoint) return m_pCheckpointSound;
+	else if (sound == Sounds::block) return m_pBreakSound;
 }
 
 SoundEffectManager& SoundEffectManager::operator=(SoundEffectManager&& other)
