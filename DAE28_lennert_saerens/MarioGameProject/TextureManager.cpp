@@ -33,7 +33,7 @@ TextureManager::TextureManager(TextureManager&& other)
 	other.m_pPowerUpTexture = nullptr;
 }
 
-Texture* TextureManager::GiveTexture(const Textures& tex)
+Texture* TextureManager::GiveTexture(const Textures& tex) const
 {
 	if (tex == Textures::coins) return m_pCoinTexture;
 	else if (tex == Textures::PowerUp) return m_pPowerUpTexture;

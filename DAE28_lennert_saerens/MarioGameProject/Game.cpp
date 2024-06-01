@@ -1,20 +1,10 @@
 #include "pch.h"
 #include "Game.h"
-#include "Mario.h"
-#include "Camera.h"
 #include "SVGParser.h"
 #include "Matrix2x3.h"
-#include "Coin.h"
-#include "DragonCoin.h"
-#include "TextureManager.h"
-#include "SoundEffectManager.h"
-#include "PowerUp.h"
-#include "Enemy.h"
-#include "EnemyManager.h"
-#include "Checkpoint.h"
-#include "Block.h"
-#include "QBlock.h"
-#include "Finish.h"
+#include "utils.h"
+#include "Mario.h"
+
 
 
 Game::Game(const Window& window)
@@ -33,11 +23,10 @@ void Game::Initialize( )
 {
 	//std::vector<Point2f> platformOne{ Point2f(0, 50), Point2f(5000, 50) };
 	//m_Landscape.push_back(platformOne);
-	m_pTextureManager = new TextureManager();
+	/*m_pTextureManager = new TextureManager();
 	m_pSoundManager = new SoundEffectManager();
 	m_pBackgroundMusic = new SoundStream("Sounds/12. Overworld.mp3");
 	m_pBackgroundMusic->Play(true);
-	m_pMario = new Mario(Point2f(50, 200), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::pipeHit));
 	m_pMap = new Texture("yoshis-island-1-top no enemies.png");
 	m_pForeground = new Texture("Level1.png");
 	m_pPipes = new Texture("Pipes.png");
@@ -118,37 +107,62 @@ void Game::Initialize( )
 	m_pBlocks.push_back(new Block(Point2f(3952*2, 96*2), m_pTextureManager->GiveTexture(TextureManager::Textures::block), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::block)));
 
 	m_pBlocks.push_back(new QBlock(Point2f(589*2, 98*2), m_pTextureManager->GiveTexture(TextureManager::Textures::block), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::block),m_pPowerUps[0]));
-	m_pBlocks.push_back(new QBlock(Point2f(3888*2, 144*2), m_pTextureManager->GiveTexture(TextureManager::Textures::block), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::block), m_pPowerUps[1]));
+	m_pBlocks.push_back(new QBlock(Point2f(3888*2, 144*2), m_pTextureManager->GiveTexture(TextureManager::Textures::block), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::block), m_pPowerUps[1]));*/
+	m_pMario = new Mario(Point2f(50, 200));
+
+	m_pMap = new Texture("yoshis-island-1-top no enemies.png");
+
+	SVGParser::GetVerticesFromSvgFile("yoshis-island-1-top-NoLag.svg", m_Landscape);
+	SVGParser::GetVerticesFromSvgFile("yoshis-island-1-top-Platforms.svg", m_Platforms);
+	//for (int idx{}; idx < m_pLandscape.size(); ++idx)
+	//{
+	//	utils::DrawPolygon(m_pLandscape[idx]);
+	//}
+
+	Matrix2x3 scaleMat{};
+	scaleMat.SetAsScale(2.f);
+
+	for (int idx{}; idx < m_Landscape.size(); ++idx)
+	{
+		Matrix2x3 transformMatrix{ scaleMat };
+		m_Landscape[idx] = transformMatrix.Transform(m_Landscape[idx]);
+	}
+	for (int idx{}; idx < m_Platforms.size(); ++idx)
+	{
+		Matrix2x3 transformMatrix{ scaleMat };
+		m_Platforms[idx] = transformMatrix.Transform(m_Platforms[idx]);
+	}
+	m_pLevel = new Level(1, m_pMap, m_Landscape, m_Platforms, GetViewPort(), m_pMario);
+
 }
 
-void Game::Respawn()
-{
-	m_pEnemyManager->Reset();
-	for (int idx{}; idx < m_pCoins.size(); ++idx)
-	{
-		m_pCoins[idx]->Reset();
-	}
-	for (int idx{}; idx < m_pPowerUps.size(); ++idx)
-	{
-		m_pPowerUps[idx]->Reset();
-	}
-	m_pMario->Reset();
-	for (int idx{}; idx < m_pBlocks.size(); ++idx)
-	{
-		m_pBlocks[idx]->Reset();
-	}
-}
+//void Game::Respawn()
+//{
+//	m_pEnemyManager->Reset();
+//	for (int idx{}; idx < m_pCoins.size(); ++idx)
+//	{
+//		m_pCoins[idx]->Reset();
+//	}
+//	for (int idx{}; idx < m_pPowerUps.size(); ++idx)
+//	{
+//		m_pPowerUps[idx]->Reset();
+//	}
+//	m_pMario->Reset();
+//	for (int idx{}; idx < m_pBlocks.size(); ++idx)
+//	{
+//		m_pBlocks[idx]->Reset();
+//	}
+//}
 
 void Game::Cleanup()
 {
-	delete m_pTextureManager;
+	/*delete m_pTextureManager;
 	m_pTextureManager = nullptr;
 	delete m_pSoundManager;
 	m_pSoundManager = nullptr;
 	delete m_pMario;
 	m_pMario = nullptr;
-	delete m_pMap;
-	m_pMap = nullptr;
+	
 	delete m_pForeground;
 	m_pForeground = nullptr;
 	delete m_pPipes;
@@ -178,14 +192,22 @@ void Game::Cleanup()
 	}
 
 	delete m_pEnemyManager;
-	m_pEnemyManager = nullptr;
+	m_pEnemyManager = nullptr;*/
+	delete m_pMap;
+	m_pMap = nullptr;
+	delete m_pLevel;
+	m_pLevel = nullptr;
+	delete m_pMario;
+	m_pMario = nullptr;
+
 }
 
 void Game::Update( float elapsedSec )
 {
-	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
+	m_pLevel->Update(elapsedSec);
+	/*const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 	m_pMario->HandleMovement(elapsedSec, pStates);
-	m_pMario->Update(elapsedSec,m_Landscape, m_Platforms);
+	m_pMario->Update(elapsedSec,m_Landscape, m_Platforms, m_pBlocks);
 	if (m_pCoins[0] != nullptr)
 	{
 		m_pCoins[0]->Update(elapsedSec);
@@ -222,7 +244,7 @@ void Game::Update( float elapsedSec )
 	{
 		m_pBackgroundMusic->Play(1);
 	}
-	m_pFinish->Update(elapsedSec);
+	m_pFinish->Update(elapsedSec);*/
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
@@ -237,54 +259,58 @@ void Game::Update( float elapsedSec )
 
 void Game::Draw( ) const
 {
-	/*glPushMatrix();
-	glScalef(2.f, 2.f, 0.f);*/
-	m_pCamera->Aim(m_pMap->GetWidth()*2, m_pMap->GetHeight()*2, m_pMario->GetPos());
-	ClearBackground( );
-	m_pMap->Draw(Rectf(0,0,m_pMap->GetWidth()*2,m_pMap->GetHeight()*2));
-	m_pForeground->Draw(Rectf(0,0, m_pForeground->GetWidth()*2, m_pForeground->GetHeight()*2));
-	for (int idx{}; idx < m_pCoins.size(); ++idx)
-	{
-		m_pCoins[idx]->Draw();
-	}
-	for (int idx{}; idx < m_pPowerUps.size(); ++idx)
-	{
-		m_pPowerUps[idx]->Draw();
-	}
-	utils::SetColor(Color4f(1.f, 0.f, 0.f, 1.f));
-	/*for (int idx{}; idx < m_Landscape.size(); ++idx)
-	{
-		utils::DrawPolygon(m_Landscape[idx]);
-	}*/
-	/*for (int idx{}; idx < m_Platforms.size(); ++idx)
-	{
-		utils::DrawPolygon(m_Platforms[idx]);
-	}*/
-	m_pCheckpoint->Draw();
-	m_pEnemyManager->Draw();
-	m_pPipes->Draw(Rectf(0, 0, m_pPipes->GetWidth() * 2, m_pPipes->GetHeight() * 2));
-	m_pFinish->Draw();
-	m_pMario->Draw();
-	for (int idx{}; idx < m_pBlocks.size(); ++idx)
-	{
-		m_pBlocks[idx]->Draw();
-		m_pBlocks[idx]->CheckHit(m_pMario);
-	}
-	//utils::DrawRect(m_pMario->GetBounds());
-	m_pCamera->Reset();
-	//glPopMatrix();
+	ClearBackground();
+	m_pLevel->Draw();
+	///*glPushMatrix();
+	//glScalef(2.f, 2.f, 0.f);*/
+	//m_pCamera->Aim(m_pMap->GetWidth()*2, m_pMap->GetHeight()*2, m_pMario->GetPos());
+	//
+	//m_pMap->Draw(Rectf(0,0,m_pMap->GetWidth()*2,m_pMap->GetHeight()*2));
+	//m_pForeground->Draw(Rectf(0,0, m_pForeground->GetWidth()*2, m_pForeground->GetHeight()*2));
+	//for (int idx{}; idx < m_pCoins.size(); ++idx)
+	//{
+	//	m_pCoins[idx]->Draw();
+	//}
+	//for (int idx{}; idx < m_pPowerUps.size(); ++idx)
+	//{
+	//	m_pPowerUps[idx]->Draw();
+	//}
+	//utils::SetColor(Color4f(1.f, 0.f, 0.f, 1.f));
+	///*for (int idx{}; idx < m_Landscape.size(); ++idx)
+	//{
+	//	utils::DrawPolygon(m_Landscape[idx]);
+	//}*/
+	///*for (int idx{}; idx < m_Platforms.size(); ++idx)
+	//{
+	//	utils::DrawPolygon(m_Platforms[idx]);
+	//}*/
+	//m_pCheckpoint->Draw();
+	//m_pEnemyManager->Draw();
+	//m_pPipes->Draw(Rectf(0, 0, m_pPipes->GetWidth() * 2, m_pPipes->GetHeight() * 2));
+	//m_pFinish->Draw();
+	//m_pMario->Draw();
+	//for (int idx{}; idx < m_pBlocks.size(); ++idx)
+	//{
+	//	m_pBlocks[idx]->Draw();
+	//	m_pBlocks[idx]->CheckHit(m_pMario);
+	//}
+	////utils::DrawRect(m_pMario->GetBounds());
+	//m_pCamera->Reset();
+	////glPopMatrix();
 	
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
+	m_pLevel->ProcessKeyDownEvent(e);
 	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
-	m_pMario->OnKeyDownEvent(e);
+	//m_pMario->OnKeyDownEvent(e);
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 {
-	m_pMario->OnKeyUpEvent(e);
+	m_pLevel->ProcessKeyUpEvent(e);
+	//m_pMario->OnKeyUpEvent(e);
 	//std::cout << "KEYUP event: " << e.keysym.sym << std::endl;
 	//switch ( e.keysym.sym )
 	//{
@@ -303,11 +329,13 @@ void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 
 void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
 {
+	m_pLevel->ProcessMouseMotionEvent(e);
 	//std::cout << "MOUSEMOTION event: " << e.x << ", " << e.y << std::endl;
 }
 
 void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
 {
+	m_pLevel->ProcessMouseDownEvent(e);
 	//std::cout << "MOUSEBUTTONDOWN event: ";
 	//switch ( e.button )
 	//{
@@ -326,6 +354,7 @@ void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
 
 void Game::ProcessMouseUpEvent( const SDL_MouseButtonEvent& e )
 {
+	m_pLevel->ProcessMouseUpEvent(e);
 	//std::cout << "MOUSEBUTTONUP event: ";
 	//switch ( e.button )
 	//{

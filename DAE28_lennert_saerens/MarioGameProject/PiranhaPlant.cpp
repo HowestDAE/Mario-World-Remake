@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "PiranhaPlant.h"
 #include "Mario.h"
+#include "FireBall.h"
+
 
 PiranhaPlant::PiranhaPlant(const Point2f& pos, const Texture* tex, const SoundEffect* sound, const SoundEffect* spinsound)
 	:Enemy::Enemy(pos, tex, sound)

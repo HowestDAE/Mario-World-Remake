@@ -15,14 +15,15 @@ public:
 		Clap,
 		CheckPoint,
 		block,
+		pause,
 	};
 
-	SoundEffectManager();
+	explicit SoundEffectManager();
 	~SoundEffectManager();
 	SoundEffectManager(const SoundEffectManager& other) = delete; //Copy constructor afzetten (rule of three)
 	SoundEffectManager(SoundEffectManager&& other);
 
-	SoundEffect* GiveSound(const Sounds& sound);
+	SoundEffect* GiveSound(const Sounds& sound) const;
 
 	SoundEffectManager& operator=(const SoundEffectManager& rhs) = delete; // asignment= operator afzetten
 	SoundEffectManager& operator=(SoundEffectManager&& other);
@@ -36,5 +37,6 @@ protected:
 	SoundEffect* m_pClapSound;
 	SoundEffect* m_pCheckpointSound;
 	SoundEffect* m_pBreakSound;
+	SoundEffect* m_pPauseSound;
 };
 

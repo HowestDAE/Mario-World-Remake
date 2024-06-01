@@ -6,7 +6,7 @@ Koopa::Koopa(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
 	:Enemy::Enemy(pos,tex,sound)
 {
 	m_HP = 1;
-	m_SrcRect = Rectf(129, 51, 16, 15);
+	m_SrcRect = Rectf(129, 52, 16, 15);
 	m_LookingRight = true;
 }
 
@@ -110,5 +110,5 @@ void Koopa::Reset()
 
 void Koopa::Animate(float elapsedSec)
 {
-	m_SrcRect = Rectf(129, 51, 16, 15);
+	m_SrcRect = Rectf(129, 52, 16, 15);
 }

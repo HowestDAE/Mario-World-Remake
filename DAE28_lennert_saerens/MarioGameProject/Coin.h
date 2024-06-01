@@ -7,6 +7,10 @@ class Coin
 {
 public:
 	explicit Coin(const Point2f& pos, const Texture* coinTex, const SoundEffect* sound);
+	Coin(const Coin& other) = default; //Copy constructor afzetten (rule of three)
+	Coin(Coin&& other) = default;
+	Coin& operator=(const Coin& rhs) = default; // asignment= operator afzetten
+	Coin& operator=(Coin&& other) = default;
 	//Coin(const Coin& other) = delete; //Copy constructor afzetten (rule of three)
 
 	//virtual ~Coin();

@@ -43,7 +43,7 @@ PowerUp::PowerUp(const PowerUpType& powerup, const Point2f& pos, const Texture* 
 	if (m_Type == PowerUpType::Mushroom)
 	{
 		m_SrcRect = Rectf(69, 17, 16, 16);
-		m_Velocity = Vector2f(200.f, 0.f);
+		m_Velocity = Vector2f(30.f, 0.f);
 	}
 	else m_SrcRect = Rectf(89, 17, 16, 16);
 	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width, m_SrcRect.height);
@@ -166,7 +166,7 @@ bool PowerUp::Collect(const Mario* mario)
 	}
 }
 
-PowerUp::PowerUpType PowerUp::GetPowerUpType()
+PowerUp::PowerUpType PowerUp::GetPowerUpType() const
 {
 	return m_Type;
 }
@@ -189,6 +189,16 @@ void PowerUp::SetPowerUpType(const PowerUpType& type)
 	if (m_Changable)
 	{
 		m_Type = type;
+		if (m_Type == PowerUpType::Mushroom)
+		{
+			m_SrcRect = Rectf(69, 17, 16, 16);
+			m_Velocity = Vector2f(30.f, 0.f);
+		}
+		else
+		{
+			m_SrcRect = Rectf(89, 17, 16, 16);
+			m_Velocity = Vector2f(0.f, 0.f);
+		}
 	}
 }
 

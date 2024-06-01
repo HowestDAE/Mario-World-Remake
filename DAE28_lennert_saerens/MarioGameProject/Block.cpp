@@ -17,7 +17,7 @@ Block::Block(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
 
 }
 
-void Block::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, std::vector<Block*> blocks)
+void Block::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks)
 {
 	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2);
 
@@ -100,17 +100,17 @@ void Block::Reset()
 	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2);
 }
 
-bool Block::GetIsHit()
+bool Block::GetIsHit() const
 {
 	return m_IsHit;
 }
 
-bool Block::GetIsBroken()
+bool Block::GetIsBroken() const
 {
 	return m_IsBroken;
 }
 
-Rectf Block::GetBounds()
+Rectf Block::GetBounds()const
 {
 	return m_Bounds;
 }

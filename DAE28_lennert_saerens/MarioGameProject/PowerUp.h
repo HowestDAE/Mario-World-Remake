@@ -15,12 +15,12 @@ public:
 		Mushroom,
 		Flower
 	};
-	PowerUp(const Mario& mario, const Point2f& pos, const Texture* tex, const SoundEffect* sound, bool iscollectable);
-	PowerUp(const PowerUpType& powerup, const Point2f& pos, const Texture* tex, const SoundEffect* sound, bool iscollectable);
+	explicit PowerUp(const Mario& mario, const Point2f& pos, const Texture* tex, const SoundEffect* sound, bool iscollectable);
+	explicit PowerUp(const PowerUpType& powerup, const Point2f& pos, const Texture* tex, const SoundEffect* sound, bool iscollectable);
 	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, std::vector<Block*> blocks);
 	void Draw() const;
 	bool Collect(const Mario* mario);
-	PowerUpType GetPowerUpType();
+	PowerUpType GetPowerUpType() const;
 	void Reset();
 	void SetPowerUpType(const PowerUpType& type);
 	void SetIsCollectable(bool flag);

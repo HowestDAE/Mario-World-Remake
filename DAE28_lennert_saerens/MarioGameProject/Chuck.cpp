@@ -89,7 +89,7 @@ void Chuck::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 				}
 				m_Velocity.y += gravity;	
 				const Uint8* pStates = SDL_GetKeyboardState(nullptr);
-				if (pStates[SDL_SCANCODE_SPACE] && m_CanJump && m_JumpCooldown <=0.f && m_InitJump == false)
+				if ((pStates[SDL_SCANCODE_SPACE] || pStates[SDL_SCANCODE_LALT]) && m_CanJump && m_JumpCooldown <= 0.f && m_InitJump == false)
 				{
 					m_InitJump = true;
 					m_JumpTime = 0.f;

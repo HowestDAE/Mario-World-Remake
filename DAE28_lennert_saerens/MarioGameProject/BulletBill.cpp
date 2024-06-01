@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "BulletBill.h"
 #include "Mario.h"
+#include "FireBall.h"
+
+
 
 BulletBill::BulletBill(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
 	:Enemy::Enemy(pos, tex, sound)

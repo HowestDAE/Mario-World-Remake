@@ -8,6 +8,14 @@ class Enemy
 {
 public:
 	explicit Enemy(const Point2f& pos, const Texture* tex, const SoundEffect* sound);
+	virtual ~Enemy() = default;
+	Enemy(const Enemy& other) = default; //Copy constructor afzetten (rule of three)
+	Enemy(Enemy&& other) = default;
+	Enemy& operator=(const Enemy& rhs) = default; // asignment= operator afzetten
+	Enemy& operator=(Enemy&& other) = default;
+
+
+
 	virtual void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const Mario* mario);
 	virtual void Draw() const;
 	virtual void CheckHit(Mario* mario);

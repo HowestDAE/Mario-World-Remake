@@ -12,11 +12,11 @@ FireBall::FireBall(const Point2f& pos, const Vector2f& velocity, const Texture* 
 {
 }
 
-void FireBall::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms)
+void FireBall::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks)
 {
 	if (m_IsAlive)
 	{
-		const float gravity{ -7.f };
+		const float gravity{ -21.f };
 		const Point2f leftTop{ m_Pos.x + 1, m_Pos.y + m_Bounds.height };
 		const Point2f leftBottom{ m_Pos.x + 1, m_Pos.y };
 		const Point2f leftMiddle{ m_Pos.x + 1, m_Pos.y + m_Bounds.height / 2 };
@@ -36,6 +36,7 @@ void FireBall::Update(float elapsedSec, const std::vector<std::vector<Point2f>>&
 		m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2);
 		m_ElapsedSec += elapsedSec;
 
+		m_Velocity.y += gravity;
 
 
 		for (int idx{ 0 }; idx < landscape.size(); ++idx)
@@ -46,10 +47,6 @@ void FireBall::Update(float elapsedSec, const std::vector<std::vector<Point2f>>&
 			{
 				m_Velocity.y = 350.f;
 				m_Pos.y = hitInfo.intersectPoint.y + 1;
-			}
-			else
-			{
-				m_Velocity.y += gravity;
 			}
 			if ((utils::Raycast(collissionShape, lowerLeft, lowerMiddle, hitInfo)))
 			{
@@ -87,6 +84,32 @@ void FireBall::Update(float elapsedSec, const std::vector<std::vector<Point2f>>&
 			if (m_FrameNr >= 4) m_FrameNr = 0;
 		}
 	}
+	for (int idx{}; idx < blocks.size(); ++idx)
+	{
+		if (!blocks[idx]->GetIsBroken())
+		{
+			Rectf BlockRect{ blocks[idx]->GetBounds() };
+
+			Rectf topRect{ BlockRect.left + 5,BlockRect.bottom + ((BlockRect.height / 8) * 7),BlockRect.width - 10, BlockRect.height / 8};
+			Rectf leftRect{ BlockRect.left,BlockRect.bottom + 5,(BlockRect.width / 8) * 7 , BlockRect.height - 10 };
+			Rectf rightRect{ BlockRect.left + (BlockRect.width / 8) * 7  ,BlockRect.bottom + 5 ,(BlockRect.width / 8) * 7, BlockRect.height - 10 };
+
+			if (utils::IsOverlapping(m_Bounds, topRect))
+			{
+				m_Velocity.y = 350.f;
+				m_Pos.y = BlockRect.bottom + BlockRect.height + 1;
+			}
+			else  if (utils::IsOverlapping(m_Bounds, leftRect) && m_Velocity.x > 0)
+			{
+				m_IsAlive = false;
+
+			}
+			else  if (utils::IsOverlapping(m_Bounds, rightRect) && m_Velocity.x < 0)
+			{
+				m_IsAlive = false;
+			}
+		}
+	}
 }
 
 void FireBall::Draw() const
@@ -99,12 +122,12 @@ void FireBall::SetDead()
 	m_IsAlive = false;
 }
 
-Point2f FireBall::GetPos()
+Point2f FireBall::GetPos() const
 {
 	return m_Pos;
 }
 
-bool FireBall::GetIsAlive()
+bool FireBall::GetIsAlive() const
 {
 	return m_IsAlive;
 }

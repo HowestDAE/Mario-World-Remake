@@ -9,7 +9,7 @@ QBlock::QBlock(const Point2f& pos, const Texture* tex, const SoundEffect* sound,
 	m_CollectablePowerUp = false;
 }
 
-void QBlock::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, std::vector<Block*> blocks)
+void QBlock::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks)
 {
 	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2);
 	Animate(elapsedSec);
@@ -38,7 +38,7 @@ void QBlock::CheckHit(Mario* mario)
 			{
 				m_pContent->SetPowerUpType(PowerUp::PowerUpType::Mushroom);
 			}
-			else
+			else if (mario->GetPowerUpState() == Mario::PowerUpState::big || (mario->GetPowerUpState() == Mario::PowerUpState::fireflower))
 			{
 				m_pContent->SetPowerUpType(PowerUp::PowerUpType::Flower);
 			}

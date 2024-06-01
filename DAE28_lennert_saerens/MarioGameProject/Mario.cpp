@@ -1,15 +1,17 @@
 #include "pch.h"
 #include "Mario.h"
 #include "iostream"
+#include "FireBall.h"
 
-Mario::Mario(const Point2f& startingPos, const SoundEffect* hiteffect)
+
+Mario::Mario(const Point2f& startingPos)
 	:m_Pos{startingPos}
 	,m_Velocity{}
 	,m_WalkingState{WalkingState::none}
 	,m_LookingState{ LookingState::right }
 	,m_AccTime{}
 	,m_FrameNr{1}
-	,m_FrameTime{ 0.5f }
+	,m_FrameTime{ 0.22f }
 	, m_JumpTime{ 0.4f }
 	, m_SpinJumpTime{ 0.25f }
 	,m_TimeInAir{0}
@@ -22,16 +24,20 @@ Mario::Mario(const Point2f& startingPos, const SoundEffect* hiteffect)
 	,m_Invincible{false}
 	,m_InvinTimer{0}
 	,m_IFrames{1.f}
-	, m_pHitEffect{hiteffect}
 	,m_CheckpointHit{false}
+	,m_FinishHit{false}
+	,m_WinTimer{0}
+	,m_LevelClear{false}
 {
 	m_pSpritesheet = new Texture("mario-spritesheet2.png");
-	m_Bounds = Rectf(0, 0, GetCurrFrameRect().width*2, GetCurrFrameRect().height*2);
+	m_Bounds = Rectf(400, 110, GetCurrFrameRect().width*2, GetCurrFrameRect().height*2);
 	m_pJumpEffect = new SoundEffect("Sounds/smw_jump.wav");
 	m_pSpinJumpEffect = new SoundEffect("Sounds/smw_spin_jump.wav");
 	m_pDeathEffect = new SoundEffect( "Sounds/smw_lost_a_life.wav");
 	m_pFireBallTex = new Texture("FireBall.png");
 	m_pFireEffect = new SoundEffect("Sounds/smw_fireball.wav");
+	m_pHitEffect = new SoundEffect("Sounds/smw_pipeandhit.wav");
+	m_pWinEffect = new SoundEffect("Sounds/smw_course_clear.wav");
 }
 
 
@@ -82,15 +88,27 @@ Mario::~Mario()
 	m_pFireBallTex = nullptr;
 	delete m_pFireEffect;
 	m_pFireEffect = nullptr;
+	delete m_pHitEffect;
+	m_pHitEffect = nullptr;
+	delete m_pWinEffect;
+	m_pWinEffect = nullptr;
 	for (int idx{}; idx < m_pFireBalls.size(); ++idx)
 	{
 		if (m_pFireBalls[idx] != nullptr) delete m_pFireBalls[idx];
 		m_pFireBalls[idx] = nullptr;
 	}
+	/*m_pSpritesheet = new Texture("mario-spritesheet2.png");
+	m_Bounds = Rectf(0, 0, GetCurrFrameRect().width * 2, GetCurrFrameRect().height * 2);
+	m_pJumpEffect = new SoundEffect("Sounds/smw_jump.wav");
+	m_pSpinJumpEffect = new SoundEffect("Sounds/smw_spin_jump.wav");
+	m_pDeathEffect = new SoundEffect("Sounds/smw_lost_a_life.wav");
+	m_pFireBallTex = new Texture("FireBall.png");
+	m_pFireEffect = new SoundEffect("Sounds/smw_fireball.wav");
+	m_pHitEffect = new SoundEffect("Sounds/smw_pipeandhit.wav");*/
 }
 
 
-void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms)
+void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks)
 {
 
 	const float gravity{ -21.f };
@@ -226,7 +244,7 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 	{
 		if (m_pFireBalls[idx] != nullptr)
 		{
-			m_pFireBalls[idx]->Update(elapsedSec, landscape, platforms);
+			m_pFireBalls[idx]->Update(elapsedSec, landscape, platforms, blocks);
 			if (m_pFireBalls[idx]->GetIsAlive() == false)
 			{
 				delete m_pFireBalls[idx];
@@ -256,6 +274,30 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 		{
 			m_pFireBalls.pop_back();
 
+		}
+	}
+	if (m_FinishHit)
+	{
+		if (m_Pos.x < 4990 * 2)
+		{
+			if (m_Velocity.x <= 140.f && m_Velocity.x >= 0.f && m_IsOnGround == 1) m_Velocity.x += 1000.f * elapsedSec;
+			m_WalkingState = WalkingState::right;
+		}
+		else if (m_Pos.x > 4990 * 2 && m_WinTimer < 7.f)
+		{
+			m_WinTimer += elapsedSec;
+			m_WalkingState = WalkingState::none;
+
+		}
+		else if (m_Pos.x > 4990 * 2 && m_WinTimer > 7.f)
+		{
+			if (m_Velocity.x <= 140.f && m_Velocity.x >= 0.f && m_IsOnGround == 1) m_Velocity.x += 1000.f * elapsedSec;
+			m_WalkingState = WalkingState::right;
+		}
+		if (m_Pos.x > 5119 * 2)
+		{
+			ResetStart();
+			m_LevelClear = true;
 		}
 	}
 
@@ -329,102 +371,115 @@ void Mario::WalkLeft(float elapsedSec, const Uint8* pStates)
 
 void Mario::HandleMovement(float elapsedSec, const Uint8* pStates)
 {
-	// Aparte functions voor elke movement method want ze worden lang
-	if (m_IsAlive == true)
+	if (!m_FinishHit)
 	{
-		if (m_IsOnGround == 1)
-		{
-			m_WalkingState = WalkingState::none;
-			if (m_LookingState == LookingState::leftSpin) m_LookingState = LookingState::left;
-			if (m_LookingState == LookingState::rightSpin) m_LookingState = LookingState::right;
-		}
-		if (pStates[SDL_SCANCODE_DOWN])
-		{
-			m_WalkingState = WalkingState::down;
-
-		}
-		if (pStates[SDL_SCANCODE_UP])
-		{
-			m_WalkingState = WalkingState::up;
-		}
-		if (pStates[SDL_SCANCODE_RIGHT])
-		{
-			WalkRight(elapsedSec, pStates);
-		}
-		else if (pStates[SDL_SCANCODE_LEFT])
-		{
-			WalkLeft(elapsedSec, pStates);
-		}
-
-		/*if (pStates[SDL_SCANCODE_LSHIFT] && m_Mariostate == PowerUpState::fireflower)
-		{
-			ShootFireBall();
-		}*/
-
-		if (pStates[SDL_SCANCODE_SPACE])
+		// Aparte functions voor elke movement method want ze worden lang
+		if (m_IsAlive == true)
 		{
 			if (m_IsOnGround == 1)
 			{
-				m_pJumpEffect->Play(0);
-				m_IsOnGround = 0;
+				m_WalkingState = WalkingState::none;
+				if (m_LookingState == LookingState::leftSpin) m_LookingState = LookingState::left;
+				if (m_LookingState == LookingState::rightSpin) m_LookingState = LookingState::right;
+			}
+			if (pStates[SDL_SCANCODE_DOWN])
+			{
+				m_WalkingState = WalkingState::down;
+
+			}
+			if (pStates[SDL_SCANCODE_UP])
+			{
+				m_WalkingState = WalkingState::up;
+			}
+			if (pStates[SDL_SCANCODE_RIGHT])
+			{
+				WalkRight(elapsedSec, pStates);
+			}
+			else if (pStates[SDL_SCANCODE_LEFT])
+			{
+				WalkLeft(elapsedSec, pStates);
 			}
 
-			if (m_CanJump == 1)
+			/*if (pStates[SDL_SCANCODE_LSHIFT] && m_Mariostate == PowerUpState::fireflower)
 			{
-				m_Velocity.y = 400.f;
-				m_TimeInAir += elapsedSec;
-			}
+				ShootFireBall();
+			}*/
 
-		}
-
-		if (pStates[SDL_SCANCODE_LALT])
-		{
-			if (m_IsOnGround == 1)
+			if (pStates[SDL_SCANCODE_SPACE])
 			{
-				m_pSpinJumpEffect->Play(0);
-				m_IsOnGround = 0;
-				m_FrameNr = 0;
-				if (m_IsOnGround == 0 && m_LookingState == LookingState::left) m_LookingState = LookingState::leftSpin;
-				if (m_IsOnGround == 0 && m_LookingState == LookingState::right) m_LookingState = LookingState::rightSpin;
-				if (m_pFireBalls.size() < 1 && m_Mariostate == PowerUpState::fireflower)
+				if (m_IsOnGround == 1)
 				{
-					m_pFireBalls.push_back(new FireBall(m_Pos, Vector2f(-400.f, 0.f), m_pFireBallTex));
-					m_pFireBalls.push_back(new FireBall(m_Pos, Vector2f(400.f, 0.f), m_pFireBallTex));
+					m_pJumpEffect->Play(0);
+					m_IsOnGround = 0;
 				}
+
+				if (m_CanJump == 1)
+				{
+					m_Velocity.y = 400.f;
+					m_TimeInAir += elapsedSec;
+				}
+
 			}
 
-
-			if (m_CanJump == 1)
+			if (pStates[SDL_SCANCODE_LALT])
 			{
-				m_Velocity.y = 400.f;
-				m_TimeInAir += elapsedSec;
+				if (m_IsOnGround == 1)
+				{
+					m_pSpinJumpEffect->Play(0);
+					m_IsOnGround = 0;
+					m_FrameNr = 0;
+					if (m_IsOnGround == 0 && m_LookingState == LookingState::left) m_LookingState = LookingState::leftSpin;
+					if (m_IsOnGround == 0 && m_LookingState == LookingState::right) m_LookingState = LookingState::rightSpin;
+					if (m_pFireBalls.size() < 1 && m_Mariostate == PowerUpState::fireflower)
+					{
+						m_pFireBalls.push_back(new FireBall(m_Pos, Vector2f(-400.f, 0.f), m_pFireBallTex));
+						m_pFireBalls.push_back(new FireBall(m_Pos, Vector2f(400.f, 0.f), m_pFireBallTex));
+					}
+				}
+
+
+				if (m_CanJump == 1)
+				{
+					m_Velocity.y = 400.f;
+					m_TimeInAir += elapsedSec;
+				}
+
+				if (m_TimeInAir >= m_SpinJumpTime)
+				{
+					m_CanJump = 0;
+				}
+				m_FrameTime = 0.05f;
 			}
 
-			if (m_TimeInAir >= m_SpinJumpTime)
+			/*if (m_AccTime >= m_FrameTime)
+			{
+				m_AccTime = 0;
+				++m_FrameNr;
+			}*/
+			if (m_IsOnGround == 0) (m_WalkingState = WalkingState::midAir);
+			if (m_TimeInAir >= m_JumpTime)
 			{
 				m_CanJump = 0;
 			}
-			m_FrameTime = 0.05f;
+			/*if ((pStates[SDL_SCANCODE_DOWN] || pStates[SDL_SCANCODE_UP] || pStates[SDL_SCANCODE_LEFT] || pStates[SDL_SCANCODE_RIGHT] )==0)
+			{
+				m_WalkingState = WalkingState::none;
+			}*/
 		}
-
-		/*if (m_AccTime >= m_FrameTime)
-		{
-			m_AccTime = 0;
-			++m_FrameNr;
-		}*/
-		if (m_IsOnGround == 0) (m_WalkingState = WalkingState::midAir);
-		if (m_TimeInAir >= m_JumpTime)
-		{
-			m_CanJump = 0;
-		}
-		/*if ((pStates[SDL_SCANCODE_DOWN] || pStates[SDL_SCANCODE_UP] || pStates[SDL_SCANCODE_LEFT] || pStates[SDL_SCANCODE_RIGHT] )==0)
-		{
-			m_WalkingState = WalkingState::none;
-		}*/
 	}
 }
 
 
+
+bool Mario::GetFinishHit() const
+{
+	return m_FinishHit;
+}
+
+bool Mario::GetLevelClear() const
+{
+	return m_LevelClear;
+}
 
 Rectf Mario::GetCurrFrameRect() const
 {
@@ -589,6 +644,11 @@ void Mario::Animate(float elapsedSec)
 					else if (m_FrameNr % 4 == 3) m_FrameRect = Rectf(209, 20, 14, 20);
 				}
 			}
+			
+			if (m_Pos.x > 4990 * 2 && m_WinTimer > 4.f && m_WinTimer < 7.f && m_FinishHit)
+			{
+				m_FrameRect = Rectf(89, 57, 15, 14);
+			}
 
 			
 		}
@@ -684,6 +744,10 @@ void Mario::Animate(float elapsedSec)
 					else if (m_FrameNr % 4 == 3) m_FrameRect = Rectf(208, 104, 15, 28);
 				}
 			}
+			if (m_Pos.x > 4990 * 2 && m_WinTimer > 4.f && m_WinTimer < 7.f && m_FinishHit)
+			{
+				m_FrameRect = Rectf(328, 144, 16, 28);
+			}
 		}
 		
 		else if (m_Mariostate == Mario::PowerUpState::fireflower)
@@ -773,6 +837,10 @@ void Mario::Animate(float elapsedSec)
 					else if (m_FrameNr % 4 == 3) m_FrameRect = Rectf(208, 260, 15, 28);
 				}
 			}
+			if (m_Pos.x > 4990 * 2 && m_WinTimer > 4.f && m_WinTimer < 7.f && m_FinishHit)
+			{
+				m_FrameRect = Rectf(8, 224, 16, 28);
+			}
 		}
 	}
 	else
@@ -841,6 +909,7 @@ void Mario::TakeDamage()
 				m_pDeathEffect->Play(0);
 
 			}
+
 		}
 	}
 }
@@ -848,7 +917,7 @@ void Mario::TakeDamage()
 void Mario::Bounce(float ypos)
 {
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
-	if (pStates[SDL_SCANCODE_SPACE])
+	if (pStates[SDL_SCANCODE_SPACE] || pStates[SDL_SCANCODE_LALT])
 	{
 		m_CanJump = true;
 		m_TimeInAir = 0;
@@ -875,6 +944,32 @@ void Mario::Reset()
 	}
 	m_Mariostate = PowerUpState::small;
 	m_Velocity.y = 0;
+}
+
+void Mario::ResetStart()
+{
+	m_Pos = Point2f(50, 200);
+	m_Velocity = Vector2f(0, 0);
+	m_WalkingState = WalkingState::none;
+	m_LookingState = LookingState::right;
+	m_AccTime = 0;
+	m_FrameNr = 1;
+	m_FrameTime = 0.22f;
+	m_JumpTime = 0.4f;
+	m_SpinJumpTime = 0.25f;
+	m_TimeInAir = 0;
+	m_Mariostate = PowerUpState::small;
+	m_CanJump = 1;
+	m_IsOnGround = 0;
+	m_FrameRect = Rectf(328, 19, 16, 19);
+	m_IsAlive = 1;
+	m_CoinCount = 0;
+	m_Invincible = false;
+	m_InvinTimer = 0;
+	m_IFrames = 1.f;
+	m_CheckpointHit = false;
+	m_FinishHit = false;
+	m_WinTimer = 0;
 }
 
 void Mario::SetCheckpointHit()
@@ -924,23 +1019,57 @@ void Mario::SetCanJump(bool flag)
 	m_CanJump = flag;
 }
 
+void Mario::SetFinishHit(bool flag)
+{
+	m_FinishHit = flag;
+	if (m_FinishHit)
+	{
+		m_pWinEffect->Play(0);
+	}
+}
+
+void Mario::SetLevelClear(bool flag)
+{
+	m_LevelClear = flag;
+}
+
 void Mario::OnKeyUpEvent(const SDL_KeyboardEvent& e)
 {
-	switch (e.keysym.sym)
+	if (!m_FinishHit)
 	{
-	case SDLK_SPACE:
-	case SDLK_LALT:
-		m_CanJump = false;
-		break;
+		switch (e.keysym.sym)
+		{
+		case SDLK_SPACE:
+		case SDLK_LALT:
+			m_CanJump = false;
+			break;
+		}
 	}
 }
 
 void Mario::OnKeyDownEvent(const SDL_KeyboardEvent& e)
 {
-	switch (e.keysym.sym)
+	if (!m_FinishHit)
 	{
-	case SDLK_LSHIFT:
-		ShootFireBall();
-		break;
+		switch (e.keysym.sym)
+		{
+		case SDLK_LSHIFT:
+			ShootFireBall();
+			break;
+		}
 	}
+}
+
+void Mario::AnimateTitle(float elapsedSec)
+{
+	m_AccTime += elapsedSec;
+	if (m_AccTime >= m_FrameTime)
+	{
+		++m_FrameNr;
+		m_AccTime = 0;
+		if (m_FrameNr % 2 == 1) m_FrameRect = Rectf(288, 57, 15, 14);
+		else if (m_FrameNr % 2 == 0) m_FrameRect = Rectf(209, 20, 14, 20);
+	}
+	m_Bounds = Rectf(400, 110, GetCurrFrameRect().width * 2, GetCurrFrameRect().height * 2);
+
 }

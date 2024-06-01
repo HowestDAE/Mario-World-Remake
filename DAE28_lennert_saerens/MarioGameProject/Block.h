@@ -2,18 +2,22 @@
 #include "Texture.h"
 #include "SoundEffect.h"
 #include "Mario.h"
-
 class Block 
 {
 public:
-	Block(const Point2f& pos, const Texture* tex, const SoundEffect* sound);
-	virtual void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, std::vector<Block*> blocks);
+	explicit Block(const Point2f& pos, const Texture* tex, const SoundEffect* sound);
+	Block(const Block& other) = default;
+	Block(Block&& other) = default;
+	Block& operator=(const Block& rhs) = default; 
+	Block& operator=(Block&& other) = default;
+
+	virtual void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks);
 	virtual void Draw() const;
 	virtual void CheckHit(Mario* mario);
 	virtual void Reset();
-	virtual bool GetIsHit();
-	virtual bool GetIsBroken();
-	virtual Rectf GetBounds();
+	virtual bool GetIsHit() const;
+	virtual bool GetIsBroken() const;
+	virtual Rectf GetBounds() const;
 protected:
 	void Animate(float elapsedSec);
 

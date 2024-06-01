@@ -8,7 +8,7 @@
 class Finish final
 {
 public:
-	Finish(const Point2f& pos, const Texture* tex, const SoundEffect* sound);
+	explicit Finish(const Point2f& pos, const Texture* tex, const SoundEffect* sound);
 	void Draw() const;
 	void CheckIsHit(Mario* mario);
 	void Update(float elapsedSec);

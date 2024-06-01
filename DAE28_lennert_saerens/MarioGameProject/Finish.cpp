@@ -19,11 +19,23 @@ Finish::Finish(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
 void Finish::Draw() const
 {
 	m_pTexture->Draw(m_PoleBounds, m_SrcRectPole);
-	m_pTexture->Draw(m_Bounds, m_SrcRectBar);
+	if (!m_IsHit)
+	{
+		m_pTexture->Draw(m_Bounds, m_SrcRectBar);
+	}
 }
 
 void Finish::CheckIsHit(Mario* mario)
 {
+	if (!mario->GetFinishHit())
+	{
+		if (utils::IsOverlapping(mario->GetBounds(), m_Bounds))
+		{
+			m_IsHit = true;
+			mario->SetFinishHit(true);
+			mario->SetVelX(0);
+		}
+	}
 }
 
 void Finish::Update(float elapsedSec)

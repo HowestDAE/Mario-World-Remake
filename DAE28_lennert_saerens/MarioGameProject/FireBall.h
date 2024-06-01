@@ -1,20 +1,21 @@
 #pragma once
 #include "utils.h"
 #include "Texture.h"
+#include "Block.h"
 
 class FireBall final
 {
 public:
-	FireBall(const Point2f& pos,const Vector2f& velocity, const Texture* tex );
+	explicit FireBall(const Point2f& pos,const Vector2f& velocity, const Texture* tex );
 	//FireBall(const FireBall& other) = delete; //Copy constructor afzetten (rule of three)
 	//FireBall(FireBall&& other);
 	//~FireBall();
 
-	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms);
+	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks);
 	void Draw()const;
 	void SetDead();
-	Point2f GetPos();
-	bool GetIsAlive();
+	Point2f GetPos() const;
+	bool GetIsAlive() const;
 	Rectf GetBounds() const;
 
 	//FireBall& operator=(const FireBall& rhs) = delete; // asignment= operator afzetten

@@ -12,6 +12,7 @@ SoundEffectManager::SoundEffectManager()
 	m_pClapSound = new SoundEffect("Sounds/smw_bubble_pop.wav");
 	m_pCheckpointSound = new SoundEffect("Sounds/smw_midway_gate.wav");
 	m_pBreakSound = new SoundEffect("Sounds/smw_break_block.wav");
+	m_pPauseSound = new SoundEffect("Sounds/smw_pause.wav");
 	
 }
 
@@ -35,6 +36,8 @@ SoundEffectManager::~SoundEffectManager()
 	m_pCheckpointSound = nullptr;
 	delete m_pBreakSound;
 	m_pBreakSound = nullptr;
+	delete m_pPauseSound;
+	m_pPauseSound = nullptr;
 }
 
 SoundEffectManager::SoundEffectManager(SoundEffectManager&& other)
@@ -47,7 +50,7 @@ SoundEffectManager::SoundEffectManager(SoundEffectManager&& other)
 	other.m_pPowerUpSound = nullptr;
 }
 
-SoundEffect* SoundEffectManager::GiveSound(const Sounds& sound)
+SoundEffect* SoundEffectManager::GiveSound(const Sounds& sound) const
 {
 	if (sound == Sounds::coins) return m_pCoinSound;
 	else if (sound == Sounds::dragonCoins) return m_pDragonCoinSound;
@@ -58,6 +61,7 @@ SoundEffect* SoundEffectManager::GiveSound(const Sounds& sound)
 	else if (sound == Sounds::Clap) return m_pClapSound;
 	else if (sound == Sounds::CheckPoint) return m_pCheckpointSound;
 	else if (sound == Sounds::block) return m_pBreakSound;
+	else if (sound == Sounds::pause) return m_pPauseSound;
 }
 
 SoundEffectManager& SoundEffectManager::operator=(SoundEffectManager&& other)
