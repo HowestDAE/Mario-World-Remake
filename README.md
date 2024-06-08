@@ -68,7 +68,7 @@ This section gives a clear and detailed overview of which parts of the original 
 * The first level of the game.
 
 ### What I will probably make as well:
-* A few more levels that i think are interesting.
+* A pipe that leads to a sublevel in the level.
 * More enemy types.
 
 ### What I plan to create if I have enough time left:
