@@ -284,6 +284,8 @@ void Level::Update(float elapsedSec) noexcept
 			m_pBackgroundMusic->Stop();
 			m_Timer = 300;
 			m_pTitleMusic->Play(1);
+			m_pCheckpoint->Reset();
+
 		}
 		if (!m_pMario->GetFinishHit())
 		{
