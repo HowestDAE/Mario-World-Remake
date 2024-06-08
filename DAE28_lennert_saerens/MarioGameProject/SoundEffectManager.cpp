@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "SoundEffectManager.h"
 
-SoundEffectManager::SoundEffectManager()
+SoundEffectManager::SoundEffectManager() noexcept
 {
 	m_pCoinSound = new SoundEffect("Sounds/smw_coin.wav");
 	m_pDragonCoinSound = new SoundEffect("Sounds/smw_dragon_coin.wav");
@@ -17,8 +17,8 @@ SoundEffectManager::SoundEffectManager()
 	
 }
 
-SoundEffectManager::~SoundEffectManager()
-{
+SoundEffectManager::~SoundEffectManager() noexcept
+{ 
 	delete m_pCoinSound;
 	m_pCoinSound = nullptr;
 	delete m_pDragonCoinSound;
@@ -43,17 +43,44 @@ SoundEffectManager::~SoundEffectManager()
 	m_pCannonSound = nullptr;
 }
 
-SoundEffectManager::SoundEffectManager(SoundEffectManager&& other)
+SoundEffectManager::SoundEffectManager(SoundEffectManager&& other) noexcept
 	:m_pCoinSound{ std::move(other.m_pCoinSound) }
 	, m_pDragonCoinSound{ std::move(other.m_pDragonCoinSound) }
 	, m_pPowerUpSound{ std::move(other.m_pPowerUpSound) }
+	, m_pStompSound{std::move(other.m_pStompSound)}
+	, m_pSpinStompSound{std::move(other.m_pSpinStompSound)}
+	, m_pPipeHitSound{std::move(other.m_pPipeHitSound)}
+	, m_pClapSound{std::move(other.m_pClapSound)}
+	, m_pCheckpointSound{std::move(other.m_pCheckpointSound)}
+	, m_pBreakSound{std::move(other.m_pBreakSound)}
+	, m_pPauseSound{std::move(other.m_pPauseSound)}
+	, m_pCannonSound{std::move(other.m_pCannonSound)}
+//SoundEffect* m_pCoinSound;
+//SoundEffect* m_pDragonCoinSound;
+//SoundEffect* m_pPowerUpSound;
+//SoundEffect* m_pStompSound;
+//SoundEffect* m_pSpinStompSound;
+//SoundEffect* m_pPipeHitSound;
+//SoundEffect* m_pClapSound;
+//SoundEffect* m_pCheckpointSound;
+//SoundEffect* m_pBreakSound;
+//SoundEffect* m_pPauseSound;
+//SoundEffect* m_pCannonSound;
 {
 	other.m_pCoinSound = nullptr;
 	other.m_pDragonCoinSound = nullptr;
 	other.m_pPowerUpSound = nullptr;
+	other.m_pStompSound = nullptr;
+	other.m_pSpinStompSound = nullptr;
+	other.m_pPipeHitSound = nullptr;
+	other.m_pClapSound = nullptr;
+	other.m_pCheckpointSound = nullptr;
+	other.m_pBreakSound = nullptr;
+	other.m_pPauseSound = nullptr;
+	other.m_pCannonSound = nullptr;
 }
 
-SoundEffect* SoundEffectManager::GiveSound(const Sounds& sound) const
+SoundEffect* SoundEffectManager::GiveSound(const Sounds& sound) const noexcept
 {
 	if (sound == Sounds::coins) return m_pCoinSound;
 	else if (sound == Sounds::dragonCoins) return m_pDragonCoinSound;
@@ -68,17 +95,33 @@ SoundEffect* SoundEffectManager::GiveSound(const Sounds& sound) const
 	else if (sound == Sounds::cannon) return m_pCannonSound;
 }
 
-SoundEffectManager& SoundEffectManager::operator=(SoundEffectManager&& other)
+SoundEffectManager& SoundEffectManager::operator=(SoundEffectManager&& other) noexcept
 {
 	if (&other != this)
 	{
 		m_pCoinSound = std::move(other.m_pCoinSound);
 		m_pDragonCoinSound = std::move(other.m_pDragonCoinSound);
 		m_pPowerUpSound = std::move(other.m_pPowerUpSound);
+		m_pStompSound = std::move(other.m_pStompSound);
+		m_pSpinStompSound = std::move(other.m_pSpinStompSound);
+		m_pPipeHitSound = std::move(other.m_pPipeHitSound);
+		m_pClapSound = std::move(other.m_pClapSound);
+		m_pCheckpointSound = std::move(other.m_pCheckpointSound);
+		m_pBreakSound = std::move(other.m_pBreakSound);
+		m_pPauseSound = std::move(other.m_pPauseSound);
+		m_pCannonSound = std::move(other.m_pCannonSound);
 
 		other.m_pCoinSound = nullptr;
 		other.m_pDragonCoinSound = nullptr;
 		other.m_pPowerUpSound = nullptr;
+		other.m_pStompSound = nullptr;
+		other.m_pSpinStompSound = nullptr;
+		other.m_pPipeHitSound = nullptr;
+		other.m_pClapSound = nullptr;
+		other.m_pCheckpointSound = nullptr;
+		other.m_pBreakSound = nullptr;
+		other.m_pPauseSound = nullptr;
+		other.m_pCannonSound = nullptr;
 	}
 
 	return *this;

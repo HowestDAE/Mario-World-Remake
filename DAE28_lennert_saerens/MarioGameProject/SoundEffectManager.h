@@ -19,15 +19,15 @@ public:
 		cannon,
 	};
 
-	explicit SoundEffectManager();
-	~SoundEffectManager();
+	explicit SoundEffectManager() noexcept;
+	~SoundEffectManager() noexcept;
 	SoundEffectManager(const SoundEffectManager& other) = delete; //Copy constructor afzetten (rule of three)
-	SoundEffectManager(SoundEffectManager&& other);
+	SoundEffectManager(SoundEffectManager&& other) noexcept;
 
-	SoundEffect* GiveSound(const Sounds& sound) const;
+	SoundEffect* GiveSound(const Sounds& sound) const noexcept;
 
 	SoundEffectManager& operator=(const SoundEffectManager& rhs) = delete; // asignment= operator afzetten
-	SoundEffectManager& operator=(SoundEffectManager&& other);
+	SoundEffectManager& operator=(SoundEffectManager&& other) noexcept;
 protected:
 	SoundEffect* m_pCoinSound;
 	SoundEffect* m_pDragonCoinSound;

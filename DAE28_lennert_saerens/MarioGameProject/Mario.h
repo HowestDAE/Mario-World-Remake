@@ -28,68 +28,71 @@ public:
 		big,
 		fireflower
 	};
-	explicit Mario(const Point2f& startingPos);
+	explicit Mario(const Point2f& startingPos) noexcept;
 	Mario(const Mario& other) = delete; //Copy constructor afzetten (rule of three)
-	Mario(Mario&& other);
-	~Mario();
-	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks);
-	void Draw() const;
-	void DrawUI(const Rectf& vieuwPort) const;
-	void HandleMovement(float elapsedSec, const Uint8* pStates) ;
-	void OnKeyUpEvent(const SDL_KeyboardEvent& e);
-	void OnKeyDownEvent(const SDL_KeyboardEvent& e);
-	void AnimateTitle(float elapsedSec);
+	Mario(Mario&& other) noexcept;
+	~Mario() noexcept;
+	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks) noexcept;
+	void Draw() const noexcept;
+	void DrawUI(const Rectf& vieuwPort) const noexcept;
+	void HandleMovement(float elapsedSec, const Uint8* pStates) noexcept;
+	void OnKeyUpEvent(const SDL_KeyboardEvent& e) noexcept;
+	void OnKeyDownEvent(const SDL_KeyboardEvent& e) noexcept;
+	void AnimateTitle(float elapsedSec) noexcept;
 
 
-	void Grow(const PowerUp::PowerUpType& type);
-	void AddCoin();
-	bool GetIsAlive() const;
-	void TakeDamage();
-	void Bounce(float ypos);
-	void Reset();
-	void ResetStart();
-	void SetCheckpointHit();
-	void SetVel(const Vector2f& vel);
-	void SetVelX(const float vel);
-	void SetVelY(const float vel);
-	void SetPosX(const float pos);
-	void SetPosY(const float pos);
-	void SetIsOnGround();
-	void SetCanJump(bool flag);
-	void SetFinishHit(bool flag);
-	void SetLevelClear(bool flag);
-	void SetCanMove(bool flag);
-	void SetDead();
-	void AddPoints(int points);
+	void Grow(const PowerUp::PowerUpType& type) noexcept;
+	void AddCoin() noexcept;
+	bool GetIsAlive() const noexcept;
+	void TakeDamage() noexcept;
+	void Bounce(float ypos) noexcept;
+	void Reset() noexcept;
+	void ResetStart() noexcept;
+	void SetCheckpointHit() noexcept;
+	void SetVel(const Vector2f& vel) noexcept;
+	void SetVelX(const float vel) noexcept;
+	void SetVelY(const float vel) noexcept;
+	void SetPosX(const float pos) noexcept;
+	void SetPosY(const float pos) noexcept;
+	void SetIsOnGround() noexcept;
+	void SetCanJump(bool flag) noexcept;
+	void SetFinishHit(bool flag) noexcept;
+	void SetLevelClear(bool flag) noexcept;
+	void SetCanMove(bool flag) noexcept;
+	void SetDead() noexcept;
+	void AddPoints(int points) noexcept;
 
-	bool GetFinishHit() const;
-	bool GetLevelClear() const;
-	Rectf GetCurrFrameRect() const;
-	Point2f GetPos() const;
-	Rectf GetBounds() const;
-	Vector2f GetVel() const;
-	PowerUpState GetPowerUpState() const;
-	LookingState GetState() const;
-	std::vector<FireBall*> GetFireBalls() const;
+	bool GetFinishHit() const noexcept;
+	bool GetLevelClear() const noexcept;
+	Rectf GetCurrFrameRect() const noexcept;
+	Point2f GetPos() const noexcept;
+	Rectf GetBounds() const noexcept;
+	Vector2f GetVel() const noexcept;
+	PowerUpState GetPowerUpState() const noexcept;
+	LookingState GetState() const noexcept;
+	bool GetCheckpointHit() const noexcept;
+	int GetLivesAmount() const noexcept;
+	std::vector<FireBall*> GetFireBalls() const noexcept;
 
 	Mario& operator=(const Mario& rhs) = delete; // asignment= operator afzetten
-	Mario& operator=(Mario&& other);
+	Mario& operator=(Mario&& other) noexcept;
 
 private:
-	void WalkRight(float elapsedSec, const Uint8* pStates);
-	void WalkLeft(float elapsedSec, const Uint8* pStates);
-	void ShootFireBall();
-	void Animate(float elapsedSec);
+	void WalkRight(float elapsedSec, const Uint8* pStates) noexcept;
+	void WalkLeft(float elapsedSec, const Uint8* pStates) noexcept;
+	void ShootFireBall() noexcept;
+	void Animate(float elapsedSec) noexcept;
 
-	Point2f m_Pos;
-	Vector2f m_Velocity;
-	Texture* m_pSpritesheet;
-	Texture* m_pFireBallTex;
+	
 	/*Texture* m_pLivesTex;
 	Texture* m_pLivesAmountTex;
 	Texture* m_pCoinAmountTex;
 	Texture* m_pCoinStringTex;
 	Texture* m_pPointsStringTex;*/
+	Point2f m_Pos;
+	Vector2f m_Velocity;
+	Texture* m_pSpritesheet;
+	Texture* m_pFireBallTex;
 	Rectf m_Bounds;
 	PowerUpState m_Mariostate;
 	WalkingState m_WalkingState;

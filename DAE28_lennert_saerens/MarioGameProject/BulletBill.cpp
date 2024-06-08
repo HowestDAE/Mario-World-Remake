@@ -5,7 +5,7 @@
 
 
 
-BulletBill::BulletBill(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
+BulletBill::BulletBill(const Point2f& pos, const Texture* tex, const SoundEffect* sound) noexcept
 	:Enemy::Enemy(pos, tex, sound)
 {
 	m_HP = 1;
@@ -15,7 +15,7 @@ BulletBill::BulletBill(const Point2f& pos, const Texture* tex, const SoundEffect
 	m_LookingRight = true;
 }
 
-void BulletBill::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario)
+void BulletBill::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario) noexcept
 {
 	
 	if (m_Pos.x - mario->GetPos().x <= 500.f && mario->GetPos().x - m_Pos.x >= -500.f)
@@ -39,7 +39,7 @@ void BulletBill::Update(float elapsedSec, const std::vector<std::vector<Point2f>
 }
 
 
-void BulletBill::CheckHit(Mario* mario)
+void BulletBill::CheckHit(Mario* mario) noexcept
 {
 	if (m_DeathAnimation == false)
 	{
@@ -83,7 +83,7 @@ void BulletBill::CheckHit(Mario* mario)
 	}
 }
 
-void BulletBill::Reset()
+void BulletBill::Reset() noexcept
 {
 	
 		m_Pos = m_OriginalPos;

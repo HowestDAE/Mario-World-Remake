@@ -3,29 +3,32 @@
 #include "SoundEffect.h"
 #include <cassert>
 
-EnemyManager::EnemyManager(Texture* tex)
+EnemyManager::EnemyManager(Texture* tex) noexcept
 	:m_pTexture{tex}
 {
 }
 
-EnemyManager::EnemyManager(EnemyManager&& other)
+EnemyManager::EnemyManager(EnemyManager&& other) noexcept
 	:m_pTexture{ std::move(other.m_pTexture) }
 	,m_pEnemies{std::move(other.m_pEnemies)}
 {
 	other.m_pTexture = nullptr;
-
+	for (int idx{}; idx < m_pEnemies.size(); ++idx)
+	{
+		m_pEnemies[idx] = nullptr;
+	}
 }
 
-EnemyManager::~EnemyManager()
+EnemyManager::~EnemyManager() noexcept
 {
-	for (int idx{}; idx < m_pEnemies.size(); ++idx)
+	for (int idx{}; idx < m_pEnemies.size(); ++idx) 
 	{
 		delete m_pEnemies[idx];
 		m_pEnemies[idx] = nullptr;
 	}
 }
 
-void EnemyManager::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario)
+void EnemyManager::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario) noexcept
 {
 	for (int idx{}; idx < m_pEnemies.size(); ++idx)
 	{
@@ -34,7 +37,7 @@ void EnemyManager::Update(float elapsedSec, const std::vector<std::vector<Point2
 	}
 }
 
-void EnemyManager::Draw() const
+void EnemyManager::Draw() const noexcept
 {
 	for (int idx{}; idx < m_pEnemies.size();++idx)
 	{
@@ -42,7 +45,7 @@ void EnemyManager::Draw() const
 	}
 }
 
-void EnemyManager::PushBackEnemy(const Point2f& pos, const EnemyType& enemy, const SoundEffect* sound) 
+void EnemyManager::PushBackEnemy(const Point2f& pos, const EnemyType& enemy, const SoundEffect* sound)
 {
 	assert(enemy != EnemyManager::EnemyType::PianhaPlant);
 	assert(enemy != EnemyManager::EnemyType::Chuck);
@@ -77,7 +80,7 @@ void EnemyManager::PushBackEnemy(const Point2f& pos, const EnemyType& enemy, con
 	}
 }
 
-void EnemyManager::Reset()
+void EnemyManager::Reset() noexcept
 {
 	for (int idx{}; idx < m_pEnemies.size(); ++idx)
 	{
@@ -85,11 +88,16 @@ void EnemyManager::Reset()
 	}
 }
 
-EnemyManager& EnemyManager::operator=(EnemyManager&& other)
+EnemyManager& EnemyManager::operator=(EnemyManager&& other) noexcept
 {
 	m_pTexture = std::move(other.m_pTexture);
 	m_pEnemies = std::move(other.m_pEnemies);
 
 	other.m_pTexture = nullptr;
-	return other;
+	other.m_pTexture = nullptr;
+	for (int idx{}; idx < m_pEnemies.size(); ++idx)
+	{
+		m_pEnemies[idx] = nullptr;
+	}
+	return *this;
 }

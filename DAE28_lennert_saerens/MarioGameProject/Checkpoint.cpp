@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Checkpoint.h"
 
-Checkpoint::Checkpoint(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
+Checkpoint::Checkpoint(const Point2f& pos, const Texture* tex, const SoundEffect* sound) noexcept
 	:m_IsHit{false}
 	,m_Pos{pos}
 	,m_pSoundEffect{sound}
@@ -11,13 +11,12 @@ Checkpoint::Checkpoint(const Point2f& pos, const Texture* tex, const SoundEffect
 
 }
 
-void Checkpoint::Draw() const
+void Checkpoint::Draw() const noexcept
 {
 	m_pTexture->Draw(m_Bounds, m_SrcRect);
 }
 
-void Checkpoint::CheckIsHit(Mario* mario)
-{
+void Checkpoint::CheckIsHit(Mario* mario)noexcept {
 	if (m_IsHit == false)
 	{
 		if (utils::IsOverlapping(mario->GetBounds(), m_Bounds))
@@ -28,9 +27,13 @@ void Checkpoint::CheckIsHit(Mario* mario)
 			m_pSoundEffect->Play(0);
 		}
 	}
+	if (mario->GetCheckpointHit())
+	{
+		m_IsHit = true;
+	}
 }
 
-void Checkpoint::Update()
+void Checkpoint::Update() noexcept
 {
 	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2);
 
@@ -43,4 +46,10 @@ void Checkpoint::Update()
 		m_SrcRect = Rectf(33, 0, 32, 32);
 
 	}
+
+}
+
+void Checkpoint::Reset() noexcept
+{
+	m_IsHit = false;
 }

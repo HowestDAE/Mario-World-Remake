@@ -6,7 +6,7 @@
 int Coin::m_CurrFrame{ 0 };
 
 
-Coin::Coin(const Point2f& pos, const Texture* coinTex, const SoundEffect* sound)
+Coin::Coin(const Point2f& pos, const Texture* coinTex, const SoundEffect* sound) noexcept
 	:m_IsCollected{ false }
 	, m_FrameTime{ 0.3f }
 	, m_ElapsedSec{}
@@ -21,8 +21,8 @@ Coin::Coin(const Point2f& pos, const Texture* coinTex, const SoundEffect* sound)
 //	m_pCoinSound = nullptr;
 //	m_pCoinTex = nullptr;
 //}
-
-void Coin::Draw() const
+ 
+void Coin::Draw() const noexcept
 {
 	if (m_IsCollected == false)
 	{
@@ -31,7 +31,7 @@ void Coin::Draw() const
 	}
 }
 
-void Coin::Update(float elapsedSec)
+void Coin::Update(float elapsedSec) noexcept
 {
 	
 	m_ElapsedSec += elapsedSec;
@@ -45,7 +45,7 @@ void Coin::Update(float elapsedSec)
 	
 }
 
-void Coin::Animate()
+void Coin::Animate() noexcept
 {
 	if (m_IsCollected == false)
 	{
@@ -56,7 +56,7 @@ void Coin::Animate()
 	}
 }
 
-void Coin::Collect(Mario* mario)
+void Coin::Collect(Mario* mario) noexcept
 {
 	if (utils::IsOverlapping(Rectf{ m_Pos.x-m_SrcRect.width, m_Pos.y-m_SrcRect.height, m_SrcRect.width * 2, m_SrcRect.height * 2 }, mario->GetBounds())&& m_IsCollected == false)
 	{
@@ -67,7 +67,7 @@ void Coin::Collect(Mario* mario)
 	}
 }
 
-void Coin::Reset()
+void Coin::Reset() noexcept
 {
 	m_IsCollected = false;
 }

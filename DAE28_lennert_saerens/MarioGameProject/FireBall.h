@@ -6,17 +6,17 @@
 class FireBall final
 {
 public:
-	explicit FireBall(const Point2f& pos,const Vector2f& velocity, const Texture* tex );
+	explicit FireBall(const Point2f& pos,const Vector2f& velocity, const Texture* tex ) noexcept;
 	//FireBall(const FireBall& other) = delete; //Copy constructor afzetten (rule of three)
 	//FireBall(FireBall&& other);
 	//~FireBall();
 
-	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks);
-	void Draw()const;
-	void SetDead();
-	Point2f GetPos() const;
-	bool GetIsAlive() const;
-	Rectf GetBounds() const;
+	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks) noexcept;
+	void Draw()const noexcept;
+	void SetDead() noexcept;
+	Point2f GetPos() const noexcept;
+	bool GetIsAlive() const noexcept;
+	Rectf GetBounds() const noexcept;
 
 	//FireBall& operator=(const FireBall& rhs) = delete; // asignment= operator afzetten
 	//FireBall& operator=(FireBall&& other);

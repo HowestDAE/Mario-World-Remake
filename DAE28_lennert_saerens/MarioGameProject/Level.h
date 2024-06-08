@@ -20,25 +20,25 @@ class Pipe;
 class Level final
 {
 public:
-	Level(int levelNr, const Texture* levelTex, const std::vector<std::vector<Point2f>> landscape, const std::vector<std::vector<Point2f>> platforms, const Rectf vieuwPort, Mario* mario, bool start);
+	Level(int levelNr, const Texture* levelTex, const std::vector<std::vector<Point2f>> landscape, const std::vector<std::vector<Point2f>> platforms, const Rectf vieuwPort, Mario* mario, bool start) noexcept;
 	Level(const Level& other) = delete; //Copy constructor afzetten (rule of three)
-	Level(Level&& other);
-	~Level();
+	Level(Level&& other) noexcept;
+	~Level() noexcept;
 
-	void Update(float elapsedSec) ;
-	void Draw(const Rectf& vieuwPort) const ;
+	void Update(float elapsedSec) noexcept;
+	void Draw(const Rectf& vieuwPort) const noexcept;
 
 	// Event handling
-	void ProcessKeyDownEvent(const SDL_KeyboardEvent& e);
-	void ProcessKeyUpEvent(const SDL_KeyboardEvent& e);
-	void ProcessMouseMotionEvent(const SDL_MouseMotionEvent& e);
-	void ProcessMouseDownEvent(const SDL_MouseButtonEvent& e);
-	void ProcessMouseUpEvent(const SDL_MouseButtonEvent& e);
+	void ProcessKeyDownEvent(const SDL_KeyboardEvent& e) noexcept;
+	void ProcessKeyUpEvent(const SDL_KeyboardEvent& e) noexcept;
+	void ProcessMouseMotionEvent(const SDL_MouseMotionEvent& e) noexcept;
+	void ProcessMouseDownEvent(const SDL_MouseButtonEvent& e) noexcept;
+	void ProcessMouseUpEvent(const SDL_MouseButtonEvent& e) noexcept;
 
-	void Respawn();
+	void Respawn() noexcept;
 
 	Level& operator=(const Level& rhs) = delete; // asignment= operator afzetten
-	Level& operator=(Level&& other);
+	Level& operator=(Level&& other) noexcept;
 
 private:
 	bool m_IsPaused;

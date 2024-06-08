@@ -7,7 +7,7 @@ class Mario;
 class Enemy
 {
 public:
-	explicit Enemy(const Point2f& pos, const Texture* tex, const SoundEffect* sound);
+	explicit Enemy(const Point2f& pos, const Texture* tex, const SoundEffect* sound) noexcept;
 	virtual ~Enemy() = default;
 	Enemy(const Enemy& other) = default; //Copy constructor afzetten (rule of three)
 	Enemy(Enemy&& other) = default;
@@ -16,13 +16,13 @@ public:
 
 
 
-	virtual void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario);
-	virtual void Draw() const;
-	virtual void CheckHit(Mario* mario);
-	virtual void Reset();
+	virtual void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario) noexcept;
+	virtual void Draw() const noexcept;
+	virtual void CheckHit(Mario* mario) noexcept;
+	virtual void Reset() noexcept;
 protected:
-	Rectf GetBounds() const;
-	virtual void Animate(float elapsedSec);
+	Rectf GetBounds() const noexcept;
+	virtual void Animate(float elapsedSec) noexcept;
 	Point2f m_Pos;
 	Rectf m_Bounds;
 	Rectf m_SrcRect;

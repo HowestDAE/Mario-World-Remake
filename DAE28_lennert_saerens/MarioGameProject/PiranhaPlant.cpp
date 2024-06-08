@@ -4,7 +4,7 @@
 #include "FireBall.h"
 
 
-PiranhaPlant::PiranhaPlant(const Point2f& pos, const Texture* tex, const SoundEffect* sound, const SoundEffect* spinsound)
+PiranhaPlant::PiranhaPlant(const Point2f& pos, const Texture* tex, const SoundEffect* sound, const SoundEffect* spinsound)noexcept
 	:Enemy::Enemy(pos, tex, sound)
 	, m_pSpinSound{ spinsound }
 	,m_AnimSec{0}
@@ -16,7 +16,7 @@ PiranhaPlant::PiranhaPlant(const Point2f& pos, const Texture* tex, const SoundEf
 	m_Velocity = Vector2f(0.f, 0.f);
 }
 
-void PiranhaPlant::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms,  Mario* mario)
+void PiranhaPlant::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms,  Mario* mario) noexcept
 {
 	if (m_Pos.x - mario->GetPos().x <= 500.f && mario->GetPos().x - m_Pos.x >= -500.f)
 	{
@@ -59,7 +59,7 @@ void PiranhaPlant::Update(float elapsedSec, const std::vector<std::vector<Point2
 	Animate(elapsedSec);
 }
 
-void PiranhaPlant::CheckHit(Mario* mario)
+void PiranhaPlant::CheckHit(Mario* mario) noexcept
 {
 	if (m_DeathAnimation == false)
 	{
@@ -99,7 +99,7 @@ void PiranhaPlant::CheckHit(Mario* mario)
 	}
 }
 
-void PiranhaPlant::Reset()
+void PiranhaPlant::Reset() noexcept
 {
 	m_IsAlive = true;
 	m_Pos = m_OriginalPos;
@@ -115,7 +115,7 @@ void PiranhaPlant::Reset()
 }
 
 
-void PiranhaPlant::Animate(float elapsedSec)
+void PiranhaPlant::Animate(float elapsedSec) noexcept
 {
 	m_AnimSec+= elapsedSec;
 	if (m_Bounds.bottom <= m_OriginalPos.y)

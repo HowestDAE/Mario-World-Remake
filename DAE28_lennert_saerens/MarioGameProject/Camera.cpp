@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "Camera.h"
 
-Camera::Camera(float screenWidth, float screenHeight)
+Camera::Camera(float screenWidth, float screenHeight) noexcept
 	:m_ScreenWidth{screenWidth}
 	,m_ScreenHeight{ screenHeight }
 {
 }
 
-void Camera::Aim(float levelW, float levelH,const Point2f& trackCenter) const
+void Camera::Aim(float levelW, float levelH,const Point2f& trackCenter) const noexcept
 {
 	Point2f bottomLeft{ trackCenter.x-m_ScreenWidth/2,trackCenter.y-m_ScreenHeight/2 };
 	if (bottomLeft.x <0)
@@ -31,7 +31,7 @@ void Camera::Aim(float levelW, float levelH,const Point2f& trackCenter) const
 	glTranslatef(-bottomLeft.x, -bottomLeft.y,0);
 }
 
-Point2f Camera::Reset()
+Point2f Camera::Reset() noexcept
 {
 	glPopMatrix();
 	return Point2f();

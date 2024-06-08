@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Finish.h"
 
-Finish::Finish(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
+Finish::Finish(const Point2f& pos, const Texture* tex, const SoundEffect* sound) noexcept
 	:m_IsHit{false}
 	,m_pTexture{tex}
 	,m_Pos{pos}
@@ -16,7 +16,7 @@ Finish::Finish(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
 	m_PoleBounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRectPole.width *4 , m_SrcRectPole.height *4);
 }
 
-void Finish::Draw() const
+void Finish::Draw() const noexcept
 {
 	m_pTexture->Draw(m_PoleBounds, m_SrcRectPole);
 	if (!m_IsHit)
@@ -25,7 +25,7 @@ void Finish::Draw() const
 	}
 }
 
-void Finish::CheckIsHit(Mario* mario)
+void Finish::CheckIsHit(Mario* mario) noexcept
 {
 	if (!mario->GetFinishHit())
 	{
@@ -39,7 +39,7 @@ void Finish::CheckIsHit(Mario* mario)
 	}
 }
 
-void Finish::Update(float elapsedSec)
+void Finish::Update(float elapsedSec) noexcept
 {
 	m_Pos.y += m_Vel.y * elapsedSec;
 	if (m_Pos.y >= m_OriginalPos.y + 60*4)

@@ -2,7 +2,7 @@
 #include "Chuck.h"
 #include "Mario.h"
 
-Chuck::Chuck(const Point2f& pos, const Texture* tex, const SoundEffect* sound, const SoundEffect* clapSound)
+Chuck::Chuck(const Point2f& pos, const Texture* tex, const SoundEffect* sound, const SoundEffect* clapSound) noexcept
 	:Enemy::Enemy(pos, tex, sound)
 	, m_CanJump{ true }
 	,m_JumpCooldown{0.f}
@@ -15,7 +15,7 @@ Chuck::Chuck(const Point2f& pos, const Texture* tex, const SoundEffect* sound, c
 	m_Velocity = Vector2f(0.f, 0.f);
 }
 
-void Chuck::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario)
+void Chuck::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario) noexcept
 {
 	if (m_Pos.x - mario->GetPos().x <= 500.f)
 	{
@@ -123,7 +123,7 @@ void Chuck::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 	Animate(elapsedSec, mario);
 }
 
-void Chuck::Reset()
+void Chuck::Reset() noexcept
 {
 	m_IsAlive = true;
 	m_Pos = m_OriginalPos;
@@ -145,7 +145,7 @@ void Chuck::Reset()
 
 
 
-void Chuck::Animate(float elapsedSec, const Mario* mario)
+void Chuck::Animate(float elapsedSec, const Mario* mario) noexcept
 {
 	if (mario->GetPos().x > m_Pos.x)
 	{

@@ -22,7 +22,7 @@
 
 float Level::m_Timer = 300;
 
-Level::Level(int levelNr, const Texture* levelTex, const std::vector<std::vector<Point2f>> landscape, const std::vector<std::vector<Point2f>> platforms, const Rectf vieuwPort, Mario* mario, bool start)
+Level::Level(int levelNr, const Texture* levelTex, const std::vector<std::vector<Point2f>> landscape, const std::vector<std::vector<Point2f>> platforms, const Rectf vieuwPort, Mario* mario, bool start)noexcept
 {
 	m_VieuwPort = vieuwPort;
 	m_pTextureManager = new TextureManager();
@@ -148,7 +148,7 @@ Level::Level(int levelNr, const Texture* levelTex, const std::vector<std::vector
 	}
 }
 
-Level::Level(Level&& other)
+Level::Level(Level&& other) noexcept
 	:m_Landscape{other.m_Landscape}
 	,m_pBackgroundMusic{other.m_pBackgroundMusic}
 	,m_pBlocks{other.m_pBlocks}
@@ -166,6 +166,16 @@ Level::Level(Level&& other)
 	,m_pSoundManager{ other.m_pSoundManager }
 	,m_pTextureManager{other.m_pTextureManager}
 	,m_VieuwPort{other.m_VieuwPort}
+	,m_IsPaused{other.m_IsPaused}
+	,m_TitleScreen{other.m_TitleScreen}
+	,m_pPauseSound{other.m_pPauseSound}
+	,m_pPipe{other.m_pPipe}
+	, m_CurrLevel{ other.m_CurrLevel }
+	,m_pTitleScreen{other.m_pTitleScreen}
+	, m_pTitleMusic{ other.m_pTitleMusic }
+	, m_pStartSound{ other.m_pStartSound }
+	, m_IntTimer{ other. m_IntTimer }
+
 {
 	other.m_pBackgroundMusic = nullptr;
 	for (int idx{}; idx < m_pBlocks.size(); ++idx)
@@ -178,12 +188,26 @@ Level::Level(Level&& other)
 	{
 		other.m_pCoins[idx] = nullptr;
 	}
-	m_pEnemyManager = nullptr;
-	m_pFinish = nullptr;
-	m_pForeground = nullptr;
+	other.m_pEnemyManager = nullptr;
+	other.m_pFinish = nullptr;
+	other.m_pForeground = nullptr;
+	other.m_pMap = nullptr;
+	other.m_pMario = nullptr;
+	other.m_pPipes = nullptr;
+	for (int idx{}; idx < m_pPowerUps.size(); ++idx)
+	{
+		other.m_pPowerUps[idx] = nullptr;
+	}
+	other.m_pSoundManager = nullptr;
+	other.m_pTextureManager = nullptr;
+	other.m_pPauseSound = nullptr;
+	other.m_pPipe = nullptr;
+	other.m_pTitleScreen = nullptr;
+	other.m_pTitleMusic = nullptr;
+	other.m_pStartSound = nullptr;
 }
 
-Level::~Level()
+Level::~Level() noexcept
 {
 	delete m_pTextureManager;
 	m_pTextureManager = nullptr;
@@ -234,12 +258,23 @@ Level::~Level()
 	
 }
 
-void Level::Update(float elapsedSec)
+void Level::Update(float elapsedSec) noexcept
 {
 	if (!m_IsPaused)
 	{
 
 		const Uint8* pStates = SDL_GetKeyboardState(nullptr);
+		if (m_pMario->GetLivesAmount() < 0)
+		{
+			Respawn();
+			m_pMario->SetLevelClear(false);
+			m_TitleScreen = true;
+			m_IsPaused = true;
+			m_pBackgroundMusic->Stop();
+			m_Timer = 300;
+			m_pTitleMusic->Play(1);
+			m_pCheckpoint->Reset();
+		}
 		if (m_pMario->GetLevelClear())
 		{
 			Respawn();
@@ -321,7 +356,7 @@ void Level::Update(float elapsedSec)
 	}
 }
 
-void Level::Draw(const Rectf& vieuwPort) const
+void Level::Draw(const Rectf& vieuwPort) const noexcept
 {
 	/*glPushMatrix();
 	glScalef(2.f, 2.f, 0.f);*/
@@ -369,10 +404,12 @@ void Level::Draw(const Rectf& vieuwPort) const
 	std::ostringstream timeAmount{};
 	//pointsAmount.str() << std::to_string(m_PointCount);
 	timeAmount << std::setfill('0') << std::setw(3) << std::to_string(m_IntTimer);
-	Texture* timeStringTex = new Texture(timeSting, "Super-Mario-World.ttf", 24, Color4f(1.f, 1.f, 0.f, 1.f));
+	Texture* timeStringTex = new Texture(timeSting, "typeface-mario-world-pixel-filled.ttf", 24, Color4f(1.f, 1.f, 0.f, 1.f));
 	Texture* timeStringAmountTex = new Texture(timeAmount.str(), "Super-Mario-World.ttf", 18, Color4f(1.f, 1.f, 0.f, 1.f));
 	timeStringTex->Draw(Point2f(vieuwPort.width/2 - timeStringTex->GetWidth()/2, vieuwPort.height - 50.f));
 	timeStringAmountTex->Draw(Point2f(vieuwPort.width / 2 - timeStringAmountTex->GetWidth() / 2, vieuwPort.height - 50.f - timeStringTex->GetHeight()));
+	delete timeStringTex;
+	delete timeStringAmountTex;
 	//glPopMatrix();
 	if (m_TitleScreen)
 	{
@@ -390,13 +427,13 @@ void Level::Draw(const Rectf& vieuwPort) const
 	}
 }
 
-void Level::ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
+void Level::ProcessKeyDownEvent(const SDL_KeyboardEvent& e) noexcept
 {
 	m_pMario->OnKeyDownEvent(e);
 
 }
 
-void Level::ProcessKeyUpEvent(const SDL_KeyboardEvent& e)
+void Level::ProcessKeyUpEvent(const SDL_KeyboardEvent& e) noexcept
 {
 	m_pMario->OnKeyUpEvent(e);
 	if (m_TitleScreen == false)
@@ -436,19 +473,19 @@ void Level::ProcessKeyUpEvent(const SDL_KeyboardEvent& e)
 
 }
 
-void Level::ProcessMouseMotionEvent(const SDL_MouseMotionEvent& e)
+void Level::ProcessMouseMotionEvent(const SDL_MouseMotionEvent& e) noexcept
 {
 }
 
-void Level::ProcessMouseDownEvent(const SDL_MouseButtonEvent& e)
+void Level::ProcessMouseDownEvent(const SDL_MouseButtonEvent& e) noexcept
 {
 }
 
-void Level::ProcessMouseUpEvent(const SDL_MouseButtonEvent& e)
+void Level::ProcessMouseUpEvent(const SDL_MouseButtonEvent& e) noexcept
 {
 }
 
-void Level::Respawn()
+void Level::Respawn() noexcept
 {
 	m_pEnemyManager->Reset();
 	for (int idx{}; idx < m_pCoins.size(); ++idx)
@@ -467,25 +504,34 @@ void Level::Respawn()
 	m_pBackgroundMusic->Play(1);
 }
 
-Level& Level::operator=(Level&& other)
+Level& Level::operator=(Level&& other) noexcept
 {
 	m_Landscape = other.m_Landscape;
-	m_pBackgroundMusic= other.m_pBackgroundMusic;
-	m_pBlocks= other.m_pBlocks;
-	m_pCamera= other.m_pCamera;
-	m_pCheckpoint= other.m_pCheckpoint;
-	m_pCoins= other.m_pCoins;
-	m_pEnemyManager= other.m_pEnemyManager;
-	m_pFinish= other.m_pFinish;
-	m_pForeground= other.m_pForeground;
-	m_Platforms= other.m_Platforms;
-	m_pMap= other.m_pMap;
-	m_pMario= other.m_pMario;
-	m_pPipes= other.m_pPipes;
-	m_pPowerUps= other.m_pPowerUps;
-	m_pSoundManager= other.m_pSoundManager;
-	m_pTextureManager= other.m_pTextureManager;
-	m_VieuwPort= other.m_VieuwPort;
+	m_pBackgroundMusic = other.m_pBackgroundMusic;
+	m_pBlocks = other.m_pBlocks;
+	m_pCamera = other.m_pCamera;
+	m_pCheckpoint = other.m_pCheckpoint;
+	m_pCoins = other.m_pCoins;
+	m_pEnemyManager = other.m_pEnemyManager;
+	m_pFinish = other.m_pFinish;
+	m_pForeground = other.m_pForeground;
+	m_Platforms = other.m_Platforms;
+	m_pMap = other.m_pMap;
+	m_pMario = other.m_pMario;
+	m_pPipes = other.m_pPipes;
+	m_pPowerUps = other.m_pPowerUps;
+	m_pSoundManager = other.m_pSoundManager;
+	m_pTextureManager = other.m_pTextureManager;
+	m_VieuwPort = other.m_VieuwPort;
+	m_IsPaused = other.m_IsPaused;
+	m_TitleScreen = other.m_TitleScreen;
+	m_pPauseSound = other.m_pPauseSound;
+	m_pPipe = other.m_pPipe;
+	m_CurrLevel = other.m_CurrLevel;
+	m_pTitleScreen = other.m_pTitleScreen;
+	m_pTitleMusic = other.m_pTitleMusic;
+	m_pStartSound = other.m_pStartSound;
+	m_IntTimer = other.m_IntTimer;
 	
 	other.m_pBackgroundMusic = nullptr;
 	for (int idx{}; idx < m_pBlocks.size(); ++idx)
@@ -498,8 +544,22 @@ Level& Level::operator=(Level&& other)
 	{
 		other.m_pCoins[idx] = nullptr;
 	}
-	m_pEnemyManager = nullptr;
-	m_pFinish = nullptr;
-	m_pForeground = nullptr;
+	other.m_pEnemyManager = nullptr;
+	other.m_pFinish = nullptr;
+	other.m_pForeground = nullptr;
+	other.m_pMap = nullptr;
+	other.m_pMario = nullptr;
+	other.m_pPipes = nullptr;
+	for (int idx{}; idx < m_pPowerUps.size(); ++idx)
+	{
+		other.m_pPowerUps[idx] = nullptr;
+	}
+	other.m_pSoundManager = nullptr;
+	other.m_pTextureManager = nullptr;
+	other.m_pPauseSound = nullptr;
+	other.m_pPipe = nullptr;
+	other.m_pTitleScreen = nullptr;
+	other.m_pTitleMusic = nullptr;
+	other.m_pStartSound = nullptr;
 	return *this;
 }

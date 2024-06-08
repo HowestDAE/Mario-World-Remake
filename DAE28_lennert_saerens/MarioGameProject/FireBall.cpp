@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "FireBall.h"
 
-FireBall::FireBall(const Point2f& pos, const Vector2f& velocity, const Texture* tex)
+FireBall::FireBall(const Point2f& pos, const Vector2f& velocity, const Texture* tex) noexcept
 	:m_Pos{pos}
 	,m_Velocity{velocity}
 	,m_pTexture{tex}
@@ -12,7 +12,7 @@ FireBall::FireBall(const Point2f& pos, const Vector2f& velocity, const Texture* 
 {
 }
 
-void FireBall::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks)
+void FireBall::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks) noexcept
 {
 	if (m_IsAlive)
 	{
@@ -112,27 +112,27 @@ void FireBall::Update(float elapsedSec, const std::vector<std::vector<Point2f>>&
 	}
 }
 
-void FireBall::Draw() const
+void FireBall::Draw() const noexcept
 {
 	if (m_IsAlive) m_pTexture->Draw(m_Bounds, m_SrcRect);
 }
 
-void FireBall::SetDead()
+void FireBall::SetDead() noexcept
 {
 	m_IsAlive = false;
 }
 
-Point2f FireBall::GetPos() const
-{
+Point2f FireBall::GetPos() const noexcept
+{ 
 	return m_Pos;
 }
 
-bool FireBall::GetIsAlive() const
+bool FireBall::GetIsAlive() const noexcept
 {
 	return m_IsAlive;
 }
 
-Rectf FireBall::GetBounds() const
+Rectf FireBall::GetBounds() const noexcept
 {
 	return m_Bounds;
 }

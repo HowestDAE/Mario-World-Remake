@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Block.h"
 
-Block::Block(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
+Block::Block(const Point2f& pos, const Texture* tex, const SoundEffect* sound) noexcept
 	:m_IsBroken{false}
 	,m_IsHit{false}
 	,m_Pos{pos}
@@ -17,7 +17,7 @@ Block::Block(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
 
 }
 
-void Block::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks)
+void Block::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks) noexcept
 {
 	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2);
 
@@ -36,7 +36,7 @@ void Block::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 	Animate(elapsedSec);
 }
 
-void Block::Draw() const
+void Block::Draw() const noexcept
 {
 	if (!m_IsBroken)
 	{
@@ -44,7 +44,7 @@ void Block::Draw() const
 	}
 }
 
-void Block::CheckHit(Mario* mario)
+void Block::CheckHit(Mario* mario) noexcept
 {
 	if (!m_IsBroken && !m_IsHit)
 	{
@@ -89,7 +89,7 @@ void Block::CheckHit(Mario* mario)
 	}
 }
 
-void Block::Reset()
+void Block::Reset() noexcept
 {
 	m_IsBroken = false;
 	m_IsHit = false;
@@ -100,22 +100,22 @@ void Block::Reset()
 	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2);
 }
 
-bool Block::GetIsHit() const
+bool Block::GetIsHit() const noexcept
 {
 	return m_IsHit;
 }
 
-bool Block::GetIsBroken() const
+bool Block::GetIsBroken() const noexcept
 {
 	return m_IsBroken;
 }
 
-Rectf Block::GetBounds()const
+Rectf Block::GetBounds()const noexcept
 {
 	return m_Bounds;
 }
 
-void Block::Animate(float elapsedSec)
+void Block::Animate(float elapsedSec) noexcept
 {
 	if (m_HitSec > 0)
 	{

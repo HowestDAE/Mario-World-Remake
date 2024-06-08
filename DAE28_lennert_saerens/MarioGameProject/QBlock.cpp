@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "QBlock.h"
 
-QBlock::QBlock(const Point2f& pos, const Texture* tex, const SoundEffect* sound, PowerUp* content)
+QBlock::QBlock(const Point2f& pos, const Texture* tex, const SoundEffect* sound, PowerUp* content) noexcept
 	:Block::Block(pos,tex,sound)
 {
 	m_pContent = content;
@@ -9,7 +9,7 @@ QBlock::QBlock(const Point2f& pos, const Texture* tex, const SoundEffect* sound,
 	m_CollectablePowerUp = false;
 }
 
-void QBlock::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks)
+void QBlock::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks) noexcept
 {
 	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2);
 	Animate(elapsedSec);
@@ -19,7 +19,7 @@ void QBlock::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& l
 	}
 }
 
-void QBlock::CheckHit(Mario* mario)
+void QBlock::CheckHit(Mario* mario) noexcept
 {
 		Rectf marioRect{ mario->GetBounds() };
 		Rectf marioHeadRect{ marioRect.left,marioRect.bottom + (marioRect.height / 4) * 3 ,marioRect.width, marioRect.height / 4 };
@@ -63,7 +63,7 @@ void QBlock::CheckHit(Mario* mario)
 		}
 }
 
-void QBlock::Draw() const
+void QBlock::Draw() const noexcept
 {
 	if (m_CollectablePowerUp)
 	{
@@ -75,7 +75,7 @@ void QBlock::Draw() const
 	}
 }
 
-void QBlock::Reset()
+void QBlock::Reset() noexcept
 {
 	m_IsBroken = false;
 	m_IsHit = false;
@@ -87,7 +87,7 @@ void QBlock::Reset()
 	m_CollectablePowerUp = false;
 }
 
-void QBlock::Animate(float elapsedSec)
+void QBlock::Animate(float elapsedSec) noexcept
 {
 	m_FrameSec += elapsedSec;
 	if (!m_IsHit)

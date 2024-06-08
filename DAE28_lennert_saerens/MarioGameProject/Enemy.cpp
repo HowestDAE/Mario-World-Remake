@@ -3,7 +3,7 @@
 #include "Mario.h"
 #include "FireBall.h"
 
-Enemy::Enemy(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
+Enemy::Enemy(const Point2f& pos, const Texture* tex, const SoundEffect* sound) noexcept
 	:m_IsAlive{true}
 	,m_Velocity{-30.f,0}
 	,m_Pos{pos}
@@ -22,7 +22,7 @@ Enemy::Enemy(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
 	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width*2, m_SrcRect.height*2);
 }
 
-void Enemy::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario)
+void Enemy::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario) noexcept
 {
 	if (m_Pos.x - mario->GetPos().x <= 500.f && m_Pos.x - mario->GetPos().x>= -500.f)
 	{
@@ -112,7 +112,7 @@ void Enemy::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 	Animate(elapsedSec);
 }
 
-void Enemy::Draw() const
+void Enemy::Draw() const noexcept
 {
 	if (m_IsAlive == true)
 	{
@@ -131,7 +131,7 @@ void Enemy::Draw() const
 	}
 }
 
-void Enemy::Animate(float elapsedSec)
+void Enemy::Animate(float elapsedSec) noexcept
 {
 	if (m_DeathAnimation == false)
 	{
@@ -181,7 +181,7 @@ void Enemy::Animate(float elapsedSec)
 	}
 }
 
-void Enemy::CheckHit(Mario* mario)
+void Enemy::CheckHit(Mario* mario) noexcept
 {
 	if (m_DeathAnimation == false)
 	{
@@ -226,8 +226,8 @@ void Enemy::CheckHit(Mario* mario)
 
 	}
 }
-
-void Enemy::Reset()
+ 
+void Enemy::Reset() noexcept
 {
 	m_IsAlive = true;
 	m_Velocity = Vector2f( - 30.f, 0);
@@ -242,7 +242,7 @@ void Enemy::Reset()
 	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2);
 }
 
-Rectf Enemy::GetBounds() const
+Rectf Enemy::GetBounds() const noexcept
 {
 	return m_Bounds;
 }

@@ -6,7 +6,7 @@
 #include <iomanip>
 
 
-Mario::Mario(const Point2f& startingPos)
+Mario::Mario(const Point2f& startingPos) noexcept
 	:m_Pos{startingPos}
 	,m_Velocity{}
 	,m_WalkingState{WalkingState::none}
@@ -51,30 +51,45 @@ Mario::Mario(const Point2f& startingPos)
 }
 
 
-Mario::Mario(Mario&& other)
-	:m_AccTime{std::move(other.m_AccTime)}
-	,m_Bounds{std::move(other.m_Bounds)}
-	,m_CanJump{std::move(other.m_CanJump)}
-	,m_FrameNr{std::move(other.m_FrameNr)}
-	,m_FrameRect{std::move(other.m_FrameRect)}
-	,m_FrameTime{std::move(other.m_FrameTime)}
-	,m_IsOnGround{std::move(other.m_IsOnGround)}
-	,m_JumpTime{std::move(other.m_JumpTime)}
-	,m_CoinCount{std::move(other.m_CoinCount)}
-	,m_LookingState{std::move(other.m_LookingState)}
-	,m_Mariostate{std::move(other.m_Mariostate)}
-	,m_Pos{std::move(other.m_Pos)}
-	,m_SpinJumpTime{std::move(other.m_SpinJumpTime)}
-	,m_TimeInAir{std::move(other.m_TimeInAir)}
-	,m_Velocity{std::move(other.m_Velocity)}
-	,m_WalkingState{std::move(other.m_WalkingState)}
-	,m_pJumpEffect{std::move(other.m_pJumpEffect)}
-	,m_pSpinJumpEffect{std::move(other.m_pJumpEffect)}
-	,m_pSpritesheet{std::move(other.m_pSpritesheet)}
-	,m_IsAlive{ std::move(other.m_IsAlive)}
-	,m_pDeathEffect{std::move(other.m_pDeathEffect)}
-	,m_pFireBallTex{ std::move(other.m_pFireBallTex) }
-	,m_pFireEffect{std::move(other.m_pFireEffect)}
+Mario::Mario(Mario&& other) noexcept
+	: m_Pos{other.m_Pos }
+	, m_Velocity{other.m_Velocity }
+	, m_pSpritesheet{other.m_pSpritesheet }
+	, m_pFireBallTex{other.m_pFireBallTex }
+	, m_Bounds{other.m_Bounds }
+	, m_Mariostate{other.m_Mariostate }
+	, m_WalkingState{other.m_WalkingState }
+	, m_LookingState{other.m_LookingState }
+	, m_pJumpEffect{other.m_pJumpEffect }
+	, m_pSpinJumpEffect{other.m_pSpinJumpEffect }
+	, m_pDeathEffect{other.m_pDeathEffect }
+	, m_pFireEffect{other.m_pFireEffect }
+	, m_pWinEffect{other.m_pWinEffect }
+	, m_pHitEffect{other.m_pHitEffect }
+	, m_AccTime{other.m_AccTime }
+	, m_FrameTime{other.m_FrameTime }
+	, m_JumpTime{other.m_JumpTime }
+	, m_SpinJumpTime{other.m_SpinJumpTime }
+	, m_TimeInAir{other.m_TimeInAir }
+	, m_FrameNr{other.m_FrameNr }
+	, m_CoinCount{other.m_CoinCount }
+	, m_PointCount{other.m_PointCount }
+	, m_LivesCount{other.m_LivesCount }
+	, m_CanJump{other.m_CanJump }
+	, m_IsOnGround{other.m_IsOnGround }
+	, m_IsAlive{other.m_IsAlive }
+	, m_Invincible{other.m_Invincible }
+	, m_CheckpointHit{other.m_CheckpointHit }
+	, m_FinishHit{other.m_FinishHit }
+	, m_LevelClear{other.m_LevelClear }
+	, m_CanMove{other.m_CanMove }
+	, m_InvinTimer{other.m_InvinTimer }
+	, m_WinTimer{other.m_WinTimer }
+	, m_IFrames{other.m_IFrames }
+	, m_FrameRect{other.m_FrameRect }
+	, m_pFireBalls{other.m_pFireBalls }
+
+
 {
 	other.m_pJumpEffect = nullptr;
 	other.m_pSpinJumpEffect = nullptr;
@@ -82,9 +97,15 @@ Mario::Mario(Mario&& other)
 	other.m_pDeathEffect = nullptr;
 	other.m_pFireBallTex = nullptr;
 	other.m_pFireEffect = nullptr;
+	other.m_pWinEffect = nullptr;
+	other.m_pHitEffect = nullptr;
+	for (int idx{}; idx < m_pFireBalls.size(); ++idx)
+	{
+		m_pFireBalls[idx] = nullptr;
+	}
 }
-
-Mario::~Mario()
+ 
+Mario::~Mario() noexcept
 {
 	delete m_pSpritesheet;
 	m_pSpritesheet = nullptr;
@@ -118,7 +139,7 @@ Mario::~Mario()
 }
 
 
-void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks)
+void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks) noexcept
 {
 
 	const float gravity{ -21.f };
@@ -238,8 +259,10 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 		}
 	}
 	if (m_Velocity.x > 0 && m_IsOnGround == 1) m_Velocity.x += friction * elapsedSec;
+	if (m_Velocity.x > -2.f && m_Velocity.x < 2.f) m_Velocity.x = 0;
 	if (m_Velocity.x < 0 && m_IsOnGround == 1)m_Velocity.x -= friction * elapsedSec;
 	if (m_Velocity.x > -2.f && m_Velocity.x < 2.f) m_Velocity.x = 0;
+
 	if (m_IsAlive == false)
 	{
 		m_Velocity.y += gravity/3;
@@ -316,14 +339,14 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 		}
 		
 	}
-	if (m_LivesCount < 0)
+	/*if (m_LivesCount < 0)
 	{
 		ResetStart();
 		m_LevelClear = true;
-	}
+	}*/
 }
 
-void Mario::Draw() const
+void Mario::Draw() const noexcept
 {
 	/*glPushMatrix();
 	glTranslatef(m_Pos.x, m_Pos.y, 0);
@@ -337,11 +360,11 @@ void Mario::Draw() const
 	}
 }
 
-void Mario::DrawUI(const Rectf& vieuwPort) const
+void Mario::DrawUI(const Rectf& vieuwPort) const noexcept
 {
 	std::string livesSting{ "Mario" };
 	std::string livesStingAmount = 'x' + std::to_string(m_LivesCount);
-	Texture* livesStringTex = new Texture(livesSting, "Super-Mario-World.ttf", 24, Color4f(1.f, 0.f, 0.f, 1.f));
+	Texture* livesStringTex = new Texture(livesSting, "typeface-mario-world-pixel-filled.ttf", 24, Color4f(1.f, 0.f, 0.f, 1.f));
 	Texture* livesStringAmountTex = new Texture(livesStingAmount, "Super-Mario-World.ttf", 18, Color4f(1.f, 1.f, 1.f, 1.f));
 	livesStringTex->Draw(Point2f(50.f, vieuwPort.height - 50.f));
 	livesStringAmountTex->Draw(Point2f(50.f, vieuwPort.height - 50.f - livesStringTex->GetHeight()));
@@ -354,9 +377,13 @@ void Mario::DrawUI(const Rectf& vieuwPort) const
 	Texture* pointsStringAmountTex = new Texture(pointsAmount.str(), "Super-Mario-World.ttf", 18, Color4f(1.f, 1.f, 1.f, 1.f));
 	coinStringTex->Draw(Point2f(vieuwPort.width - 50.f - coinStringTex->GetWidth(), vieuwPort.height - 50.f));
 	pointsStringAmountTex->Draw(Point2f(vieuwPort.width - 50.f - pointsStringAmountTex->GetWidth(), vieuwPort.height - 50.f - livesStringTex->GetHeight()));
+	delete livesStringTex;
+	delete livesStringAmountTex;
+	delete coinStringTex;
+	delete pointsStringAmountTex;
 }
 
-void Mario::WalkRight(float elapsedSec, const Uint8* pStates)
+void Mario::WalkRight(float elapsedSec, const Uint8* pStates) noexcept
 {
 	if (m_Velocity.x <= 140.f && m_Velocity.x >= -5.f && m_IsOnGround == 1) m_Velocity.x += 1000.f * elapsedSec;
 	else if (m_Velocity.x <= 140.f && m_IsOnGround == 0)m_Velocity.x += 2500.f * elapsedSec;
@@ -378,7 +405,7 @@ void Mario::WalkRight(float elapsedSec, const Uint8* pStates)
 	else m_JumpTime = 0.25f;
 }
 
-void Mario::WalkLeft(float elapsedSec, const Uint8* pStates)
+void Mario::WalkLeft(float elapsedSec, const Uint8* pStates) noexcept
 {
 	/*if (m_Velocity.x >= -140.f && m_Velocity.x <= 0.f && m_CanJump == 1) m_Velocity.x = -140.f;
 		else if (m_Velocity.x >= -80.f && m_CanJump == 0)m_Velocity.x = -80.f;
@@ -408,7 +435,7 @@ void Mario::WalkLeft(float elapsedSec, const Uint8* pStates)
 }
 
 
-void Mario::HandleMovement(float elapsedSec, const Uint8* pStates)
+void Mario::HandleMovement(float elapsedSec, const Uint8* pStates) noexcept
 {
 	if (!m_FinishHit && m_CanMove)
 	{
@@ -510,79 +537,101 @@ void Mario::HandleMovement(float elapsedSec, const Uint8* pStates)
 
 
 
-bool Mario::GetFinishHit() const
+bool Mario::GetFinishHit() const noexcept
 {
 	return m_FinishHit;
 }
 
-bool Mario::GetLevelClear() const
+bool Mario::GetLevelClear() const noexcept
 {
 	return m_LevelClear;
 }
 
-Rectf Mario::GetCurrFrameRect() const
+Rectf Mario::GetCurrFrameRect() const noexcept
 {
 	return m_FrameRect;
 }
 
-Point2f Mario::GetPos() const
+Point2f Mario::GetPos() const noexcept
 {
 	return m_Pos;
 }
 
-Rectf Mario::GetBounds() const
+Rectf Mario::GetBounds() const noexcept
 {
 	return m_Bounds;
 }
 
-Vector2f Mario::GetVel() const
+Vector2f Mario::GetVel() const noexcept
 {
 	return m_Velocity;
 }
 
-Mario::PowerUpState Mario::GetPowerUpState() const
-{
+Mario::PowerUpState Mario::GetPowerUpState() const noexcept
+{ 
 	return m_Mariostate;
 }
 
-Mario::LookingState Mario::GetState() const
+Mario::LookingState Mario::GetState() const noexcept
 {
 	return m_LookingState;
 }
 
-std::vector<FireBall*> Mario::GetFireBalls() const
+bool Mario::GetCheckpointHit() const noexcept
+{
+	return m_CheckpointHit;
+}
+
+int Mario::GetLivesAmount() const noexcept
+{
+	return m_LivesCount;
+}
+
+std::vector<FireBall*> Mario::GetFireBalls() const noexcept
 {
 	return m_pFireBalls;
 }
 
-Mario& Mario::operator=(Mario&& other)
+Mario& Mario::operator=(Mario&& other) noexcept
 {
 	if (&other != this)
 	{
-		m_AccTime = std::move(other.m_AccTime);
-		m_Bounds = std::move(other.m_Bounds);
-		m_CanJump = std::move(other.m_CanJump);
-		m_FrameNr = std::move(other.m_FrameNr);
-		m_FrameRect = std::move(other.m_FrameRect);
-		m_FrameTime = std::move(other.m_FrameTime);
-		m_IsOnGround = std::move(other.m_IsOnGround);
-		m_JumpTime = std::move(other.m_JumpTime);
-		m_LookingState = std::move(other.m_LookingState);
-		m_Mariostate = std::move(other.m_Mariostate);
-		m_Pos = std::move(other.m_Pos);
-		m_SpinJumpTime = std::move(other.m_SpinJumpTime);
-		m_TimeInAir = std::move(other.m_TimeInAir);
-		m_Velocity = std::move(other.m_Velocity);
-		m_WalkingState = std::move(other.m_WalkingState);
-		m_IsAlive= std::move(other.m_IsAlive);
-		m_CoinCount = std::move(other.m_CoinCount);
-
-		m_pJumpEffect = std::move(other.m_pJumpEffect);
-		m_pSpinJumpEffect = std::move(other.m_pJumpEffect);
-		m_pSpritesheet = std::move(other.m_pSpritesheet);
-		m_pFireBallTex = std::move(other.m_pFireBallTex);
-		m_pDeathEffect = std::move(other.m_pDeathEffect);
-		m_pFireEffect = std::move(other.m_pFireEffect);
+		m_Pos = other.m_Pos;
+		m_Velocity = other.m_Velocity;
+		m_pSpritesheet = other.m_pSpritesheet;
+		m_pFireBallTex = other.m_pFireBallTex;
+		m_Bounds = other.m_Bounds;
+		m_Mariostate = other.m_Mariostate;
+		m_WalkingState = other.m_WalkingState;
+		m_LookingState = other.m_LookingState;
+		m_pJumpEffect = other.m_pJumpEffect;
+		m_pSpinJumpEffect = other.m_pSpinJumpEffect;
+		m_pDeathEffect = other.m_pDeathEffect;
+		m_pFireEffect = other.m_pFireEffect;
+		m_pWinEffect = other.m_pWinEffect;
+		m_pHitEffect = other.m_pHitEffect;
+		m_AccTime = other.m_AccTime;
+		m_FrameTime = other.m_FrameTime;
+		m_JumpTime = other.m_JumpTime;
+		m_SpinJumpTime = other.m_SpinJumpTime;
+		m_TimeInAir = other.m_TimeInAir;
+		m_FrameNr = other.m_FrameNr;
+		m_CoinCount = other.m_CoinCount;
+		m_PointCount = other.m_PointCount;
+		m_LivesCount = other.m_LivesCount;
+		m_CanJump = other.m_CanJump;
+		m_IsOnGround = other.m_IsOnGround;
+		m_IsAlive = other.m_IsAlive;
+		m_Invincible = other.m_Invincible;
+		m_CheckpointHit = other.m_CheckpointHit;
+		m_FinishHit = other.m_FinishHit;
+		m_LevelClear = other.m_LevelClear;
+		m_CanMove = other.m_CanMove;
+		m_InvinTimer = other.m_InvinTimer;
+		m_WinTimer = other.m_WinTimer;
+		m_IFrames = other.m_IFrames;
+		m_FrameRect = other.m_FrameRect;
+		m_pFireBalls = other.m_pFireBalls;
 
 		other.m_pJumpEffect = nullptr;
 		other.m_pSpinJumpEffect = nullptr;
@@ -595,7 +644,7 @@ Mario& Mario::operator=(Mario&& other)
 	return *this;
 }
 
-void Mario::Animate(float elapsedSec)
+void Mario::Animate(float elapsedSec) noexcept
 {
 	m_AccTime += elapsedSec;
 	if (m_IsAlive == true)
@@ -894,14 +943,14 @@ void Mario::Animate(float elapsedSec)
 	}
 }
 
-void Mario::Grow(const PowerUp::PowerUpType& type)
+void Mario::Grow(const PowerUp::PowerUpType& type) noexcept
 {
 	if (type == PowerUp::PowerUpType::Mushroom && m_Mariostate == PowerUpState::small) m_Mariostate = PowerUpState::big;
 	else if (type == PowerUp::PowerUpType::Flower && (m_Mariostate == PowerUpState::small || m_Mariostate == PowerUpState::big)) m_Mariostate = PowerUpState::fireflower;
 	
 }
 
-void Mario::ShootFireBall()
+void Mario::ShootFireBall() noexcept
 {
 	if (m_pFireBalls.size() < 2 && m_Mariostate == PowerUpState::fireflower)
 	{
@@ -911,17 +960,17 @@ void Mario::ShootFireBall()
 	}
 }
 
-void Mario::AddCoin()
+void Mario::AddCoin() noexcept
 {
 	++m_CoinCount;
 }
 
-bool Mario::GetIsAlive() const
+bool Mario::GetIsAlive() const noexcept
 {
 	return m_IsAlive;
 }
 
-void Mario::TakeDamage()
+void Mario::TakeDamage() noexcept
 {
 	if (m_IsAlive == true)
 	{
@@ -953,7 +1002,7 @@ void Mario::TakeDamage()
 	}
 }
 
-void Mario::Bounce(float ypos)
+void Mario::Bounce(float ypos) noexcept
 {
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 	if (pStates[SDL_SCANCODE_SPACE] || pStates[SDL_SCANCODE_LALT])
@@ -968,8 +1017,8 @@ void Mario::Bounce(float ypos)
 		m_Pos.y = ypos + 7;
 	}
 }
-
-void Mario::Reset()
+ 
+void Mario::Reset() noexcept
 {
 	m_CoinCount = 0;
 	m_PointCount = 0;
@@ -987,7 +1036,7 @@ void Mario::Reset()
 	m_LivesCount -= 1;
 }
 
-void Mario::ResetStart()
+void Mario::ResetStart() noexcept
 {
 	m_Pos = Point2f(50, 200);
 	m_Velocity = Vector2f(0, 0);
@@ -1014,41 +1063,41 @@ void Mario::ResetStart()
 	m_LivesCount = 6;
 }
 
-void Mario::SetCheckpointHit()
+void Mario::SetCheckpointHit() noexcept
 {
 	m_CheckpointHit = true;
 }
 
-void Mario::SetVel(const Vector2f& vel)
+void Mario::SetVel(const Vector2f& vel) noexcept
 {
 	m_Velocity = vel;
 }
 
-void Mario::SetVelX(const float vel)
+void Mario::SetVelX(const float vel) noexcept
 {
 	m_Velocity.x = vel;
 
 }
 
-void Mario::SetVelY(const float vel)
+void Mario::SetVelY(const float vel) noexcept
 {
 	m_Velocity.y = vel;
 }
 
-void Mario::SetPosX(const float pos)
+void Mario::SetPosX(const float pos) noexcept
 {
 	m_Pos.x = pos;
 
 }
 
-void Mario::SetPosY(const float pos)
+void Mario::SetPosY(const float pos) noexcept
 {
 	m_Pos.y = pos;
 }
 
 
 
-void Mario::SetIsOnGround()
+void Mario::SetIsOnGround() noexcept
 {
 	m_Velocity.y = 0;
 	m_TimeInAir = 0;
@@ -1056,12 +1105,12 @@ void Mario::SetIsOnGround()
 	m_IsOnGround = 1;
 }
 
-void Mario::SetCanJump(bool flag)
+void Mario::SetCanJump(bool flag) noexcept
 {
 	m_CanJump = flag;
 }
 
-void Mario::SetFinishHit(bool flag)
+void Mario::SetFinishHit(bool flag) noexcept
 {
 	m_FinishHit = flag;
 	if (m_FinishHit)
@@ -1070,17 +1119,17 @@ void Mario::SetFinishHit(bool flag)
 	}
 }
 
-void Mario::SetLevelClear(bool flag)
+void Mario::SetLevelClear(bool flag) noexcept
 {
 	m_LevelClear = flag;
 }
 
-void Mario::SetCanMove(bool flag)
+void Mario::SetCanMove(bool flag) noexcept
 {
 	m_CanMove = flag;
 }
 
-void Mario::SetDead()
+void Mario::SetDead() noexcept
 {
 	m_IsAlive = false;
 	m_Velocity.y = 500;
@@ -1088,12 +1137,12 @@ void Mario::SetDead()
 	m_pDeathEffect->Play(0);
 }
 
-void Mario::AddPoints(int points)
+void Mario::AddPoints(int points) noexcept
 {
 	m_PointCount += points;
 }
-
-void Mario::OnKeyUpEvent(const SDL_KeyboardEvent& e)
+ 
+void Mario::OnKeyUpEvent(const SDL_KeyboardEvent& e) noexcept
 {
 	if (!m_FinishHit&& m_CanMove)
 	{
@@ -1107,8 +1156,8 @@ void Mario::OnKeyUpEvent(const SDL_KeyboardEvent& e)
 	}
 }
 
-void Mario::OnKeyDownEvent(const SDL_KeyboardEvent& e)
-{
+void Mario::OnKeyDownEvent(const SDL_KeyboardEvent& e) noexcept
+{ 
 	if (!m_FinishHit && m_CanMove)
 	{
 		switch (e.keysym.sym)
@@ -1120,9 +1169,10 @@ void Mario::OnKeyDownEvent(const SDL_KeyboardEvent& e)
 	}
 }
 
-void Mario::AnimateTitle(float elapsedSec)
+void Mario::AnimateTitle(float elapsedSec) noexcept
 {
 	m_AccTime += elapsedSec;
+	m_FrameTime= 0.22f ;
 	if (m_AccTime >= m_FrameTime)
 	{
 		++m_FrameNr;

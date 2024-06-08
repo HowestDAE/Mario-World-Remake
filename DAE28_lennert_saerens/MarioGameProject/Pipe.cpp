@@ -4,7 +4,7 @@
 
 bool Pipe::m_Sublevel{ false };
 
-Pipe::Pipe(const Point2f& startingPos, const Texture* tex, const SoundEffect* sound, const state& state, const bool& mirrored)
+Pipe::Pipe(const Point2f& startingPos, const Texture* tex, const SoundEffect* sound, const state& state, const bool& mirrored) noexcept
 	:m_Pos {startingPos}
 	, m_pSoundEffect{ sound }
 	,m_pTexture{ tex }
@@ -25,7 +25,7 @@ Pipe::Pipe(const Point2f& startingPos, const Texture* tex, const SoundEffect* so
 
 }
 
-void Pipe::Update(float elapsedSec, Mario* mario)
+void Pipe::Update(float elapsedSec, Mario* mario) noexcept
 {
 	Rectf marioRect{ mario->GetBounds() };
 	Rectf marioHeadRect{ marioRect.left,marioRect.bottom + (marioRect.height / 4) * 3 ,marioRect.width, marioRect.height / 4 };
@@ -55,7 +55,7 @@ void Pipe::Update(float elapsedSec, Mario* mario)
 			m_Sublevel = !m_Sublevel;
 			mario->SetPosX(2094 * 2);
 			mario->SetPosY(131 * 2);
-			mario->SetVel(Vector2f(1000.f, 1000.f));
+			mario->SetVel(Vector2f(600.f, 1000.f));
 			mario->SetCanMove(true);
 			m_GoingIn = false;
 		}
@@ -97,7 +97,7 @@ void Pipe::Update(float elapsedSec, Mario* mario)
 	
 }
 
-void Pipe::Draw() const
+void Pipe::Draw() const noexcept
 {
 	Point2f centerPos{ m_Pos.x + m_Bounds.width / 2, m_Pos.y + m_Bounds.height / 2 };
 	glPushMatrix();

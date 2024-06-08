@@ -4,7 +4,7 @@
 #include "utils.h"
 #include "Block.h"
 
-PowerUp::PowerUp(const Mario& mario, const Point2f& pos, const Texture* tex, const SoundEffect* sound, bool iscollectable)
+PowerUp::PowerUp(const Mario& mario, const Point2f& pos, const Texture* tex, const SoundEffect* sound, bool iscollectable) noexcept
 	:m_Pos{pos}
 	,m_Velocity{Vector2f(0,0)}
 	,m_pSound{sound}
@@ -27,7 +27,7 @@ PowerUp::PowerUp(const Mario& mario, const Point2f& pos, const Texture* tex, con
 	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width, m_SrcRect.height);
 }
 
-PowerUp::PowerUp(const PowerUpType& powerup, const Point2f& pos, const Texture* tex, const SoundEffect* sound, bool iscollectable)
+PowerUp::PowerUp(const PowerUpType& powerup, const Point2f& pos, const Texture* tex, const SoundEffect* sound, bool iscollectable) noexcept
 	:m_Pos{ pos }
 	, m_Velocity{ Vector2f(0,0) }
 	, m_pSound{ sound }
@@ -50,7 +50,7 @@ PowerUp::PowerUp(const PowerUpType& powerup, const Point2f& pos, const Texture* 
 
 }
 
-void PowerUp::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, std::vector<Block*> blocks)
+void PowerUp::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, std::vector<Block*> blocks) noexcept
 {
 	if (m_IsCollectable)
 	{
@@ -144,7 +144,7 @@ void PowerUp::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& 
 	}
 }
 
-void PowerUp::Draw() const
+void PowerUp::Draw() const noexcept
 {
 	if (m_IsCollectable)
 	{
@@ -152,7 +152,7 @@ void PowerUp::Draw() const
 	}
 }
 
-bool PowerUp::Collect(Mario* mario)
+bool PowerUp::Collect(Mario* mario) noexcept
 {
 	if (m_IsCollectable)
 	{
@@ -167,12 +167,12 @@ bool PowerUp::Collect(Mario* mario)
 	}
 }
 
-PowerUp::PowerUpType PowerUp::GetPowerUpType() const
+PowerUp::PowerUpType PowerUp::GetPowerUpType() const noexcept
 {
 	return m_Type;
 }
 
-void PowerUp::Reset()
+void PowerUp::Reset() noexcept
 {
 	m_IsCollected = false;
 	m_Pos = m_OriginalPos;
@@ -185,7 +185,7 @@ void PowerUp::Reset()
 	m_IsCollectable = m_OriginalCollectableState;
 }
 
-void PowerUp::SetPowerUpType(const PowerUpType& type)
+void PowerUp::SetPowerUpType(const PowerUpType& type) noexcept
 {
 	if (m_Changable)
 	{
@@ -203,12 +203,12 @@ void PowerUp::SetPowerUpType(const PowerUpType& type)
 	}
 }
 
-void PowerUp::SetIsCollectable(bool flag)
+void PowerUp::SetIsCollectable(bool flag) noexcept
 {
 	m_IsCollectable = flag;
 }
 
-void PowerUp::SetPosY(float pos)
+void PowerUp::SetPosY(float pos) noexcept
 {
 	m_Pos.y = pos;
 }

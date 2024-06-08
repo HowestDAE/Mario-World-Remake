@@ -5,10 +5,11 @@
 class Checkpoint final
 {
 public:
-	explicit Checkpoint(const Point2f& pos, const Texture* tex, const SoundEffect* sound);
-	void Draw() const;
-	void CheckIsHit(Mario* mario);
-	void Update();
+	explicit Checkpoint(const Point2f& pos, const Texture* tex, const SoundEffect* sound) noexcept;
+	void Draw() const noexcept;
+	void CheckIsHit(Mario* mario) noexcept;
+	void Update() noexcept;
+	void Reset() noexcept;
 private:
 	const Point2f m_Pos;
 	bool m_IsHit;

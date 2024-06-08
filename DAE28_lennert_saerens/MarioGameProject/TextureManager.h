@@ -13,15 +13,15 @@ public:
 		Finish,
 	};
 
-	explicit TextureManager();
-	~TextureManager();
+	explicit TextureManager() noexcept;
+	~TextureManager() noexcept;
 	TextureManager(const TextureManager& other) = delete; //Copy constructor afzetten (rule of three)
-	TextureManager(TextureManager&& other);
+	TextureManager(TextureManager&& other) noexcept;
 
-	Texture* GiveTexture(const Textures& tex) const;
+	Texture* GiveTexture(const Textures& tex) const noexcept;
 
-	TextureManager& operator=(const TextureManager& rhs) = delete; // asignment= operator afzetten
-	TextureManager& operator=(TextureManager&& other);
+	TextureManager& operator=(const TextureManager& rhs) = delete ; // asignment= operator afzetten
+	TextureManager& operator=(TextureManager&& other) noexcept;
 protected:
 	Texture* m_pCoinTexture;
 	Texture* m_pPowerUpTexture;

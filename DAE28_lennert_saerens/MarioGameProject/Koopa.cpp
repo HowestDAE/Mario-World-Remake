@@ -2,7 +2,7 @@
 #include "Koopa.h"
 #include "Mario.h"
 
-Koopa::Koopa(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
+Koopa::Koopa(const Point2f& pos, const Texture* tex, const SoundEffect* sound) noexcept
 	:Enemy::Enemy(pos,tex,sound)
 {
 	m_HP = 1;
@@ -10,7 +10,7 @@ Koopa::Koopa(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
 	m_LookingRight = true;
 }
 
-void Koopa::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario)
+void Koopa::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario)noexcept
 {
 	if (m_Pos.x - mario->GetPos().x <= 500.f && mario->GetPos().x - m_Pos.x >= -500.f)
 	{
@@ -95,7 +95,7 @@ void Koopa::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 	Animate(elapsedSec);
 }
 
-void Koopa::Reset()
+void Koopa::Reset() noexcept
 {
 	m_IsAlive = true;
 	m_Velocity = Vector2f(0, 0);
@@ -110,7 +110,7 @@ void Koopa::Reset()
 	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2);
 }
 
-void Koopa::Animate(float elapsedSec)
+void Koopa::Animate(float elapsedSec) noexcept
 {
 	m_SrcRect = Rectf(129, 52, 16, 15);
 }

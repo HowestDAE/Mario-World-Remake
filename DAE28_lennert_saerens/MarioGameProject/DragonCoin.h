@@ -5,11 +5,11 @@
 class DragonCoin final: public Coin 
 {
 public:
-	explicit DragonCoin(const Point2f& pos, const Texture* tex, const SoundEffect* sound);
+	explicit DragonCoin(const Point2f& pos, const Texture* tex, const SoundEffect* sound) noexcept;
 
 
-	virtual void Animate()override;
-	virtual void Collect(Mario* mario);
+	virtual void Animate() noexcept override;
+	virtual void Collect(Mario* mario) noexcept;
 
 };
 

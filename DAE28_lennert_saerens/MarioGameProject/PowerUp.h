@@ -15,16 +15,16 @@ public:
 		Mushroom,
 		Flower
 	};
-	explicit PowerUp(const Mario& mario, const Point2f& pos, const Texture* tex, const SoundEffect* sound, bool iscollectable);
-	explicit PowerUp(const PowerUpType& powerup, const Point2f& pos, const Texture* tex, const SoundEffect* sound, bool iscollectable);
-	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, std::vector<Block*> blocks);
-	void Draw() const;
-	bool Collect(Mario* mario);
-	PowerUpType GetPowerUpType() const;
-	void Reset();
-	void SetPowerUpType(const PowerUpType& type);
-	void SetIsCollectable(bool flag);
-	void SetPosY(float pos);
+	explicit PowerUp(const Mario& mario, const Point2f& pos, const Texture* tex, const SoundEffect* sound, bool iscollectable) noexcept;
+	explicit PowerUp(const PowerUpType& powerup, const Point2f& pos, const Texture* tex, const SoundEffect* sound, bool iscollectable) noexcept;
+	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, std::vector<Block*> blocks) noexcept;
+	void Draw() const noexcept;
+	bool Collect(Mario* mario) noexcept;
+	PowerUpType GetPowerUpType() const noexcept;
+	void Reset() noexcept;
+	void SetPowerUpType(const PowerUpType& type) noexcept;
+	void SetIsCollectable(bool flag) noexcept;
+	void SetPosY(float pos) noexcept;
 	//PowerUp(const PowerUp& other) = delete; //Copy constructor afzetten (rule of three)
 	//PowerUp(PowerUp&& other);
 	//~PowerUp();

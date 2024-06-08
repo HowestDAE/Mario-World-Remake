@@ -14,9 +14,9 @@ public:
 		vertical,
 	};
 
-	explicit Pipe(const Point2f& startingPos, const Texture* tex, const SoundEffect* sound, const state& state, const bool& mirrored);
-	void Update(float elapsedSec, Mario* mario) ;
-	void Draw() const;
+	explicit Pipe(const Point2f& startingPos, const Texture* tex, const SoundEffect* sound, const state& state, const bool& mirrored) noexcept;
+	void Update(float elapsedSec, Mario* mario) noexcept;
+	void Draw() const noexcept;
 
 	static bool m_Sublevel;
 

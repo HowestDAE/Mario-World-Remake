@@ -5,21 +5,21 @@
 class Block 
 {
 public:
-	explicit Block(const Point2f& pos, const Texture* tex, const SoundEffect* sound);
+	explicit Block(const Point2f& pos, const Texture* tex, const SoundEffect* sound) noexcept;
 	Block(const Block& other) = default;
 	Block(Block&& other) = default;
 	Block& operator=(const Block& rhs) = default; 
 	Block& operator=(Block&& other) = default;
 
-	virtual void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks);
-	virtual void Draw() const;
-	virtual void CheckHit(Mario* mario);
-	virtual void Reset();
-	virtual bool GetIsHit() const;
-	virtual bool GetIsBroken() const;
-	virtual Rectf GetBounds() const;
+	virtual void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks) noexcept;
+	virtual void Draw() const noexcept;
+	virtual void CheckHit(Mario* mario) noexcept;
+	virtual void Reset() noexcept;
+	virtual bool GetIsHit() const noexcept;
+	virtual bool GetIsBroken() const noexcept;
+	virtual Rectf GetBounds() const noexcept;
 protected:
-	void Animate(float elapsedSec);
+	void Animate(float elapsedSec) noexcept;
 
 	Point2f m_Pos;
 	Rectf m_Bounds;

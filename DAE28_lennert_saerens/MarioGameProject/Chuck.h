@@ -4,12 +4,12 @@
 class Chuck final : public Enemy
 {
 public:
-	explicit Chuck(const Point2f& pos, const Texture* tex, const SoundEffect* sound, const SoundEffect* clapSound);
-	virtual void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario) override;
-	virtual void Reset() override;
+	explicit Chuck(const Point2f& pos, const Texture* tex, const SoundEffect* sound, const SoundEffect* clapSound) noexcept;
+	virtual void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario)noexcept override;
+	virtual void Reset()noexcept override;
 private:
 
-	virtual void Animate(float elapsedSec, const Mario* mario);
+	virtual void Animate(float elapsedSec, const Mario* mario) noexcept;
 
 	const SoundEffect* m_pClapSound;
 	Point2f m_GroundPos;

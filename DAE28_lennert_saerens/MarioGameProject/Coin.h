@@ -6,7 +6,7 @@ class Mario;
 class Coin 
 {
 public:
-	explicit Coin(const Point2f& pos, const Texture* coinTex, const SoundEffect* sound);
+	explicit Coin(const Point2f& pos, const Texture* coinTex, const SoundEffect* sound) noexcept;
 	Coin(const Coin& other) = default; //Copy constructor afzetten (rule of three)
 	Coin(Coin&& other) = default;
 	Coin& operator=(const Coin& rhs) = default; // asignment= operator afzetten
@@ -15,11 +15,11 @@ public:
 
 	//virtual ~Coin();
 
-	virtual void Draw() const;
-	virtual void Update(float elapsedSec);
-	virtual void Animate();
-	virtual void Collect(Mario* mario);
-	virtual void Reset();
+	virtual void Draw() const noexcept;
+	virtual void Update(float elapsedSec) noexcept;
+	virtual void Animate() noexcept;
+	virtual void Collect(Mario* mario) noexcept;
+	virtual void Reset() noexcept;
 
 	//Coin& operator=(const Coin& rhs) = delete; // asignment= operator afzetten
 

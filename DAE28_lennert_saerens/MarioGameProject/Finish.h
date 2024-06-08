@@ -8,10 +8,10 @@
 class Finish final
 {
 public:
-	explicit Finish(const Point2f& pos, const Texture* tex, const SoundEffect* sound);
-	void Draw() const;
-	void CheckIsHit(Mario* mario);
-	void Update(float elapsedSec);
+	explicit Finish(const Point2f& pos, const Texture* tex, const SoundEffect* sound) noexcept;
+	void Draw() const noexcept;
+	void CheckIsHit(Mario* mario) noexcept;
+	void Update(float elapsedSec) noexcept;
 private:
 	Point2f m_Pos;
 	Point2f m_BarPos;
