@@ -15,7 +15,7 @@ Chuck::Chuck(const Point2f& pos, const Texture* tex, const SoundEffect* sound, c
 	m_Velocity = Vector2f(0.f, 0.f);
 }
 
-void Chuck::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const Mario* mario)
+void Chuck::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario)
 {
 	if (m_Pos.x - mario->GetPos().x <= 500.f)
 	{
@@ -25,9 +25,11 @@ void Chuck::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 
 		m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2);
 
-		if (m_HP <= 0)
+		if (m_HP <= 0 && m_DeathAnimation == false)
 		{
 			m_DeathAnimation = true;
+			mario->AddPoints(200);
+
 		}
 		if (m_DeathAnimation == true)
 		{

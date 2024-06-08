@@ -152,13 +152,14 @@ void PowerUp::Draw() const
 	}
 }
 
-bool PowerUp::Collect(const Mario* mario)
+bool PowerUp::Collect(Mario* mario)
 {
 	if (m_IsCollectable)
 	{
 		if (utils::IsOverlapping(Rectf{ m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2 }, mario->GetBounds()) && m_IsCollected == false)
 		{
 			m_IsCollected = true;
+			mario->AddPoints(500);
 			m_pSound->Play(0);
 			return true;
 		}

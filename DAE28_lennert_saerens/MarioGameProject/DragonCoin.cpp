@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "DragonCoin.h"
+#include "Mario.h"
+#include "utils.h"
 
 DragonCoin::DragonCoin(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
 	:Coin(pos, tex, sound)
@@ -18,5 +20,15 @@ void DragonCoin::Animate()
 		else if (m_CurrFrame%6 == 3) m_SrcRect = Rectf(48, 60, 16, 25);
 		else if (m_CurrFrame%6 == 4) m_SrcRect = Rectf(64, 60, 16, 25);
 		else if (m_CurrFrame%6 == 5) m_SrcRect = Rectf(80, 60, 16, 25);
+	}
+}
+
+void DragonCoin::Collect(Mario* mario)
+{
+	if (utils::IsOverlapping(Rectf{ m_Pos.x - m_SrcRect.width, m_Pos.y - m_SrcRect.height, m_SrcRect.width * 2, m_SrcRect.height * 2 }, mario->GetBounds()) && m_IsCollected == false)
+	{
+		m_IsCollected = true;
+		m_pCoinSound->Play(0);
+		mario->AddPoints(1000);
 	}
 }

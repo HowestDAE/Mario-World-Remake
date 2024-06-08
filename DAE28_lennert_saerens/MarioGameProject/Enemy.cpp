@@ -22,13 +22,14 @@ Enemy::Enemy(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
 	m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width*2, m_SrcRect.height*2);
 }
 
-void Enemy::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const Mario* mario)
+void Enemy::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario)
 {
 	if (m_Pos.x - mario->GetPos().x <= 500.f && m_Pos.x - mario->GetPos().x>= -500.f)
 	{
-		if (m_HP <= 0)
+		if (m_HP <= 0 && m_DeathAnimation == false)
 		{
 			m_DeathAnimation = true;
+			mario->AddPoints(200);
 		}
 
 		if (m_DeathAnimation == false)

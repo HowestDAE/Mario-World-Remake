@@ -26,7 +26,7 @@ public:
 	~Level();
 
 	void Update(float elapsedSec) ;
-	void Draw() const ;
+	void Draw(const Rectf& vieuwPort) const ;
 
 	// Event handling
 	void ProcessKeyDownEvent(const SDL_KeyboardEvent& e);
@@ -66,5 +66,7 @@ private:
 	std::vector<Coin*> m_pCoins;
 	std::vector<PowerUp*> m_pPowerUps;
 	std::vector<Block*> m_pBlocks;
+	static float m_Timer;
+	int m_IntTimer;
 };
 

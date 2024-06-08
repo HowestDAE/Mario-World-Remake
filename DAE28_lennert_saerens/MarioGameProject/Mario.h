@@ -34,6 +34,7 @@ public:
 	~Mario();
 	void Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const std::vector<Block*>& blocks);
 	void Draw() const;
+	void DrawUI(const Rectf& vieuwPort) const;
 	void HandleMovement(float elapsedSec, const Uint8* pStates) ;
 	void OnKeyUpEvent(const SDL_KeyboardEvent& e);
 	void OnKeyDownEvent(const SDL_KeyboardEvent& e);
@@ -58,6 +59,8 @@ public:
 	void SetFinishHit(bool flag);
 	void SetLevelClear(bool flag);
 	void SetCanMove(bool flag);
+	void SetDead();
+	void AddPoints(int points);
 
 	bool GetFinishHit() const;
 	bool GetLevelClear() const;
@@ -82,6 +85,11 @@ private:
 	Vector2f m_Velocity;
 	Texture* m_pSpritesheet;
 	Texture* m_pFireBallTex;
+	/*Texture* m_pLivesTex;
+	Texture* m_pLivesAmountTex;
+	Texture* m_pCoinAmountTex;
+	Texture* m_pCoinStringTex;
+	Texture* m_pPointsStringTex;*/
 	Rectf m_Bounds;
 	PowerUpState m_Mariostate;
 	WalkingState m_WalkingState;
@@ -99,6 +107,8 @@ private:
 	float m_TimeInAir;
 	int m_FrameNr;
 	int m_CoinCount;
+	int m_PointCount;
+	int m_LivesCount;
 	bool m_CanJump;
 	bool m_IsOnGround;
 	bool m_IsAlive;

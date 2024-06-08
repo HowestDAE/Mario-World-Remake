@@ -10,13 +10,15 @@ Koopa::Koopa(const Point2f& pos, const Texture* tex, const SoundEffect* sound)
 	m_LookingRight = true;
 }
 
-void Koopa::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const Mario* mario)
+void Koopa::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, Mario* mario)
 {
 	if (m_Pos.x - mario->GetPos().x <= 500.f && mario->GetPos().x - m_Pos.x >= -500.f)
 	{
-		if (m_HP <= 0)
+		if (m_HP <= 0 && m_DeathAnimation == false)
 		{
 			m_DeathAnimation = true;
+			mario->AddPoints(200);
+
 		}
 
 		if (m_DeathAnimation == false)

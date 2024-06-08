@@ -106,7 +106,8 @@ The controls are pretty simple
 * Arrow key down to crouch
 * Space to jump
 * Shift to sprint
-* Spinjumping will be added
+* Spinjumping with left alt
+* Going down a pipe by pressing the down key or in a pipe by holding the position of the pipe
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -116,12 +117,18 @@ The controls are pretty simple
 ## Class structure 
 
 ### Object composition 
-Thus far i haven't used Object Composition, but i will in the future for a koopa enemy;
+I have used object composition for the fireballs that are shot by mario;
 
 ### Inheritance 
 Inheritance is used for all enemy types, they all inherit from one enemy class.
+Inhertitance is also udes for the blocks, the question mark block is inherited from the normal block.
+The dragon coin inherits from the basic coin.
 
-### ..
+### Agregation
+Agregation is used for the managers: Enemy manager, texture manager and sound manager. They are used in multiple instances of the level class.
+
+### Association
+Association is not used
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -139,10 +146,10 @@ Inheritance is used for all enemy types, they all inherit from one enemy class.
 - [x] week 04 topics applied
 - [x] week 05 topics applied
 - [x] week 06 topics applied
-- [ ] week 07 topics applied
-- [ ] week 08 topics applied
+- [x] week 07 topics applied
+- [x] week 08 topics applied
 - [ ] week 09 topics applied (optional)
-- [ ] week 10 topics applied (optional)
+- [x] week 10 topics applied (optional)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

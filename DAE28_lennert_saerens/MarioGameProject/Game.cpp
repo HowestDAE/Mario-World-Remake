@@ -326,7 +326,7 @@ void Game::Update( float elapsedSec )
 void Game::Draw( ) const
 {
 	ClearBackground();
-	m_pLevel->Draw();
+	m_pLevel->Draw(GetViewPort());
 	///*glPushMatrix();
 	//glScalef(2.f, 2.f, 0.f);*/
 	//m_pCamera->Aim(m_pMap->GetWidth()*2, m_pMap->GetHeight()*2, m_pMario->GetPos());

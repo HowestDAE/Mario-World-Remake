@@ -9,5 +9,7 @@ public:
 
 
 	virtual void Animate()override;
+	virtual void Collect(Mario* mario);
+
 };
 

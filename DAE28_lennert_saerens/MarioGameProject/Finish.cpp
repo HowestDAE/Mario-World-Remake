@@ -34,6 +34,7 @@ void Finish::CheckIsHit(Mario* mario)
 			m_IsHit = true;
 			mario->SetFinishHit(true);
 			mario->SetVelX(0);
+			mario->AddPoints(1000);
 		}
 	}
 }

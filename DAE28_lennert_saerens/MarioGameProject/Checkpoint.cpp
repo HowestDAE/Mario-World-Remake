@@ -24,6 +24,7 @@ void Checkpoint::CheckIsHit(Mario* mario)
 		{
 			m_IsHit = true;
 			mario->SetCheckpointHit();
+			mario->AddPoints(500);
 			m_pSoundEffect->Play(0);
 		}
 	}

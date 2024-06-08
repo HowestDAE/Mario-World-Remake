@@ -16,7 +16,7 @@ PiranhaPlant::PiranhaPlant(const Point2f& pos, const Texture* tex, const SoundEf
 	m_Velocity = Vector2f(0.f, 0.f);
 }
 
-void PiranhaPlant::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms, const Mario* mario)
+void PiranhaPlant::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& landscape, const std::vector<std::vector<Point2f>>& platforms,  Mario* mario)
 {
 	if (m_Pos.x - mario->GetPos().x <= 500.f && mario->GetPos().x - m_Pos.x >= -500.f)
 	{
@@ -26,9 +26,11 @@ void PiranhaPlant::Update(float elapsedSec, const std::vector<std::vector<Point2
 
 		m_Bounds = Rectf(m_Pos.x, m_Pos.y, m_SrcRect.width * 2, m_SrcRect.height * 2);
 
-		if (m_HP <= 0)
+		if (m_HP <= 0 && m_DeathAnimation == false)
 		{
 			m_DeathAnimation = true;
+			mario->AddPoints(200);
+
 		}
 		if (m_DeathAnimation == true)
 		{

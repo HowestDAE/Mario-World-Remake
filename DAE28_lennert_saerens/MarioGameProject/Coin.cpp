@@ -63,6 +63,7 @@ void Coin::Collect(Mario* mario)
 		m_IsCollected = true;
 		m_pCoinSound->Play(0);
 		mario->AddCoin();
+		mario->AddPoints(200);
 	}
 }
 

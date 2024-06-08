@@ -17,6 +17,10 @@
 #include "QBlock.h"
 #include "Finish.h"
 #include "Pipe.h"
+#include <sstream>
+#include <iomanip>
+
+float Level::m_Timer = 300;
 
 Level::Level(int levelNr, const Texture* levelTex, const std::vector<std::vector<Point2f>> landscape, const std::vector<std::vector<Point2f>> platforms, const Rectf vieuwPort, Mario* mario, bool start)
 {
@@ -33,6 +37,7 @@ Level::Level(int levelNr, const Texture* levelTex, const std::vector<std::vector
 	m_pCamera = new Camera(vieuwPort.width, vieuwPort.height);
 	m_pEnemyManager = new EnemyManager(m_pTextureManager->GiveTexture(TextureManager::Textures::Enemies));
 	m_CurrLevel = levelNr;
+	m_IntTimer = static_cast<int> (m_Timer);
 
 
 	
@@ -233,6 +238,7 @@ void Level::Update(float elapsedSec)
 {
 	if (!m_IsPaused)
 	{
+
 		const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 		if (m_pMario->GetLevelClear())
 		{
@@ -241,7 +247,18 @@ void Level::Update(float elapsedSec)
 			m_TitleScreen = true;
 			m_IsPaused = true;
 			m_pBackgroundMusic->Stop();
+			m_Timer = 300;
 			m_pTitleMusic->Play(1);
+		}
+		if (!m_pMario->GetFinishHit())
+		{
+			m_Timer -= elapsedSec;
+		}
+		m_IntTimer = static_cast<int> (m_Timer);
+
+		if (m_Timer < 0)
+		{
+			m_pMario->SetDead();
 		}
 
 		m_pMario->HandleMovement(elapsedSec, pStates);
@@ -287,6 +304,7 @@ void Level::Update(float elapsedSec)
 			if (m_pMario->GetPos().y <= -5000.f)
 			{
 				Respawn();
+				m_Timer = 300;
 			}
 		}
 		
@@ -303,7 +321,7 @@ void Level::Update(float elapsedSec)
 	}
 }
 
-void Level::Draw() const
+void Level::Draw(const Rectf& vieuwPort) const
 {
 	/*glPushMatrix();
 	glScalef(2.f, 2.f, 0.f);*/
@@ -345,6 +363,16 @@ void Level::Draw() const
 	}
 	//utils::DrawRect(m_pMario->GetBounds());
 	m_pCamera->Reset();
+	m_pMario->DrawUI(vieuwPort);
+
+	std::string timeSting{ "Time" };
+	std::ostringstream timeAmount{};
+	//pointsAmount.str() << std::to_string(m_PointCount);
+	timeAmount << std::setfill('0') << std::setw(3) << std::to_string(m_IntTimer);
+	Texture* timeStringTex = new Texture(timeSting, "Super-Mario-World.ttf", 24, Color4f(1.f, 1.f, 0.f, 1.f));
+	Texture* timeStringAmountTex = new Texture(timeAmount.str(), "Super-Mario-World.ttf", 18, Color4f(1.f, 1.f, 0.f, 1.f));
+	timeStringTex->Draw(Point2f(vieuwPort.width/2 - timeStringTex->GetWidth()/2, vieuwPort.height - 50.f));
+	timeStringAmountTex->Draw(Point2f(vieuwPort.width / 2 - timeStringAmountTex->GetWidth() / 2, vieuwPort.height - 50.f - timeStringTex->GetHeight()));
 	//glPopMatrix();
 	if (m_TitleScreen)
 	{

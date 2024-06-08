@@ -2,6 +2,8 @@
 #include "Mario.h"
 #include "iostream"
 #include "FireBall.h"
+#include <sstream>
+#include <iomanip>
 
 
 Mario::Mario(const Point2f& startingPos)
@@ -29,6 +31,13 @@ Mario::Mario(const Point2f& startingPos)
 	,m_WinTimer{0}
 	,m_LevelClear{false}
 	,m_CanMove{true}
+	,m_LivesCount{5}
+	,m_PointCount{0}
+	/*,m_pLivesTex{}
+	,m_pLivesAmountTex{}
+	,m_pCoinAmountTex{}
+	,m_pCoinStringTex{}
+	,m_pPointsStringTex{}*/
 {
 	m_pSpritesheet = new Texture("mario-spritesheet2.png");
 	m_Bounds = Rectf(400, 110, GetCurrFrameRect().width*2, GetCurrFrameRect().height*2);
@@ -230,7 +239,7 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 	}
 	if (m_Velocity.x > 0 && m_IsOnGround == 1) m_Velocity.x += friction * elapsedSec;
 	if (m_Velocity.x < 0 && m_IsOnGround == 1)m_Velocity.x -= friction * elapsedSec;
-	if (m_Velocity.x > -1.f && m_Velocity.x < 1.f) m_Velocity.x = 0;
+	if (m_Velocity.x > -2.f && m_Velocity.x < 2.f) m_Velocity.x = 0;
 	if (m_IsAlive == false)
 	{
 		m_Velocity.y += gravity/3;
@@ -305,8 +314,13 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 			ResetStart();
 			m_LevelClear = true;
 		}
+		
 	}
-
+	if (m_LivesCount < 0)
+	{
+		ResetStart();
+		m_LevelClear = true;
+	}
 }
 
 void Mario::Draw() const
@@ -321,6 +335,25 @@ void Mario::Draw() const
 	{
 		if (m_pFireBalls[idx] != nullptr) m_pFireBalls[idx]->Draw();
 	}
+}
+
+void Mario::DrawUI(const Rectf& vieuwPort) const
+{
+	std::string livesSting{ "Mario" };
+	std::string livesStingAmount = 'x' + std::to_string(m_LivesCount);
+	Texture* livesStringTex = new Texture(livesSting, "Super-Mario-World.ttf", 24, Color4f(1.f, 0.f, 0.f, 1.f));
+	Texture* livesStringAmountTex = new Texture(livesStingAmount, "Super-Mario-World.ttf", 18, Color4f(1.f, 1.f, 1.f, 1.f));
+	livesStringTex->Draw(Point2f(50.f, vieuwPort.height - 50.f));
+	livesStringAmountTex->Draw(Point2f(50.f, vieuwPort.height - 50.f - livesStringTex->GetHeight()));
+	
+	std::string coinAmount = 'x' + std::to_string(m_CoinCount);
+	std::ostringstream pointsAmount{};
+	//pointsAmount.str() << std::to_string(m_PointCount);
+	pointsAmount << std::setfill('0') << std::setw(5)<< std::to_string(m_PointCount);
+	Texture* coinStringTex = new Texture(coinAmount, "Super-Mario-World.ttf", 18, Color4f(1.f, 1.f, 1.f, 1.f));
+	Texture* pointsStringAmountTex = new Texture(pointsAmount.str(), "Super-Mario-World.ttf", 18, Color4f(1.f, 1.f, 1.f, 1.f));
+	coinStringTex->Draw(Point2f(vieuwPort.width - 50.f - coinStringTex->GetWidth(), vieuwPort.height - 50.f));
+	pointsStringAmountTex->Draw(Point2f(vieuwPort.width - 50.f - pointsStringAmountTex->GetWidth(), vieuwPort.height - 50.f - livesStringTex->GetHeight()));
 }
 
 void Mario::WalkRight(float elapsedSec, const Uint8* pStates)
@@ -939,6 +972,7 @@ void Mario::Bounce(float ypos)
 void Mario::Reset()
 {
 	m_CoinCount = 0;
+	m_PointCount = 0;
 	m_IsAlive = true;
 	if (m_CheckpointHit == false)
 	{
@@ -950,6 +984,7 @@ void Mario::Reset()
 	}
 	m_Mariostate = PowerUpState::small;
 	m_Velocity.y = 0;
+	m_LivesCount -= 1;
 }
 
 void Mario::ResetStart()
@@ -976,6 +1011,7 @@ void Mario::ResetStart()
 	m_CheckpointHit = false;
 	m_FinishHit = false;
 	m_WinTimer = 0;
+	m_LivesCount = 6;
 }
 
 void Mario::SetCheckpointHit()
@@ -1042,6 +1078,19 @@ void Mario::SetLevelClear(bool flag)
 void Mario::SetCanMove(bool flag)
 {
 	m_CanMove = flag;
+}
+
+void Mario::SetDead()
+{
+	m_IsAlive = false;
+	m_Velocity.y = 500;
+	m_Velocity.x = 0;
+	m_pDeathEffect->Play(0);
+}
+
+void Mario::AddPoints(int points)
+{
+	m_PointCount += points;
 }
 
 void Mario::OnKeyUpEvent(const SDL_KeyboardEvent& e)
