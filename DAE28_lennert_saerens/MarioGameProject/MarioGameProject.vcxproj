@@ -164,6 +164,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
+    <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="PiranhaPlant.cpp" />
     <ClCompile Include="PowerUp.cpp" />
     <ClCompile Include="QBlock.cpp" />
@@ -187,6 +188,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="Mario.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="EnemyManager.h" />
+    <ClInclude Include="Pipe.h" />
     <ClInclude Include="PiranhaPlant.h" />
     <ClInclude Include="PowerUp.h" />
     <ClInclude Include="QBlock.h" />

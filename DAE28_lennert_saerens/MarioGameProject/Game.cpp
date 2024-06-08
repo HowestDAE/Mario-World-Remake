@@ -4,6 +4,7 @@
 #include "Matrix2x3.h"
 #include "utils.h"
 #include "Mario.h"
+#include "Pipe.h"
 
 
 
@@ -110,6 +111,8 @@ void Game::Initialize( )
 	m_pBlocks.push_back(new QBlock(Point2f(3888*2, 144*2), m_pTextureManager->GiveTexture(TextureManager::Textures::block), m_pSoundManager->GiveSound(SoundEffectManager::Sounds::block), m_pPowerUps[1]));*/
 	m_pMario = new Mario(Point2f(50, 200));
 
+	m_CurrentLevel = 1;
+
 	m_pMap = new Texture("yoshis-island-1-top no enemies.png");
 
 	SVGParser::GetVerticesFromSvgFile("yoshis-island-1-top-NoLag.svg", m_Landscape);
@@ -132,7 +135,7 @@ void Game::Initialize( )
 		Matrix2x3 transformMatrix{ scaleMat };
 		m_Platforms[idx] = transformMatrix.Transform(m_Platforms[idx]);
 	}
-	m_pLevel = new Level(1, m_pMap, m_Landscape, m_Platforms, GetViewPort(), m_pMario);
+	m_pLevel = new Level(1, m_pMap, m_Landscape, m_Platforms, GetViewPort(), m_pMario, true);
 
 }
 
@@ -204,7 +207,68 @@ void Game::Cleanup()
 
 void Game::Update( float elapsedSec )
 {
-	m_pLevel->Update(elapsedSec);
+	if (Pipe::m_Sublevel == true && m_CurrentLevel == 1)
+	{
+		m_CurrentLevel = 2;
+		delete m_pLevel;
+		delete m_pMap;
+		m_Landscape.clear();
+		m_Platforms.clear();
+		SVGParser::GetVerticesFromSvgFile("yoshis-island-1-bottom.svg", m_Landscape);
+		SVGParser::GetVerticesFromSvgFile("yoshis-island-1-bottom platforms.svg", m_Platforms);
+		
+		Matrix2x3 scaleMat{};
+		scaleMat.SetAsScale(2.f);
+
+		for (int idx{}; idx < m_Landscape.size(); ++idx)
+		{
+			Matrix2x3 transformMatrix{ scaleMat };
+			m_Landscape[idx] = transformMatrix.Transform(m_Landscape[idx]);
+		}
+		for (int idx{}; idx < m_Platforms.size(); ++idx)
+		{
+			Matrix2x3 transformMatrix{ scaleMat };
+			m_Platforms[idx] = transformMatrix.Transform(m_Platforms[idx]);
+		}
+
+		m_pMap = new Texture("yoshis-island-1-bottom no enemies.png");
+
+		m_pLevel = new Level(2, m_pMap, m_Landscape, m_Platforms, GetViewPort(), m_pMario, false);
+
+	}
+	if (Pipe::m_Sublevel == false && m_CurrentLevel == 2)
+	{
+
+		m_CurrentLevel = 1;
+		delete m_pLevel;
+		delete m_pMap;
+		m_Landscape.clear();
+		m_Platforms.clear();
+		m_pMap = new Texture("yoshis-island-1-top no enemies.png");
+
+		SVGParser::GetVerticesFromSvgFile("yoshis-island-1-top-NoLag.svg", m_Landscape);
+		SVGParser::GetVerticesFromSvgFile("yoshis-island-1-top-Platforms.svg", m_Platforms);
+		//for (int idx{}; idx < m_pLandscape.size(); ++idx)
+		//{
+		//	utils::DrawPolygon(m_pLandscape[idx]);
+		//}
+
+		Matrix2x3 scaleMat{};
+		scaleMat.SetAsScale(2.f);
+
+		for (int idx{}; idx < m_Landscape.size(); ++idx)
+		{
+			Matrix2x3 transformMatrix{ scaleMat };
+			m_Landscape[idx] = transformMatrix.Transform(m_Landscape[idx]);
+		}
+		for (int idx{}; idx < m_Platforms.size(); ++idx)
+		{
+			Matrix2x3 transformMatrix{ scaleMat };
+			m_Platforms[idx] = transformMatrix.Transform(m_Platforms[idx]);
+		}
+		m_pLevel = new Level(1, m_pMap, m_Landscape, m_Platforms, GetViewPort(), m_pMario, false);
+
+	}
 	/*const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 	m_pMario->HandleMovement(elapsedSec, pStates);
 	m_pMario->Update(elapsedSec,m_Landscape, m_Platforms, m_pBlocks);
@@ -255,6 +319,8 @@ void Game::Update( float elapsedSec )
 	//{
 	//	std::cout << "Left and up arrow keys are down\n";
 	//}
+	m_pLevel->Update(elapsedSec);
+
 }
 
 void Game::Draw( ) const

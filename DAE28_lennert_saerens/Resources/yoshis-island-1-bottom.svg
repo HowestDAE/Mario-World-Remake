@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="509"
+   height="268"
+   viewBox="0 0 509 268"
+   sodipodi:docname="yoshis-island-1-bottom.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="2.7700804"
+     inkscape:cx="249.45124"
+     inkscape:cy="93.679591"
+     inkscape:window-width="2560"
+     inkscape:window-height="1351"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g1" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Image"
+     id="g1">
+    <image
+       width="509"
+       height="268"
+       preserveAspectRatio="none"
+       xlink:href="yoshis-island-1-bottom%20no%20enemies.png"
+       id="image1" />
+    <path
+       style="fill:#000000"
+       d="m 47.200796,-2.7977527 0.27075,182.8918027 -31.452155,-0.0451 -0.451251,48.05817 304.54892,-0.31588 0.31588,-63.58118 15.34251,-0.0451 0.27075,64.07756 48.37405,0.22563 0.31588,-64.25806 14.84614,0.0451 0.0451,63.89706 76.98333,-0.31587 0.1805,-31.27166 h 19.31352 V 72.425696 l 16.24501,0.225625 1.35375,203.874949 -528.143514,2.166 0.361,-285.912277 z"
+       id="path1" />
+    <path
+       style="fill:#000000"
+       d="M 53.157302,-1.6245016 54.240303,67.868066 515.1475,67.597316 516.14025,-5.5052554 Z"
+       id="path2" />
+  </g>
+</svg>

@@ -16,6 +16,7 @@ public:
 		CheckPoint,
 		block,
 		pause,
+		cannon,
 	};
 
 	explicit SoundEffectManager();
@@ -38,5 +39,6 @@ protected:
 	SoundEffect* m_pCheckpointSound;
 	SoundEffect* m_pBreakSound;
 	SoundEffect* m_pPauseSound;
+	SoundEffect* m_pCannonSound;
 };
 

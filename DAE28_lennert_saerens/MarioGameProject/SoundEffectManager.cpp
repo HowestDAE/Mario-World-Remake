@@ -13,6 +13,7 @@ SoundEffectManager::SoundEffectManager()
 	m_pCheckpointSound = new SoundEffect("Sounds/smw_midway_gate.wav");
 	m_pBreakSound = new SoundEffect("Sounds/smw_break_block.wav");
 	m_pPauseSound = new SoundEffect("Sounds/smw_pause.wav");
+	m_pCannonSound = new SoundEffect("Sounds/smw_thud.wav");
 	
 }
 
@@ -38,6 +39,8 @@ SoundEffectManager::~SoundEffectManager()
 	m_pBreakSound = nullptr;
 	delete m_pPauseSound;
 	m_pPauseSound = nullptr;
+	delete m_pCannonSound;
+	m_pCannonSound = nullptr;
 }
 
 SoundEffectManager::SoundEffectManager(SoundEffectManager&& other)
@@ -62,6 +65,7 @@ SoundEffect* SoundEffectManager::GiveSound(const Sounds& sound) const
 	else if (sound == Sounds::CheckPoint) return m_pCheckpointSound;
 	else if (sound == Sounds::block) return m_pBreakSound;
 	else if (sound == Sounds::pause) return m_pPauseSound;
+	else if (sound == Sounds::cannon) return m_pCannonSound;
 }
 
 SoundEffectManager& SoundEffectManager::operator=(SoundEffectManager&& other)

@@ -57,6 +57,7 @@ public:
 	void SetCanJump(bool flag);
 	void SetFinishHit(bool flag);
 	void SetLevelClear(bool flag);
+	void SetCanMove(bool flag);
 
 	bool GetFinishHit() const;
 	bool GetLevelClear() const;
@@ -105,6 +106,7 @@ private:
 	bool m_CheckpointHit;
 	bool m_FinishHit;
 	bool m_LevelClear;
+	bool m_CanMove;
 	float m_InvinTimer;
 	float m_WinTimer;
 	float m_IFrames;

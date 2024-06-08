@@ -60,6 +60,7 @@ private:
 	std::vector<std::vector<Point2f>> m_Platforms;
 	Texture* m_pMap;
 	Level* m_pLevel;
+	int m_CurrentLevel;
 	
 
 	// FUNCTIONS

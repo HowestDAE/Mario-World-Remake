@@ -28,6 +28,7 @@ Mario::Mario(const Point2f& startingPos)
 	,m_FinishHit{false}
 	,m_WinTimer{0}
 	,m_LevelClear{false}
+	,m_CanMove{true}
 {
 	m_pSpritesheet = new Texture("mario-spritesheet2.png");
 	m_Bounds = Rectf(400, 110, GetCurrFrameRect().width*2, GetCurrFrameRect().height*2);
@@ -112,7 +113,7 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 {
 
 	const float gravity{ -21.f };
-	const float friction{ -1.4f };
+	const float friction{ -600.f };
 
 	const Point2f leftTop{ m_Pos.x+1, m_Pos.y + m_Bounds.height };
 	const Point2f leftBottom{ m_Pos.x+1, m_Pos.y };
@@ -148,6 +149,12 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 				m_TimeInAir = 0;
 				m_CanJump = 1;
 				m_IsOnGround = 1;
+			}
+			if ((utils::Raycast(collissionShape, leftTop, leftMiddle, hitInfo) || utils::Raycast(collissionShape, rightTop, rightMiddle, hitInfo)) && m_Velocity.y > 0)
+			{
+				m_Velocity.y = 0;
+				m_Pos.y = hitInfo.intersectPoint.y - m_Bounds.height;
+				m_CanJump = false;
 			}
 			if ((utils::Raycast(collissionShape, lowerLeft, lowerMiddle, hitInfo)))
 			{
@@ -196,10 +203,7 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 				m_IsOnGround = 0;
 				m_CanJump = false;
 			}
-			if (m_Velocity.x > 0 && m_IsOnGround == 1) m_Velocity.x += friction;
-			if (m_Velocity.x < 1.f && m_Velocity.x >-1.f) m_Velocity.x = 0;
-			if (m_Velocity.x < 0 && m_IsOnGround == 1) m_Velocity.x -= friction;
-			if (m_Velocity.x < 1.f && m_Velocity.x >-1.f) m_Velocity.x = 0;
+			
 
 
 
@@ -224,7 +228,9 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 			m_pDeathEffect->Play(0);
 		}
 	}
-	
+	if (m_Velocity.x > 0 && m_IsOnGround == 1) m_Velocity.x += friction * elapsedSec;
+	if (m_Velocity.x < 0 && m_IsOnGround == 1)m_Velocity.x -= friction * elapsedSec;
+	if (m_Velocity.x > -1.f && m_Velocity.x < 1.f) m_Velocity.x = 0;
 	if (m_IsAlive == false)
 	{
 		m_Velocity.y += gravity/3;
@@ -280,7 +286,7 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 	{
 		if (m_Pos.x < 4990 * 2)
 		{
-			if (m_Velocity.x <= 140.f && m_Velocity.x >= 0.f && m_IsOnGround == 1) m_Velocity.x += 1000.f * elapsedSec;
+			if (m_Velocity.x <= 140.f && m_Velocity.x >= -0.5f && m_IsOnGround == 1) m_Velocity.x += 1000.f * elapsedSec;
 			m_WalkingState = WalkingState::right;
 		}
 		else if (m_Pos.x > 4990 * 2 && m_WinTimer < 7.f)
@@ -291,7 +297,7 @@ void Mario::Update(float elapsedSec, const std::vector<std::vector<Point2f>>& la
 		}
 		else if (m_Pos.x > 4990 * 2 && m_WinTimer > 7.f)
 		{
-			if (m_Velocity.x <= 140.f && m_Velocity.x >= 0.f && m_IsOnGround == 1) m_Velocity.x += 1000.f * elapsedSec;
+			if (m_Velocity.x <= 140.f && m_Velocity.x >= -0.5f && m_IsOnGround == 1) m_Velocity.x += 1000.f * elapsedSec;
 			m_WalkingState = WalkingState::right;
 		}
 		if (m_Pos.x > 5119 * 2)
@@ -319,7 +325,7 @@ void Mario::Draw() const
 
 void Mario::WalkRight(float elapsedSec, const Uint8* pStates)
 {
-	if (m_Velocity.x <= 140.f && m_Velocity.x >= 0.f && m_IsOnGround == 1) m_Velocity.x += 1000.f * elapsedSec;
+	if (m_Velocity.x <= 140.f && m_Velocity.x >= -5.f && m_IsOnGround == 1) m_Velocity.x += 1000.f * elapsedSec;
 	else if (m_Velocity.x <= 140.f && m_IsOnGround == 0)m_Velocity.x += 2500.f * elapsedSec;
 	if (m_LookingState != LookingState::leftSpin && m_LookingState != LookingState::rightSpin)
 	{
@@ -331,8 +337,8 @@ void Mario::WalkRight(float elapsedSec, const Uint8* pStates)
 	}
 	if (pStates[SDL_SCANCODE_LSHIFT] && m_IsOnGround == 1)
 	{
-		if (m_Velocity.x <= 300.f && m_Velocity.x >= 0.f) m_Velocity.x += 1000.f * elapsedSec;
-		if (m_Velocity.x >= 300.f) m_Velocity.x = 300.f;
+		if (m_Velocity.x <= 300.f && m_Velocity.x >= -5.f) m_Velocity.x += 1000.f * elapsedSec;
+		//if (m_Velocity.x >= 300.f) m_Velocity.x = 300.f;
 		m_FrameTime = 0.25f;
 	}
 	if (pStates[SDL_SCANCODE_LSHIFT]) m_JumpTime = 0.4f;
@@ -349,7 +355,7 @@ void Mario::WalkLeft(float elapsedSec, const Uint8* pStates)
 		{
 			if (m_Velocity.x >= -300.f) m_Velocity.x = -300.f;
 		}*/
-	if (m_Velocity.x >= -140.f && m_Velocity.x <= 0.f && m_IsOnGround == 1) m_Velocity.x -= 1000.f * elapsedSec;
+	if (m_Velocity.x >= -140.f && m_Velocity.x <= 5.f && m_IsOnGround == 1) m_Velocity.x -= 1000.f * elapsedSec;
 	else if (m_Velocity.x >= -140.f && m_IsOnGround == 0)m_Velocity.x -= 2500.f * elapsedSec;
 	if (m_LookingState != LookingState::leftSpin && m_LookingState != LookingState::rightSpin)
 	{
@@ -360,8 +366,8 @@ void Mario::WalkLeft(float elapsedSec, const Uint8* pStates)
 	}
 	if (pStates[SDL_SCANCODE_LSHIFT] && m_IsOnGround == 1)
 	{
-		if (m_Velocity.x >= -300.f && m_Velocity.x <= 0.f) m_Velocity.x -= 1000.f * elapsedSec;
-		if (m_Velocity.x <= -300.f) m_Velocity.x = -300.f;
+		if (m_Velocity.x >= -300.f && m_Velocity.x <= 5.f) m_Velocity.x -= 1000.f * elapsedSec;
+		//if (m_Velocity.x <= -300.f) m_Velocity.x = -300.f;
 		m_FrameTime = 0.25f;
 	}
 	if (pStates[SDL_SCANCODE_LSHIFT]) m_JumpTime = 0.4f;
@@ -371,7 +377,7 @@ void Mario::WalkLeft(float elapsedSec, const Uint8* pStates)
 
 void Mario::HandleMovement(float elapsedSec, const Uint8* pStates)
 {
-	if (!m_FinishHit)
+	if (!m_FinishHit && m_CanMove)
 	{
 		// Aparte functions voor elke movement method want ze worden lang
 		if (m_IsAlive == true)
@@ -936,7 +942,7 @@ void Mario::Reset()
 	m_IsAlive = true;
 	if (m_CheckpointHit == false)
 	{
-		m_Pos = Point2f(50, 200);
+		m_Pos = Point2f(50, 100);
 	}
 	else
 	{
@@ -1033,9 +1039,14 @@ void Mario::SetLevelClear(bool flag)
 	m_LevelClear = flag;
 }
 
+void Mario::SetCanMove(bool flag)
+{
+	m_CanMove = flag;
+}
+
 void Mario::OnKeyUpEvent(const SDL_KeyboardEvent& e)
 {
-	if (!m_FinishHit)
+	if (!m_FinishHit&& m_CanMove)
 	{
 		switch (e.keysym.sym)
 		{
@@ -1049,7 +1060,7 @@ void Mario::OnKeyUpEvent(const SDL_KeyboardEvent& e)
 
 void Mario::OnKeyDownEvent(const SDL_KeyboardEvent& e)
 {
-	if (!m_FinishHit)
+	if (!m_FinishHit && m_CanMove)
 	{
 		switch (e.keysym.sym)
 		{

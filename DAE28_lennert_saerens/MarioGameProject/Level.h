@@ -15,11 +15,12 @@ class EnemyManager;
 class Checkpoint;
 class Block;
 class Finish;
+class Pipe;
 
 class Level final
 {
 public:
-	Level(int levelNr, const Texture* levelTex, const std::vector<std::vector<Point2f>> landscape, const std::vector<std::vector<Point2f>> platforms, const Rectf vieuwPort, Mario* mario);
+	Level(int levelNr, const Texture* levelTex, const std::vector<std::vector<Point2f>> landscape, const std::vector<std::vector<Point2f>> platforms, const Rectf vieuwPort, Mario* mario, bool start);
 	Level(const Level& other) = delete; //Copy constructor afzetten (rule of three)
 	Level(Level&& other);
 	~Level();
@@ -46,7 +47,9 @@ private:
 	std::vector<std::vector<Point2f>> m_Landscape;
 	std::vector<std::vector<Point2f>> m_Platforms;
 	Mario* m_pMario;
+	Pipe* m_pPipe;
 	const Texture* m_pMap;
+	int m_CurrLevel;
 	Texture* m_pForeground;
 	Texture* m_pPipes;
 	Texture* m_pTitleScreen;
@@ -55,6 +58,7 @@ private:
 	SoundStream* m_pTitleMusic;
 	TextureManager* m_pTextureManager;
 	SoundEffectManager* m_pSoundManager;
+	SoundEffect* m_pStartSound;
 	EnemyManager* m_pEnemyManager;
 	Checkpoint* m_pCheckpoint;
 	Finish* m_pFinish;
