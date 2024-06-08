@@ -274,17 +274,20 @@ void Level::Update(float elapsedSec) noexcept
 			m_Timer = 300;
 			m_pTitleMusic->Play(1);
 			m_pCheckpoint->Reset();
+			m_pMario->ResetStart();
 		}
 		if (m_pMario->GetLevelClear())
 		{
-			Respawn();
-			m_pMario->SetLevelClear(false);
 			m_TitleScreen = true;
 			m_IsPaused = true;
+			Respawn();
+			m_pMario->SetLevelClear(false);
 			m_pBackgroundMusic->Stop();
 			m_Timer = 300;
 			m_pTitleMusic->Play(1);
 			m_pCheckpoint->Reset();
+			m_pMario->ResetStart();
+
 
 		}
 		if (!m_pMario->GetFinishHit())

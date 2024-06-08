@@ -1060,7 +1060,7 @@ void Mario::ResetStart() noexcept
 	m_CheckpointHit = false;
 	m_FinishHit = false;
 	m_WinTimer = 0;
-	m_LivesCount = 6;
+	m_LivesCount = 5;
 }
 
 void Mario::SetCheckpointHit() noexcept
